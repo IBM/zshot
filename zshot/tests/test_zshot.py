@@ -14,9 +14,10 @@ def test_add_pipe():
 
 
 def test_call_pipe():
-    nlp = spacy.load("en_core_web_sm")
+    nlp = spacy.load("en_core_web_trf")
     nlp.add_pipe("zshot", config={"entities": {}}, last=True)
     # Process a doc and see the results
+    nlp(DOCS[0])
     for doc in nlp.pipe(DOCS):
         print(doc._.acronyms)
     assert "zshot" in nlp.pipe_names
