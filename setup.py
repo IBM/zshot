@@ -16,7 +16,7 @@ setup(name='zshot',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-          # -*- Extra requirements: -*-
+          "spacy~=3.2.1"
       ],
       entry_points="""
       # -*- Entry points: -*-
