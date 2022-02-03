@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 
 from spacy.language import Language
 from spacy.tokens import Doc
@@ -21,3 +21,20 @@ class Zshot:
         # Add the matched spans when doc is processed
         doc._.acronyms.append("test")
         return doc
+
+    def pipe(self, docs: List[Doc], batch_size: int, **kwargs):
+        """.
+        docs: A sequence of spacy documents.
+        YIELDS (Doc): A sequence of Doc objects, in order.
+        """
+        self.extracts_mentions(docs)
+        self.link_entities(docs)
+        for doc in docs:
+            yield self(doc)
+
+    def extracts_mentions(self, docs: List[Doc]):
+        # Extract and filter mentions
+        pass
+
+    def link_entities(self, docs):
+        pass

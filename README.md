@@ -2,3 +2,11 @@
 # zshot
 
 Zero and Few shot named entity recognition plugin for Spacy
+
+# Development installation
+
+    pip install -r requirements/devel.txt
+
+# Run tests
+
+    python -m pytest -v
