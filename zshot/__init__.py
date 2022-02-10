@@ -1,17 +1,28 @@
-from typing import Dict, Optional, List
-
+from typing import Dict, Optional, List, Union
 from spacy.language import Language
 from spacy.tokens import Doc
 
 
+class Entity(Dict):
+    def __init__(self, name: str, description: str, label: str = None, vocabulary: List[str] = None):
+        super().__init__()
+        self.name = name
+        self.description = description
+        self.label = label if label else name
+        self.vocabulary = vocabulary
+
+
 @Language.factory("zshot", default_config={"entities": None})
-def create_zshot_component(nlp: Language, name: str, entities: Optional[Dict[str, str]]):
+def create_zshot_component(nlp: Language, name: str, entities: Optional[Union[Dict[str, str], List[Entity]]]):
     return Zshot(nlp, entities)
 
 
 class Zshot:
-    def __init__(self, nlp: Language, entities: Optional[Dict[str, str]]):
+
+    def __init__(self, nlp: Language, entities: Optional[Union[Dict[str, str], List[Entity]]]):
         # Register custom extension on the Doc
+        if isinstance(entities, dict):
+            entities = [Entity(name=name, description=description) for name, description in entities.items()]
         self.nlp = nlp
         self.entities = entities
         if not Doc.has_extension("acronyms"):
