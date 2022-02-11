@@ -26,8 +26,6 @@ def test_call_pipe_with_dict():
                                                         "in a north-bending arc of the river Seine"}}, last=True)
     # Process a doc and see the results
     nlp(DOCS[0])
-    for doc in nlp.pipe(DOCS):
-        print(doc._.acronyms)
     assert "zshot" in nlp.pipe_names
 
 
@@ -47,5 +45,5 @@ def test_call_pipe_with_entities():
     # Process a doc and see the results
     nlp(DOCS[0])
     for doc in nlp.pipe(DOCS):
-        print(doc._.acronyms)
+        print(doc._.mentions)
     assert "zshot" in nlp.pipe_names

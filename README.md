@@ -10,3 +10,17 @@ Zero and Few shot named entity recognition plugin for Spacy
 # Run tests
 
     python -m pytest -v
+
+# For using Blink NER
+
+    pip install git+https://github.com/facebookresearch/BLINK.git#egg=BLINK
+
+
+## Examples with Flair, Blink and Displacy
+
+    pip install flair
+    pip install git+https://github.com/facebookresearch/BLINK.git#egg=BLINK
+
+Run Wikification on a test sentence
+
+    python -m zshot.examples.wikification

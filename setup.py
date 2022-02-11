@@ -6,7 +6,7 @@ setup(name='zshot',
       version=version,
       description="Zero and Few shot named entity recognition",
       long_description="""Zero and Few shot named entity recognition""",
-      classifiers=[], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
+      classifiers=[],
       keywords='NER Zero-Shot Few-Shot',
       author='IBM Research',
       author_email='',
@@ -16,7 +16,10 @@ setup(name='zshot',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-          "spacy~=3.2.1"
+          "spacy~=3.2.1",
+          "requests~=2.27.1",
+          "appdata~=2.1.2",
+          "tqdm~=4.62.3",
       ],
       entry_points="""
       # -*- Entry points: -*-
