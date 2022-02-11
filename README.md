@@ -24,3 +24,5 @@ Zero and Few shot named entity recognition plugin for Spacy
 Run Wikification on a test sentence
 
     python -m zshot.examples.wikification
+    
+![](https://i.imgur.com/0oYuV38.png)
