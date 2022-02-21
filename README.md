@@ -6,6 +6,10 @@ Zero and Few shot named entity recognition plugin for Spacy
 # Development installation
 
     pip install -r requirements/devel.txt
+    
+# Download Spacy transformers model
+
+    python -m spacy download en_core_web_trf 
 
 # Run tests
 
