@@ -39,9 +39,10 @@ _config = {
 class Blink(Linker):
 
     def __init__(self):
-        if not pkgutil.find_loader("blink") and not pkgutil.find_loader("BLINK"):
+        if not pkgutil.find_loader("blink"):
             raise Exception("Blink module not installed. You need to install blink in order to use the Blink Linker."
-                            "Install it with: pip install git+https://github.com/facebookresearch/BLINK.git#egg=BLINK")
+                            "Install it with: pip install -e git+https://github.com/facebookresearch/BLINK.git#egg"
+                            "=BLINK")
         self.config = argparse.Namespace(**_config)
         self.models = None
 
