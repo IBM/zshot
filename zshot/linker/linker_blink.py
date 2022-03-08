@@ -8,7 +8,7 @@ from spacy.tokens import Doc
 from zshot.linker.linker import Linker
 from zshot.utils import download_file
 
-MODELS_PATH = AppDataPaths(f".{Path(__file__).stem}").app_data_path + "/"
+MODELS_PATH = AppDataPaths(f"{Path(__file__).stem}").app_data_path + "/"
 
 BLINK_FILES = \
     ["http://dl.fbaipublicfiles.com/BLINK/entity.jsonl",
