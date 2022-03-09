@@ -53,6 +53,12 @@ class Blink(Linker):
             for f in BLINK_CROSS_ENCODER_FILES:
                 download_file(f, output_dir=MODELS_PATH)
 
+    @property
+    def entities(self) -> List[str]:
+        if len(self.models) < 6:
+            raise Exception('model not yet initialized')
+        return list(self.models[5].keys())
+
     def load_models(self):
         import blink.main_dense as main_dense
         self.download_models()
