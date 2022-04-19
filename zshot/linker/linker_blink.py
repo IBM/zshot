@@ -121,6 +121,8 @@ class Blink(Linker):
                         "mention": mention.text.lower(),
                         "context_right": doc.text[mention.end_char:].lower(),
                     })
+        if not data_to_link:
+            return
         _, _, _, _, _, predictions, scores, = main_dense.run(self.config, None, *self.models, test_data=data_to_link)
         for data, pred in zip(data_to_link, predictions):
             doc = docs[data['id']]
