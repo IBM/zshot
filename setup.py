@@ -20,6 +20,7 @@ setup(name='zshot',
           "requests~=2.27.1",
           "appdata~=2.1.2",
           "tqdm~=4.62.3",
+          "setuptools~=60.0.0",  # Needed to install dynamic packages from source (e.g. Blink)
       ],
       entry_points="""
       # -*- Entry points: -*-

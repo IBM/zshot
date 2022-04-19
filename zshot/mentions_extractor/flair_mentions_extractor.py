@@ -10,7 +10,7 @@ class FlairMentionsExtractor(MentionsExtractor):
     def __init__(self):
         if not pkgutil.find_loader("flair"):
             raise Exception("Flair module not installed. You need to install Flair for using this class."
-                            "Install it with: pip install flair")
+                            "Install it with: pip install flair==0.10")
         from flair.models import SequenceTagger
         self.model = SequenceTagger.load("ner")
 
