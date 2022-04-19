@@ -101,8 +101,8 @@ class Blink(Linker):
 
     def load_models(self):
         import blink.main_dense as main_dense
-        self.download_models()
         if self.models is None:
+            self.download_models()
             self.models = main_dense.load_models(self.config, logger=None)
 
     def link(self, docs: List[Doc], batch_size=None):
