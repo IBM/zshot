@@ -1,7 +1,7 @@
 ---
 name: Feature request
 about: Feature or enhancement for the project
-title: ':triangular_flag_on_post:'
+title: ''
 labels: enhancement
 assignees: ''
 
