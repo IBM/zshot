@@ -7,6 +7,20 @@ install:
   - pip install -r requirements/devel.txt
   - python -m spacy download en_core_web_sm
   - python -m spacy download en_core_web_trf
+  # Install the mkdocs dependencies
+  - pip install mkdocs mkdocs-material mkdocs-markdownextradata-plugin mdx_include
+
 # command to run tests
 script:
   - python -m pytest -v
+
+before_deploy:
+    - mkdocs build --verbose --clean --strict
+
+deploy: # Deploy documentation to Github in the gh_pages branch
+    provider: pages
+    skip_cleanup: true
+    github_token: $github_token
+    local_dir: site
+    on:
+        branch: master

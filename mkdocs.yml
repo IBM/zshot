@@ -1,0 +1,53 @@
+site_name: Zshot
+site_description: Zero and Few shot Named Entities and Relationships recognition
+markdown_extensions:
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+theme:
+    name: material
+    palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/lightbulb
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/lightbulb-outline
+        name: Switch to dark mode
+      features:
+        - search.suggest
+        - search.highlight
+        - content.tabs.link
+      language: en
+repo_name: Dublin-Research-Lab/zshot
+repo_url: https://github.ibm.com/Dublin-Research-Lab/zshot
+edit_uri: ''
+plugins:
+- search
+- markdownextradata:
+    data: data
+markdown_extensions:
+- toc:
+    permalink: true
+- markdown.extensions.codehilite:
+    guess_lang: false
+- mdx_include:
+    base_path: docs
+- admonition
+- codehilite
+- extra
+- pymdownx.superfences:
+    custom_fences:
+    - name: mermaid
+      class: mermaid
+      format: !!python/name:pymdownx.superfences.fence_code_format ''
+- pymdownx.tabbed:
+    alternate_style: true
+extra:
+  social:
+  - icon: fontawesome/brands/github-alt
+    link: https://github.ibm.com/Dublin-Research-Lab/zshot
