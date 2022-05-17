@@ -1,6 +1,13 @@
 [![Build Status](https://travis.ibm.com/Dublin-Research-Lab/zshot.svg?token=zSP5krJq4ryG4zqgNyms&branch=master)](https://travis.ibm.com/Dublin-Research-Lab/zshot)
 # zshot
 
+----
+
+## Documentation
+[pages.github.ibm.com/Dublin-Research-Lab/zshot](https://pages.github.ibm.com/Dublin-Research-Lab/zshot/)
+
+----
+
 Zero and Few shot named entity recognition plugin for Spacy for performing:
 
 - Wikification: the task of linking textual mentions to entities in Wikipedia
