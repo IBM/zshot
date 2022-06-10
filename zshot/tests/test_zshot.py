@@ -1,6 +1,6 @@
 import spacy
 
-from zshot import Entity
+from zshot import Entity, MentionsExtractor
 
 DOCS = ["The Domain Name System (DNS) is the hierarchical and decentralized naming system used to identify"
         " computers, services, and other resources reachable through the Internet or other Internet Protocol"
@@ -13,6 +13,16 @@ def test_add_pipe():
     nlp = spacy.blank("en")
     nlp.add_pipe("zshot", config={"entities": {}})
     assert "zshot" in nlp.pipe_names
+
+
+def test_disable_ner():
+    nlp = spacy.load("en_core_web_trf")
+    config_zshot = {
+        "mentions_extractor": MentionsExtractor.NONE
+    }
+    nlp.add_pipe("zshot", config=config_zshot, last=True)
+    assert "zshot" in nlp.pipe_names
+    assert "ner" not in nlp.pipe_names
 
 
 def test_call_pipe_with_dict():

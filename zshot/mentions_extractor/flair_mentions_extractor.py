@@ -1,7 +1,7 @@
 import pkgutil
-from packaging import version
-from spacy.tokens.doc import Doc
 from typing import List, Optional
+
+from spacy.tokens.doc import Doc
 
 from zshot.mentions_extractor.mentions_extractor import MentionsExtractor
 
@@ -16,7 +16,6 @@ class FlairMentionsExtractor(MentionsExtractor):
         self.model = SequenceTagger.load("ner")
 
     def extract_mentions(self, docs: List[Doc], batch_size: Optional[int] = None):
-        import flair
         from flair.data import Sentence
         for doc in docs:
             sent = Sentence(str(doc), use_tokenizer=True)
