@@ -2,6 +2,7 @@ import warnings
 from enum import Enum
 from typing import Dict, Optional, List, Union
 
+from pydantic import BaseModel
 from spacy.language import Language
 from spacy.tokens import Doc
 
@@ -24,13 +25,10 @@ class End2End(str, Enum):
     NONE = "NONE"
 
 
-class Entity(Dict):
-    def __init__(self, name: str, description: str, label: str = None, vocabulary: List[str] = None):
-        super().__init__()
-        self.name = name
-        self.description = description
-        self.label = label if label else name
-        self.vocabulary = vocabulary
+class Entity(BaseModel):
+    name: str
+    description: str
+    vocabulary: Optional[List[str]] = None
 
 
 @Language.factory("zshot", default_config={
@@ -50,11 +48,13 @@ def create_zshot_component(nlp: Language, name: str,
 class Zshot:
 
     def __init__(self, nlp: Language,
-                 entities: Optional[Union[Dict[str, str], List[Entity]]],
+                 entities: Optional[Union[Dict[str, str], List[Entity], List[Dict]]],
                  mentions_extractor: MentionsExtractor,
                  linker: Linker,
                  end2end: End2End):
-        if isinstance(entities, dict):
+        if isinstance(entities, list) and len(entities) > 0 and isinstance(entities[0], dict):
+            entities = list(map(lambda e: Entity(**e), entities))
+        elif isinstance(entities, dict):
             entities = [Entity(name=name, description=description) for name, description in entities.items()]
         self.nlp = nlp
         self.entities = entities
@@ -95,6 +95,7 @@ class Zshot:
         docs: A sequence of spacy documents.
         YIELDS (Doc): A sequence of Doc objects, in order.
         """
+        docs = list(docs)
         self.extracts_mentions(docs, batch_size=batch_size)
         self.link_entities(docs, batch_size=batch_size)
         for doc in docs:

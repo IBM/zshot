@@ -1,12 +1,8 @@
+from typing import List
+
 import spacy
-
-from zshot import Entity, MentionsExtractor
-
-DOCS = ["The Domain Name System (DNS) is the hierarchical and decentralized naming system used to identify"
-        " computers, services, and other resources reachable through the Internet or other Internet Protocol"
-        " (IP) networks.",
-        "International Business Machines Corporation (IBM) is an American multinational technology corporation"
-        " headquartered in Armonk, New York, with operations in over 171 countries."]
+from zshot import Entity, MentionsExtractor, Zshot
+from zshot.tests.config import EX_ENTITIES_DICT, EX_DOCS, EX_ENTITIES
 
 
 def test_add_pipe():
@@ -25,35 +21,41 @@ def test_disable_ner():
     assert "ner" not in nlp.pipe_names
 
 
-def test_call_pipe_with_dict():
+def test_call_pipe_with_dict_configuration():
     nlp = spacy.load("en_core_web_trf")
-    nlp.add_pipe("zshot", config={"entities": {"apple": "The apple fruit",
-                                               "DNS": "domain name system",
-                                               "IBM": "technology corporation",
-                                               "NYC": "New York city",
-                                               "Florida": "southeasternmost U.S. state",
-                                               "Paris": "Paris is located in northern central France, "
-                                                        "in a north-bending arc of the river Seine"}}, last=True)
-    # Process a doc and see the results
-    nlp(DOCS[0])
+    nlp.add_pipe("zshot", config={"entities": EX_ENTITIES_DICT}, last=True)
+    nlp(EX_DOCS[0])
     assert "zshot" in nlp.pipe_names
+    zshot_component: Zshot = [comp for name, comp in nlp.pipeline if name == 'zshot'][0]
+    assert len(zshot_component.entities) == len(EX_ENTITIES_DICT)
+    assert type(zshot_component.entities[0]) == Entity
 
 
-def test_call_pipe_with_entities():
+def test_call_pipe_with_registered_function_configuration():
+
+    @spacy.registry.misc("create.entities.v1")
+    def create_entities() -> List[Entity]:
+        return EX_ENTITIES
+
     nlp = spacy.load("en_core_web_trf")
-    entities = [
-        Entity(name="apple", description="the apple fruit"),
-        Entity(name="DNS", description="domain name system", vocabulary=["DNS", "Domain Name System"]),
-        Entity(name="IBM", description="technology corporation", vocabulary=["IBM", "International Business machine"]),
-        Entity(name="NYC", description="New York city"),
-        Entity(name="Florida", description="southeasternmost U.S. state"),
-        Entity(name="Paris", description="Paris is located in northern central France, "
-                                         "in a north-bending arc of the river Seine"),
 
-    ]
-    nlp.add_pipe("zshot", config={"entities": entities}, last=True)
-    # Process a doc and see the results
-    nlp(DOCS[0])
-    for doc in nlp.pipe(DOCS):
-        print(doc._.mentions)
+    nlp.add_pipe("zshot", config={"entities": {"@misc": "create.entities.v1"}}, last=True)
     assert "zshot" in nlp.pipe_names
+    zshot_component: Zshot = [comp for name, comp in nlp.pipeline if name == 'zshot'][0]
+    assert len(zshot_component.entities) == len(EX_ENTITIES_DICT)
+    assert type(zshot_component.entities[0]) == Entity
+
+
+def test_process_single_document():
+    nlp = spacy.load("en_core_web_trf")
+    nlp.add_pipe("zshot", last=True)
+    assert "zshot" in nlp.pipe_names
+    doc = nlp(EX_DOCS[0])
+    assert doc._.mentions is not None
+
+
+def test_process_pipeline_documents():
+    nlp = spacy.load("en_core_web_trf")
+    nlp.add_pipe("zshot", last=True)
+    assert "zshot" in nlp.pipe_names
+    assert all(doc._.mentions is not None for doc in nlp.pipe(EX_DOCS))

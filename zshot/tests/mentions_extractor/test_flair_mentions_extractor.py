@@ -1,13 +1,17 @@
+import pkgutil
+
 import spacy
 
 from zshot import MentionsExtractor
 from zshot.tests.config import EX_DOCS
 
 
-def test_spacy_mentions_extractor():
+def test_flair_mentions_extractor():
+    if not pkgutil.find_loader("flair"):
+        return
     nlp = spacy.load("en_core_web_sm")
     config_zshot = {
-        "mentions_extractor": MentionsExtractor.SPACY
+        "mentions_extractor": MentionsExtractor.FLAIR
     }
     nlp.add_pipe("zshot", config=config_zshot, last=True)
     assert "zshot" in nlp.pipe_names
@@ -16,10 +20,12 @@ def test_spacy_mentions_extractor():
     assert len(doc._.mentions) > 0
 
 
-def test_spacy_mentions_extractor_pipeline():
+def test_flair_mentions_extractor_pipeline():
+    if not pkgutil.find_loader("flair"):
+        return
     nlp = spacy.load("en_core_web_sm")
     config_zshot = {
-        "mentions_extractor": MentionsExtractor.SPACY
+        "mentions_extractor": MentionsExtractor.FLAIR
     }
     nlp.add_pipe("zshot", config=config_zshot, last=True)
     assert "zshot" in nlp.pipe_names
