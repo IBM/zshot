@@ -10,8 +10,7 @@ class SpacyMentionsExtractor(MentionsExtractor):
 
     def extract_mentions(self, docs: List[Doc], batch_size: Optional[int] = None):
         for doc in docs:
-            sent_mentions = doc.ents
-            for mention in sent_mentions:
+            ents_filtered = [ent for ent in doc.ents if ent.label_ not in "CARDINAL"]
+            for mention in ents_filtered:
                 doc._.mentions.append(doc.char_span(mention.start_char, mention.end_char))
-
             doc.ents = []
