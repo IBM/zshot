@@ -1,2 +1,3 @@
 from zshot.mentions_extractor.flair_mentions_extractor import FlairMentionsExtractor
 from zshot.mentions_extractor.spacy_mentions_extractor import SpacyMentionsExtractor
+from zshot.mentions_extractor.mentions_extractor import MentionsExtractor

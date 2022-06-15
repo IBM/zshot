@@ -4,6 +4,8 @@ from enum import Enum
 from pathlib import Path
 from typing import List
 import pkgutil
+
+import spacy
 from appdata import AppDataPaths
 from spacy.tokens import Doc
 
@@ -54,7 +56,7 @@ class BlinkIndex(str, Enum):
 blink_index2url = {BlinkIndex.FLAT: BLINK_FAISS_FLAT_INDEX, BlinkIndex.HNSW: BLINK_FAISS_HNSW_INDEX}
 
 
-class Blink(Linker):
+class LinkerBlink(Linker):
 
     def __init__(self, index=BlinkIndex.FLAT):
         if not pkgutil.find_loader("blink"):
@@ -70,7 +72,7 @@ class Blink(Linker):
         self._wikipedia_id2local_id = None
 
     @property
-    def entities(self) -> List[str]:
+    def entities_list(self) -> List[str]:
         if len(self.models) < 6:
             raise Exception('model not yet initialized')
         return list(self.models[5].keys())
@@ -127,4 +129,10 @@ class Blink(Linker):
         for data, pred in zip(data_to_link, predictions):
             doc = docs[data['id']]
             mention = doc._.mentions[data['mention_id']]
-            doc.ents += (doc.char_span(mention.start_char, mention.end_char, label=pred[0]),)
+            doc.ents += (doc.char_span(mention.start_char, mention.end_char, label=pred[0],
+                                       kb_id=self.local_name2wikipedia_url(pred[0])))
+
+
+@spacy.registry.misc(LinkerBlink.id())
+def register_mention_extractor():
+    return LinkerBlink()

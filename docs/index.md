@@ -65,14 +65,6 @@ $ python -m spacy download en_core_web_trf
 
 ### Install addiotional dependencies
 
-Install [Flair](https://github.com/facebookresearch/BLINK/tree/main/blink) to use the flair for the mentions extraction
-
-```console
-$ pip install flair==0.10
-
----> 100%
-```
-
 Install [Blink](https://github.com/facebookresearch/BLINK/tree/main/blink) to use the Blink linker
 
 ```console
@@ -89,14 +81,15 @@ $ pip install git+https://github.com/facebookresearch/BLINK.git#egg=BLINK
 import spacy
 from spacy import displacy
 
-from zshot import Linker, MentionsExtractor
+from zshot.mentions_extractor import SpacyMentionsExtractor
+from zshot.linker import LinkerBlink
 
 text = "International Business Machines Corporation (IBM) is an American multinational technology corporation " \
        "headquartered in Armonk, New York, with operations in over 171 countries."
 
 nlp = spacy.load("en_core_web_trf")
 nlp.disable_pipes('ner')
-nlp.add_pipe("zshot", config={"mentions_extractor": MentionsExtractor.FLAIR, "linker": Linker.BLINK}, last=True)
+nlp.add_pipe("zshot", config={"mentions_extractor": SpacyMentionsExtractor.id(), "linker": LinkerBlink.id()}, last=True)
 print(nlp.pipe_names)
 
 doc = nlp(text)

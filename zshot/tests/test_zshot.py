@@ -1,7 +1,9 @@
 from typing import List
 
 import spacy
-from zshot import Entity, MentionsExtractor, Zshot
+
+from zshot import Zshot
+from zshot.entity import Entity
 from zshot.tests.config import EX_ENTITIES_DICT, EX_DOCS, EX_ENTITIES
 
 
@@ -14,7 +16,7 @@ def test_add_pipe():
 def test_disable_ner():
     nlp = spacy.load("en_core_web_trf")
     config_zshot = {
-        "mentions_extractor": MentionsExtractor.NONE
+        "mentions_extractor": None
     }
     nlp.add_pipe("zshot", config=config_zshot, last=True)
     assert "zshot" in nlp.pipe_names

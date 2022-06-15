@@ -1,6 +1,7 @@
 import pkgutil
 from typing import List, Optional
 
+import spacy
 from spacy.tokens.doc import Doc
 
 from zshot.mentions_extractor.mentions_extractor import MentionsExtractor
@@ -23,3 +24,8 @@ class FlairMentionsExtractor(MentionsExtractor):
             sent_mentions = sent.get_spans('ner')
             for mention in sent_mentions:
                 doc._.mentions.append(doc.char_span(mention.start_position, mention.end_position))
+
+
+@spacy.registry.misc(FlairMentionsExtractor.id())
+def register_mention_extractor():
+    return FlairMentionsExtractor()
