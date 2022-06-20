@@ -10,13 +10,13 @@ from zshot.tests.config import EX_DOCS, EX_ENTITIES
 class DummyMentionsExtractor(MentionsExtractor):
     def extract_mentions(self, docs: Iterator[Doc], batch_size=None):
         for doc in docs:
-            doc._.mentions.append(doc.char_span(0, len(doc.text)-1))
+            doc._.mentions.append(doc.char_span(0, len(doc.text) - 1))
 
 
 class DummyMentionsExtractorWithEntities(MentionsExtractor):
     def extract_mentions(self, docs: Iterator[Doc], batch_size=None):
         for idx, doc in enumerate(docs):
-            doc._.mentions.append(doc.char_span(0, len(doc.text)-1, label=self.entities[idx % len(self.entities)].name))
+            doc._.mentions.append(doc.char_span(0, len(doc.text) - 1, label=self.entities[idx % len(self.entities)].name))
 
 
 def test_dummy_mentions_extractor():

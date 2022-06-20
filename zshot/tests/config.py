@@ -14,7 +14,8 @@ EX_ENTITIES_DICT = {"apple": "The apple fruit",
                     "Paris": "Paris is located in northern central France, "
                              "in a north-bending arc of the river Seine"}
 
-EX_ENTITIES = [
+EX_ENTITIES = \
+    [
         Entity(name="apple", description="the apple fruit"),
         Entity(name="DNS", description="domain name system", vocabulary=["DNS", "Domain Name System"]),
         Entity(name="IBM", description="technology corporation", vocabulary=["IBM", "International Business machine"]),

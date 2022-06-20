@@ -1,3 +1,4 @@
 pytest>=5.0
 setuptools~=60.0.0
 flair==0.11.3
+flake8>=4.0.1
