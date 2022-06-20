@@ -38,20 +38,11 @@ class DummyLinkerWithEntities(Linker):
 
 
 def test_dummy_linker():
-    @spacy.registry.misc("dummy.mentions-extractor")
-    def create_custom_spacy_extractor():
-        return DummyMentionsExtractor()
-
-    @spacy.registry.misc("dummy.linker")
-    def create_custom_linker():
-        return DummyLinker()
-
     nlp = spacy.blank("en")
-    config_zshot = {
-        "mentions_extractor": {"@misc": "dummy.mentions-extractor"},
-        "linker": {"@misc": "dummy.linker"}
-    }
-    nlp.add_pipe("zshot", config=config_zshot, last=True)
+    config = PipelineConfig(
+        mentions_extractor=DummyMentionsExtractor(),
+        linker=DummyLinker())
+    nlp.add_pipe("zshot", config=config, last=True)
     assert "zshot" in nlp.pipe_names
     doc = nlp(EX_DOCS[1])
     assert len(doc._.mentions) > 0
