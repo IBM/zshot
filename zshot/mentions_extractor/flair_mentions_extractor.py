@@ -1,22 +1,40 @@
 import pkgutil
-from typing import List, Optional
+from typing import Optional, Iterator
 
-import spacy
 from spacy.tokens.doc import Doc
 
 from zshot.mentions_extractor.mentions_extractor import MentionsExtractor
+from zshot.mentions_extractor.utils import ExtractorType
 
 
 class FlairMentionsExtractor(MentionsExtractor):
 
-    def __init__(self):
+    ALLOWED_CHUNKS = ("NP",)
+
+    def __init__(self, extractor_type: Optional[ExtractorType] = ExtractorType.NER):
         if not pkgutil.find_loader("flair"):
             raise Exception("Flair module not installed. You need to install Flair for using this class."
                             "Install it with: pip install flair==0.11")
         from flair.models import SequenceTagger
-        self.model = SequenceTagger.load("ner")
+        super(FlairMentionsExtractor, self).__init__()
 
-    def extract_mentions(self, docs: List[Doc], batch_size: Optional[int] = None):
+        self.extractor_type = extractor_type
+        if self.extractor_type == ExtractorType.NER:
+            self.model = SequenceTagger.load("ner")
+        else:
+            self.model = SequenceTagger.load("chunk")
+
+    def extract_pos_mentions(self, docs: Iterator[Doc], batch_size: Optional[int] = None):
+        from flair.data import Sentence
+        for doc in docs:
+            sent = Sentence(str(doc), use_tokenizer=True)
+            self.model.predict(sent)
+            for i in range(len(sent.labels)):
+                if sent.labels[i].value in self.ALLOWED_CHUNKS:
+                    doc._.mentions.append(doc.char_span(sent.labels[i].data_point.start_position,
+                                                        sent.labels[i].data_point.end_position))
+
+    def extract_ner_mentions(self, docs: Iterator[Doc], batch_size: Optional[int] = None):
         from flair.data import Sentence
         for doc in docs:
             sent = Sentence(str(doc), use_tokenizer=True)
@@ -25,7 +43,8 @@ class FlairMentionsExtractor(MentionsExtractor):
             for mention in sent_mentions:
                 doc._.mentions.append(doc.char_span(mention.start_position, mention.end_position))
 
-
-@spacy.registry.misc(FlairMentionsExtractor.id())
-def register_mention_extractor():
-    return FlairMentionsExtractor()
+    def extract_mentions(self, docs: Iterator[Doc], batch_size=None):
+        if self.extractor_type == ExtractorType.NER:
+            return self.extract_ner_mentions(docs, batch_size)
+        else:
+            return self.extract_pos_mentions(docs, batch_size)

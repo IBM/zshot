@@ -1,11 +1,10 @@
 import argparse
 import os
+import pkgutil
 from enum import Enum
 from pathlib import Path
-from typing import List
-import pkgutil
+from typing import List, Iterator
 
-import spacy
 from appdata import AppDataPaths
 from spacy.tokens import Doc
 
@@ -107,7 +106,7 @@ class LinkerBlink(Linker):
             self.download_models()
             self.models = main_dense.load_models(self.config, logger=None)
 
-    def link(self, docs: List[Doc], batch_size=None):
+    def link(self, docs: Iterator[Doc], batch_size=None):
         import blink.main_dense as main_dense
         self.load_models()
         data_to_link = []
@@ -131,8 +130,3 @@ class LinkerBlink(Linker):
             mention = doc._.mentions[data['mention_id']]
             doc.ents += (doc.char_span(mention.start_char, mention.end_char, label=pred[0],
                                        kb_id=self.local_name2wikipedia_url(pred[0])))
-
-
-@spacy.registry.misc(LinkerBlink.id())
-def register_mention_extractor():
-    return LinkerBlink()

@@ -1,6 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import Iterator, List
+import os
+import zlib
+import pickle as pkl
 
+from spacy.util import ensure_path
 from spacy.tokens import Doc
 
 from zshot.entity import Entity
@@ -10,11 +14,6 @@ class Linker(ABC):
 
     def __init__(self):
         self._entities = None
-
-    @classmethod
-    def id(cls) -> str:
-        return f"zshot.{cls.__name__}.{Linker.__name__}" \
-               f".{cls.version()}"
 
     def set_kg(self, entities: Iterator[Entity]):
         """
@@ -45,3 +44,27 @@ class Linker(ABC):
     def version() -> str:
         return "v1"
 
+    @staticmethod
+    def _get_serialize_file(path):
+        return os.path.join(path, "linker.pkl")
+
+    @staticmethod
+    def _get_config_file(path):
+        path = os.path.join(path, "linker.json")
+        path = ensure_path(path)
+        return path
+
+    @classmethod
+    def from_disk(cls, path, exclude=()):
+        serialize_file = cls._get_serialize_file(path)
+        with open(serialize_file, "rb") as f:
+            return pkl.load(f)
+
+    def to_disk(self, path):
+        serialize_file = self._get_serialize_file(path)
+        with open(serialize_file, "wb") as f:
+            return pkl.dump(self, f)
+
+    def __hash__(self):
+        self_repr = f"{self.__class__.__name__}.{self.version()}.{str(self.__dict__)}"
+        return zlib.crc32(self_repr.encode())

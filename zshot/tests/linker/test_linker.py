@@ -1,10 +1,9 @@
-from typing import Iterator, List
+from typing import Iterator
 
 import spacy
 from spacy.tokens import Doc
 
-from zshot import Linker
-from zshot.entity import Entity
+from zshot import Linker, PipelineConfig
 from zshot.tests.config import EX_DOCS, EX_ENTITIES
 from zshot.tests.mentions_extractor.test_mention_extractor import DummyMentionsExtractor
 
@@ -25,7 +24,7 @@ class DummyLinkerEnd2End(Linker):
 
     def link(self, docs: Iterator[Doc], batch_size=None):
         for doc in docs:
-            doc.ents += (doc.char_span(0, len(doc.text)-1, label='label'),)
+            doc.ents += (doc.char_span(0, len(doc.text) - 1, label='label'),)
 
 
 class DummyLinkerWithEntities(Linker):
@@ -47,7 +46,7 @@ def test_dummy_linker():
     def create_custom_linker():
         return DummyLinker()
 
-    nlp = spacy.load("en_core_web_sm")
+    nlp = spacy.blank("en")
     config_zshot = {
         "mentions_extractor": {"@misc": "dummy.mentions-extractor"},
         "linker": {"@misc": "dummy.linker"}
@@ -60,26 +59,13 @@ def test_dummy_linker():
 
 
 def test_dummy_linker_with_entities_config():
-    @spacy.registry.misc("dummy.mentions-extractor")
-    def create_custom_spacy_extractor():
-        return DummyMentionsExtractor()
+    nlp = spacy.blank("en")
 
-    @spacy.registry.misc("dummy.linker")
-    def create_custom_linker():
-        return DummyLinker()
+    nlp.add_pipe("zshot", config=PipelineConfig(
+        mentions_extractor=DummyMentionsExtractor(),
+        linker=DummyLinker(),
+        entities=EX_ENTITIES), last=True)
 
-    @spacy.registry.misc("get.entities.v1")
-    def get_entities() -> List[Entity]:
-        return EX_ENTITIES
-
-    nlp = spacy.load("en_core_web_sm")
-    config_zshot = {
-        "mentions_extractor": {"@misc": "dummy.mentions-extractor"},
-        "linker": {"@misc": "dummy.linker"},
-        "entities": {"@misc": "get.entities.v1"}
-    }
-
-    nlp.add_pipe("zshot", config=config_zshot, last=True)
     assert "zshot" in nlp.pipe_names
     doc = nlp(EX_DOCS[1])
 
@@ -89,26 +75,13 @@ def test_dummy_linker_with_entities_config():
 
 
 def test_dummy_linker_end2end():
-    @spacy.registry.misc("dummy.mentions-extractor")
-    def create_custom_spacy_extractor():
-        return DummyMentionsExtractor()
+    nlp = spacy.blank("en")
 
-    @spacy.registry.misc("dummy.linker")
-    def create_custom_linker():
-        return DummyLinkerEnd2End()
+    nlp.add_pipe("zshot", config=PipelineConfig(
+        mentions_extractor=DummyMentionsExtractor(),
+        linker=DummyLinkerEnd2End(),
+        entities=EX_ENTITIES), last=True)
 
-    @spacy.registry.misc("get.entities.v1")
-    def get_entities() -> List[Entity]:
-        return EX_ENTITIES
-
-    nlp = spacy.load("en_core_web_sm")
-    config_zshot = {
-        "mentions_extractor": {"@misc": "dummy.mentions-extractor"},
-        "linker": {"@misc": "dummy.linker"},
-        "entities": {"@misc": "get.entities.v1"}
-    }
-
-    nlp.add_pipe("zshot", config=config_zshot, last=True)
     assert "zshot" in nlp.pipe_names
     doc = nlp(EX_DOCS[1])
 

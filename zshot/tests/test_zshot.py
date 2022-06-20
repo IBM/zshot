@@ -1,47 +1,82 @@
+import json
+import os
+import tempfile
 from typing import List
 
 import spacy
 
-from zshot import Zshot
+from zshot import Zshot, PipelineConfig
 from zshot.entity import Entity
 from zshot.tests.config import EX_ENTITIES_DICT, EX_DOCS, EX_ENTITIES
+from zshot.tests.linker.test_linker import DummyLinker
+from zshot.tests.mentions_extractor.test_mention_extractor import DummyMentionsExtractor
 
 
 def test_add_pipe():
     nlp = spacy.blank("en")
-    nlp.add_pipe("zshot", config={"entities": {}})
+    nlp.add_pipe("zshot")
     assert "zshot" in nlp.pipe_names
 
 
 def test_disable_ner():
-    nlp = spacy.load("en_core_web_trf")
-    config_zshot = {
-        "mentions_extractor": None
-    }
-    nlp.add_pipe("zshot", config=config_zshot, last=True)
+    nlp = spacy.load("en_core_web_sm")
+    nlp.add_pipe("zshot", last=True)
     assert "zshot" in nlp.pipe_names
     assert "ner" not in nlp.pipe_names
 
 
-def test_call_pipe_with_dict_configuration():
-    nlp = spacy.load("en_core_web_trf")
-    nlp.add_pipe("zshot", config={"entities": EX_ENTITIES_DICT}, last=True)
-    nlp(EX_DOCS[0])
+def test_serialization_zshot():
+    nlp = spacy.blank("en")
+    nlp.add_pipe("zshot", last=True)
+    assert "zshot" in nlp.pipe_names
+    assert "ner" not in nlp.pipe_names
+    pipes = [p for p in nlp.pipe_names if p != "zshot"]
+
+    d = tempfile.TemporaryDirectory()
+    nlp.to_disk(d.name, exclude=pipes)
+    config_fn = os.path.join(d.name, "zshot", "config.cfg")
+    assert os.path.exists(config_fn)
+    with open(config_fn, "r") as f:
+        config = json.load(f)
+    assert "disable_default_ner" in config and config["disable_default_ner"]
+    nlp2 = spacy.load(d.name)
+    assert "zshot" in nlp2.pipe_names
+
+
+def test_call_pipe_with_registered_function_configuration():
+
+    @spacy.registry.misc("dummy.mentions-extractor")
+    def create_custom_spacy_extractor():
+        return DummyMentionsExtractor()
+
+    @spacy.registry.misc("dummy.linker")
+    def create_custom_linker():
+        return DummyLinker()
+
+    @spacy.registry.misc("get.entities.v1")
+    def get_entities() -> List[Entity]:
+        return EX_ENTITIES
+
+    config_zshot = {
+        "mentions_extractor": {"@misc": "dummy.mentions-extractor"},
+        "linker": {"@misc": "dummy.linker"},
+        "entities": {"@misc": "get.entities.v1"}
+    }
+
+    nlp = spacy.blank("en")
+    nlp.add_pipe("zshot", config=config_zshot, last=True)
     assert "zshot" in nlp.pipe_names
     zshot_component: Zshot = [comp for name, comp in nlp.pipeline if name == 'zshot'][0]
     assert len(zshot_component.entities) == len(EX_ENTITIES_DICT)
     assert type(zshot_component.entities[0]) == Entity
 
 
-def test_call_pipe_with_registered_function_configuration():
-
-    @spacy.registry.misc("create.entities.v1")
-    def create_entities() -> List[Entity]:
-        return EX_ENTITIES
-
-    nlp = spacy.load("en_core_web_trf")
-
-    nlp.add_pipe("zshot", config={"entities": {"@misc": "create.entities.v1"}}, last=True)
+def test_call_pipe_with_piepeline_configuration():
+    nlp = spacy.load("en_core_web_sm")
+    nlp.add_pipe("zshot", config=PipelineConfig(
+        mentions_extractor=DummyMentionsExtractor(),
+        linker=DummyLinker(),
+        entities=EX_ENTITIES), last=True)
     assert "zshot" in nlp.pipe_names
     zshot_component: Zshot = [comp for name, comp in nlp.pipeline if name == 'zshot'][0]
     assert len(zshot_component.entities) == len(EX_ENTITIES_DICT)
@@ -49,7 +84,7 @@ def test_call_pipe_with_registered_function_configuration():
 
 
 def test_process_single_document():
-    nlp = spacy.load("en_core_web_trf")
+    nlp = spacy.blank("en")
     nlp.add_pipe("zshot", last=True)
     assert "zshot" in nlp.pipe_names
     doc = nlp(EX_DOCS[0])
@@ -57,7 +92,7 @@ def test_process_single_document():
 
 
 def test_process_pipeline_documents():
-    nlp = spacy.load("en_core_web_trf")
+    nlp = spacy.blank("en")
     nlp.add_pipe("zshot", last=True)
     assert "zshot" in nlp.pipe_names
     assert all(doc._.mentions is not None for doc in nlp.pipe(EX_DOCS))

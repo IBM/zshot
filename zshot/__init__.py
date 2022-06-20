@@ -1,1 +1,1 @@
-from zshot.zshot import MentionsExtractor, Linker, Zshot
+from zshot.zshot import MentionsExtractor, Linker, Zshot, PipelineConfig
