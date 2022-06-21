@@ -14,6 +14,7 @@ class Linker(ABC):
 
     def __init__(self):
         self._entities = None
+        self._is_end2end = False
 
     def set_kg(self, entities: Iterator[Entity]):
         """
@@ -38,7 +39,11 @@ class Linker(ABC):
 
     @property
     def is_end2end(self) -> bool:
-        return False
+        return self._is_end2end
+
+    @is_end2end.setter
+    def is_end2end(self, value):
+        self._is_end2end = value
 
     @staticmethod
     def version() -> str:
