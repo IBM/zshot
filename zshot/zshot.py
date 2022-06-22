@@ -69,14 +69,18 @@ class Zshot:
             except RegistryError:
                 self.linker = None
 
-        if self.mentions_extractor and self.mentions_extractor.require_existing_ner\
+        if self.mentions_extractor and self.mentions_extractor.require_existing_ner \
                 and "ner" not in self.nlp.pipe_names:
             raise ValueError(f"The pipeline you are using does not contains a NER,"
                              f" but mentions extractor {self.mentions_extractor.__class__.__name__} rely on"
                              f"an existing NER")
 
+        if self.mentions_extractor and (self.linker is not None and self.linker.is_end2end):
+            logging.warning("Using linker end2end. Disabling mentions_extractor")
+            self.mentions_extractor = None
+
         if self.disable_default_ner and \
-                (not self.mentions_extractor or not self.mentions_extractor.require_existing_ner)\
+                (not self.mentions_extractor or not self.mentions_extractor.require_existing_ner) \
                 and "ner" in self.nlp.pipe_names:
             logging.warning("Disabling default NER")
             self.nlp.disable_pipes("ner")

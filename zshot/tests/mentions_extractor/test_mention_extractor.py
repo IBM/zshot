@@ -13,6 +13,16 @@ class DummyMentionsExtractor(MentionsExtractor):
             doc._.mentions.append(doc.char_span(0, len(doc.text) - 1))
 
 
+class DummyMentionsExtractorWithNER(MentionsExtractor):
+    @property
+    def require_existing_ner(self) -> bool:
+        return True
+
+    def extract_mentions(self, docs: Iterator[Doc], batch_size=None):
+        for doc in docs:
+            doc._.mentions.append(doc.char_span(0, len(doc.text) - 1))
+
+
 class DummyMentionsExtractorWithEntities(MentionsExtractor):
     def extract_mentions(self, docs: Iterator[Doc], batch_size=None):
         for idx, doc in enumerate(docs):

@@ -8,8 +8,8 @@ import spacy
 from zshot import Zshot, PipelineConfig
 from zshot.entity import Entity
 from zshot.tests.config import EX_ENTITIES_DICT, EX_DOCS, EX_ENTITIES
-from zshot.tests.linker.test_linker import DummyLinker
-from zshot.tests.mentions_extractor.test_mention_extractor import DummyMentionsExtractor
+from zshot.tests.linker.test_linker import DummyLinker, DummyLinkerEnd2End
+from zshot.tests.mentions_extractor.test_mention_extractor import DummyMentionsExtractor, DummyMentionsExtractorWithNER
 
 
 def test_add_pipe():
@@ -23,6 +23,14 @@ def test_disable_ner():
     nlp.add_pipe("zshot", last=True)
     assert "zshot" in nlp.pipe_names
     assert "ner" not in nlp.pipe_names
+
+
+def test_disable_mentions_extractor():
+    nlp = spacy.load("en_core_web_sm")
+    config_zshot = PipelineConfig(mentions_extractor=DummyMentionsExtractorWithNER(), linker=DummyLinkerEnd2End())
+    nlp.add_pipe("zshot", config=config_zshot, last=True)
+    assert "zshot" in nlp.pipe_names and "ner" not in nlp.pipe_names
+    assert not nlp.get_pipe("zshot").mentions_extractor
 
 
 def test_serialization_zshot():
