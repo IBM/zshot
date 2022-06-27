@@ -24,3 +24,13 @@ EX_ENTITIES = \
         Entity(name="Paris", description="Paris is located in northern central France, "
                                          "in a north-bending arc of the river Seine"),
     ]
+
+EX_ENTITIES_NEG = [
+    Entity(name="NEG", description="Coal, water, oil, etc. are normally used for traditional electricity generation. "
+                                   "However using liquefied natural gas as fuel for joint circulatory electircity generation has advantages. "
+                                   "The chief financial officer is the only one there taking the fall. It has a very talented team, eh. "
+                                   "What will happen to the wildlife? I just tell them, you've got to change. They're here to stay. "
+                                   "They have no insurance on their cars. What else would you like? Whether holding an international cultural event "
+                                   "or setting the city's cultural policies, she always asks for the participation or input of other cities and counties."),
+]
+EX_ENTITIES_NEG.extend(EX_ENTITIES)
