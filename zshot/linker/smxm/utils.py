@@ -1,11 +1,13 @@
 import os
 import zipfile
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
-import gdown
 import torch
 from transformers import BertTokenizerFast
+
+from zshot.entity import Entity
 from zshot.linker.smxm.model import BertTaggerMultiClass
+from zshot.utils import download_file
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -34,11 +36,11 @@ class SmxmInput(dict):
 
 
 def load_model(url: str, output_path: str, folder_name: str) -> BertTaggerMultiClass:
-    if not os.path.exists(output_path):
-        os.makedirs(output_path, exist_ok=True)
-    model_file_path = os.path.join(output_path, "model.zip")
+    filename = url.rsplit("/", 1)[1]
+    model_file_path = os.path.join(output_path, filename)
+
     if not os.path.isfile(model_file_path):
-        gdown.download(url, output=model_file_path, quiet=False)
+        download_file(url, output_path)
         with zipfile.ZipFile(model_file_path, "r") as model_zip:
             model_zip.extractall(output_path)
 
@@ -81,8 +83,22 @@ def predictions_to_span_annotations(
 
         for j, input_id in enumerate(mapping_input_id_to_word[:-1]):
             pred = predictions[i][j]
-            if (entities[pred] != "NEG") and (input_id is not None):
-                if (j > 0) and (input_id != mapping_input_id_to_word[j - 1]):
+            if (
+                entities[pred] != "NEG"
+            ) and (
+                input_id is not None
+            ) and (
+                (j == 0) or (input_id != mapping_input_id_to_word[j - 1])
+            ) and (
+                (words_offset_mappings[input_id][1] - words_offset_mappings[input_id][0]) > 1
+            ):
+                if (
+                    sentence_span_annotations and (sentence_span_annotations[-1]["label"] == entities[pred])
+                ) and (
+                    sentence_span_annotations[-1]["end"] == words_offset_mappings[input_id][0] - 1
+                ):
+                    sentence_span_annotations[-1]["end"] = words_offset_mappings[input_id][1]
+                else:
                     sentence_span_annotations.append(
                         {
                             "label": entities[pred],
@@ -93,3 +109,25 @@ def predictions_to_span_annotations(
         span_annotations.append(sentence_span_annotations)
 
     return span_annotations
+
+
+def get_entities_names_descriptions(entities: List[Entity]) -> Tuple[List[str], List[str]]:
+    if "NEG" in [e.name for e in entities]:
+        neg_index = [e.name for e in entities].index("NEG")
+        entities.insert(0, entities.pop(neg_index))
+    else:
+        neg_ent = Entity(
+            name="NEG",
+            description="Coal, water, oil, etc. are normally used for traditional electricity generation. "
+            "However using liquefied natural gas as fuel for joint circulatory electircity generation has advantages. "
+            "The chief financial officer is the only one there taking the fall. It has a very talented team, eh. "
+            "What will happen to the wildlife? I just tell them, you've got to change. They're here to stay. "
+            "They have no insurance on their cars. What else would you like? Whether holding an international cultural event "
+            "or setting the city's cultural policies, she always asks for the participation or input of other cities and counties.",
+        )
+        entities.insert(0, neg_ent)
+
+    entity_labels = [e.name for e in entities]
+    entity_descriptions = [e.description for e in entities]
+
+    return entity_labels, entity_descriptions
