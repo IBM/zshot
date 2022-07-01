@@ -28,6 +28,7 @@ MODEL_FOLDER_NAME = "BertTaggerMultiClass_config03_mode_tagger_multiclass_filter
 
 
 class LinkerSMXM(Linker):
+
     def __init__(self):
         super().__init__()
 
@@ -50,16 +51,20 @@ class LinkerSMXM(Linker):
                     doc.char_span(pred["start"], pred["end"], label=pred["label"]),
                 )
 
-    def predict(
-        self, docs: Iterator[Doc], entities: List[Entity], batch_size: Union[int, None]
-    ) -> List[List[Dict[str, Any]]]:
-        entity_labels, entity_descriptions = get_entities_names_descriptions(entities)
-        sentences = [doc.text for doc in docs]
-
+    def load_models(self):
         if self.model is None:
             self.model = load_model(
                 MODEL_FILES_URL, MODELS_CACHE_PATH, MODEL_FOLDER_NAME
             )
+
+    def predict(
+        self, docs: Iterator[Doc], entities: List[Entity], batch_size: Union[int, None]
+    ) -> List[List[Dict[str, Any]]]:
+
+        entity_labels, entity_descriptions = get_entities_names_descriptions(entities)
+        sentences = [doc.text for doc in docs]
+
+        self.load_models()
 
         encoded_data = encode_data(
             sentences, entity_labels, entity_descriptions, self.tokenizer

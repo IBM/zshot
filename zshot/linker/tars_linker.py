@@ -14,11 +14,9 @@ class TARSLinker(Linker):
         if not pkgutil.find_loader("flair"):
             raise Exception("Flair module not installed. You need to install Flair for using this class."
                             "Install it with: pip install flair==0.11")
-        from flair.models import TARSTagger
 
         self.is_end2end = True
-
-        self.model = TARSTagger.load('tars-ner')
+        self.model = None
         self.flat_entities()
 
     def flat_entities(self):
@@ -29,8 +27,14 @@ class TARSLinker(Linker):
         if self._entities is None:
             self._entities = []
 
+    def load_models(self):
+        from flair.models import TARSTagger
+        if self.model is None:
+            self.model = TARSTagger.load('tars-ner')
+
     def link(self, docs: Iterator[Doc], batch_size=None):
         from flair.data import Sentence
+        self.load_models()
         self.flat_entities()
         self.model.add_and_switch_to_new_task(f'zshot.ner.{hash(tuple(self._entities))}',
                                               self._entities, label_type='ner')

@@ -28,6 +28,14 @@ class Linker(ABC):
         return self._entities
 
     @abstractmethod
+    def load_models(self):
+        """
+        Load the model
+        :return:
+        """
+        pass
+
+    @abstractmethod
     def link(self, docs: Iterator[Doc], batch_size=None):
         """
         Perform the entity linking
