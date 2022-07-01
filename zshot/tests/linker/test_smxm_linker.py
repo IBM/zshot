@@ -16,7 +16,7 @@ def test_smxm_download():
         if "SMXM_MODELS_CACHE_PATH" in os.environ
         else AppDataPaths("linker_smxm").app_data_path + "/"
     )
-    MODEL_FILES_URL = "https://drive.google.com/uc?id=1PGEyBsuc6n085j9kZ5TtkAV7hC5mggdd&confirm=t"
+    MODEL_FILES_URL = "https://ibm.box.com/shared/static/uqav0794cbfrzru2q3seru0xm7pz336c.zip"
     MODEL_FOLDER_NAME = "BertTaggerMultiClass_config03_mode_tagger_multiclass_filtered_classes__entity_descriptions_mode_annotation_guidelines__per_gpu_train_batch_size_7/checkpoint"
 
     if os.path.exists(MODELS_CACHE_PATH):

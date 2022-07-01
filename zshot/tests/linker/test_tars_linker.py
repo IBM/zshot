@@ -10,7 +10,7 @@ from zshot import PipelineConfig
 def test_tars_end2end_no_entities():
     if not pkgutil.find_loader("flair"):
         return
-    nlp = spacy.load("en_core_web_sm")
+    nlp = spacy.blank("en")
 
     config_zshot = PipelineConfig(linker=TARSLinker())
     nlp.add_pipe("zshot", config=config_zshot, last=True)
@@ -22,7 +22,7 @@ def test_tars_end2end_no_entities():
 def test_tars_end2end_pipeline_no_entities():
     if not pkgutil.find_loader("flair"):
         return
-    nlp = spacy.load("en_core_web_sm")
+    nlp = spacy.blank("en")
 
     config_zshot = PipelineConfig(linker=TARSLinker())
     nlp.add_pipe("zshot", config=config_zshot, last=True)
@@ -34,7 +34,7 @@ def test_tars_end2end_pipeline_no_entities():
 def test_tars_end2end_with_entities():
     if not pkgutil.find_loader("flair"):
         return
-    nlp = spacy.load("en_core_web_sm")
+    nlp = spacy.blank("en")
 
     config_zshot = PipelineConfig(linker=TARSLinker(), entities=EX_ENTITIES)
     nlp.add_pipe("zshot", config=config_zshot, last=True)
@@ -46,7 +46,7 @@ def test_tars_end2end_with_entities():
 def test_tars_end2end_pipeline_with_entities():
     if not pkgutil.find_loader("flair"):
         return
-    nlp = spacy.load("en_core_web_sm")
+    nlp = spacy.blank("en")
 
     config_zshot = PipelineConfig(linker=TARSLinker(), entities=EX_ENTITIES)
     nlp.add_pipe("zshot", config=config_zshot, last=True)
