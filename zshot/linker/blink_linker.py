@@ -58,6 +58,8 @@ blink_index2url = {BlinkIndex.FLAT: BLINK_FAISS_FLAT_INDEX, BlinkIndex.HNSW: BLI
 class LinkerBlink(Linker):
 
     def __init__(self, index=BlinkIndex.FLAT):
+        super().__init__()
+
         if not pkgutil.find_loader("blink"):
             raise Exception("Blink module not installed. You need to install blink in order to use the Blink Linker."
                             "Install it with: pip install -e git+https://github.com/facebookresearch/BLINK.git#egg"
