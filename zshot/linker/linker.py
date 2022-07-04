@@ -27,7 +27,6 @@ class Linker(ABC):
     def entities(self) -> List[Entity]:
         return self._entities
 
-    @abstractmethod
     def load_models(self):
         """
         Load the model

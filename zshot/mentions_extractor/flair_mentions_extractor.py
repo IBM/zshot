@@ -15,14 +15,19 @@ class FlairMentionsExtractor(MentionsExtractor):
         if not pkgutil.find_loader("flair"):
             raise Exception("Flair module not installed. You need to install Flair for using this class."
                             "Install it with: pip install flair==0.11")
-        from flair.models import SequenceTagger
+
         super(FlairMentionsExtractor, self).__init__()
 
         self.extractor_type = extractor_type
-        if self.extractor_type == ExtractorType.NER:
-            self.model = SequenceTagger.load("ner")
-        else:
-            self.model = SequenceTagger.load("chunk")
+        self.model = None
+
+    def load_models(self):
+        if self.model is None:
+            from flair.models import SequenceTagger
+            if self.extractor_type == ExtractorType.NER:
+                self.model = SequenceTagger.load("ner")
+            else:
+                self.model = SequenceTagger.load("chunk")
 
     def extract_pos_mentions(self, docs: Iterator[Doc], batch_size: Optional[int] = None):
         from flair.data import Sentence
@@ -44,6 +49,7 @@ class FlairMentionsExtractor(MentionsExtractor):
                 doc._.mentions.append(doc.char_span(mention.start_position, mention.end_position))
 
     def extract_mentions(self, docs: Iterator[Doc], batch_size=None):
+        self.load_models()
         if self.extractor_type == ExtractorType.NER:
             return self.extract_ner_mentions(docs, batch_size)
         else:

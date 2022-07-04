@@ -10,9 +10,6 @@ from zshot.tests.mentions_extractor.test_mention_extractor import DummyMentionsE
 
 class DummyLinker(Linker):
 
-    def load_models(self):
-        pass
-
     def link(self, docs: Iterator[Doc], batch_size=None):
         for doc in docs:
             for mention in doc._.mentions:
@@ -20,9 +17,6 @@ class DummyLinker(Linker):
 
 
 class DummyLinkerEnd2End(Linker):
-
-    def load_models(self):
-        pass
 
     @property
     def is_end2end(self) -> bool:

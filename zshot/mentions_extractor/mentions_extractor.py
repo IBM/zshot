@@ -26,6 +26,13 @@ class MentionsExtractor(ABC):
     def entities(self) -> List[Entity]:
         return self._entities
 
+    def load_models(self):
+        """
+        Load the model
+        :return:
+        """
+        pass
+
     @abstractmethod
     def extract_mentions(self, docs: Iterator[Doc], batch_size=None):
         """

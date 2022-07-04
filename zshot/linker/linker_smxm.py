@@ -17,14 +17,14 @@ from zshot.linker.smxm.utils import (SmxmInput,
                                      predictions_to_span_annotations)
 
 MODELS_CACHE_PATH = (
-    os.getenv("SMXM_MODELS_CACHE_PATH")
-    if "SMXM_MODELS_CACHE_PATH" in os.environ
+    os.getenv("MODELS_CACHE_PATH")
+    if "MODELS_CACHE_PATH" in os.environ
     else AppDataPaths("linker_smxm").app_data_path + "/"
 )
-MODEL_FILES_URL = (
-    "https://drive.google.com/uc?id=1PGEyBsuc6n085j9kZ5TtkAV7hC5mggdd&confirm=t"
+SMXM_MODEL_FILES_URL = (
+    "https://ibm.box.com/shared/static/uqav0794cbfrzru2q3seru0xm7pz336c.zip"
 )
-MODEL_FOLDER_NAME = "BertTaggerMultiClass_config03_mode_tagger_multiclass_filtered_classes__entity_descriptions_mode_annotation_guidelines__per_gpu_train_batch_size_7/checkpoint"
+SMXM_MODEL_FOLDER_NAME = "BertTaggerMultiClass_config03_mode_tagger_multiclass_filtered_classes__entity_descriptions_mode_annotation_guidelines__per_gpu_train_batch_size_7/checkpoint"
 
 
 class LinkerSMXM(Linker):
@@ -54,7 +54,7 @@ class LinkerSMXM(Linker):
     def load_models(self):
         if self.model is None:
             self.model = load_model(
-                MODEL_FILES_URL, MODELS_CACHE_PATH, MODEL_FOLDER_NAME
+                SMXM_MODEL_FILES_URL, MODELS_CACHE_PATH, SMXM_MODEL_FOLDER_NAME
             )
 
     def predict(

@@ -11,7 +11,7 @@ from spacy.tokens import Doc
 from zshot.linker.linker import Linker
 from zshot.utils.utils import download_file
 
-MODELS_CACHE_PATH = os.getenv("BLINK_MODELS_CACHE_PATH") if "BLINK_MODELS_CACHE_PATH" in os.environ \
+MODELS_CACHE_PATH = os.getenv("MODELS_CACHE_PATH") if "MODELS_CACHE_PATH" in os.environ \
     else AppDataPaths(f"{Path(__file__).stem}").app_data_path + "/"
 
 BLINK_ENTITIES = "http://dl.fbaipublicfiles.com/BLINK/entity.jsonl"
