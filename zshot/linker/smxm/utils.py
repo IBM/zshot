@@ -37,15 +37,16 @@ class SmxmInput(dict):
 
 def load_model(url: str, output_path: str, folder_name: str) -> BertTaggerMultiClass:
     filename = url.rsplit("/", 1)[1]
-    model_file_path = os.path.join(output_path, filename)
+    model_zipfile_path = os.path.join(output_path, filename)
+    model_folder_path = os.path.join(output_path, folder_name)
 
-    if not os.path.isfile(model_file_path):
+    if not os.path.isdir(model_folder_path):
         download_file(url, output_path)
-        with zipfile.ZipFile(model_file_path, "r") as model_zip:
+        with zipfile.ZipFile(model_zipfile_path, "r") as model_zip:
             model_zip.extractall(output_path)
 
     model = BertTaggerMultiClass.from_pretrained(
-        os.path.join(output_path, folder_name), output_hidden_states=True
+        model_folder_path, output_hidden_states=True
     ).to(device)
 
     return model
