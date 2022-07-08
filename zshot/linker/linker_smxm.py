@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from typing import Any, Dict, Iterator, List, Optional, Union
 
 import torch
@@ -19,10 +20,10 @@ from zshot.linker.smxm.utils import (SmxmInput,
 MODELS_CACHE_PATH = (
     os.getenv("MODELS_CACHE_PATH")
     if "MODELS_CACHE_PATH" in os.environ
-    else AppDataPaths("linker_smxm").app_data_path + "/"
+    else AppDataPaths(f"{Path(__file__).stem}").app_data_path + "/"
 )
 SMXM_MODEL_FILES_URL = (
-    "https://ibm.box.com/shared/static/1jzpbp7ow5mda5lcdmea7p3o5h3u5fu0.zip"
+    "https://ibm.box.com/shared/static/1mituy0t1w19t5y1uvn1la0x9k5w4d5m.zip"
 )
 SMXM_MODEL_FOLDER_NAME = "BertTaggerMultiClass_config03_mode_tagger_multiclass_filtered_classes__entity_descriptions_mode_annotation_guidelines__per_gpu_train_batch_size_7/checkpoint"
 

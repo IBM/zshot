@@ -2,6 +2,7 @@ import functools
 import os
 import pathlib
 import shutil
+import logging
 from urllib.request import urlopen
 
 import requests
@@ -19,6 +20,7 @@ def download_file(url, output_dir="."):
     path = pathlib.Path(os.path.join(output_dir, filename)).resolve()
     path.parent.mkdir(parents=True, exist_ok=True)
     with requests.get(url, stream=True) as r:
+        logging.info(f"Downloading {url}")
         total_length = int(urlopen(url=url).info().get('Content-Length', 0))
         if path.exists() and os.path.getsize(path) == total_length:
             return

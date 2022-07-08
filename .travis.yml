@@ -1,4 +1,10 @@
 language: python
+cache:
+  directories:
+    - $HOME/.cache/pip
+    - $HOME/.cache/pip
+    - $HOME/linker_smxm
+    - $HOME/blink_linker
 python:
   - "3.9"
 # command to install dependencies
@@ -6,7 +12,6 @@ install:
   - pip install -U pip
   - pip install -r requirements/devel.txt
   - python -m spacy download en_core_web_sm
-  - python -m spacy download en_core_web_trf
   # Install the mkdocs dependencies
   - pip install mkdocs mkdocs-material mkdocs-markdownextradata-plugin mdx_include
 
