@@ -23,7 +23,7 @@ MODELS_CACHE_PATH = (
     else AppDataPaths(f"{Path(__file__).stem}").app_data_path + "/"
 )
 SMXM_MODEL_FILES_URL = (
-    "https://ibm.box.com/shared/static/1mituy0t1w19t5y1uvn1la0x9k5w4d5m.zip"
+    "https://ibm.box.com/shared/static/duni7p7i4gbk0prksc6zv5uahiemfy00.zip"
 )
 SMXM_MODEL_FOLDER_NAME = "BertTaggerMultiClass_config03_mode_tagger_multiclass_filtered_classes__entity_descriptions_mode_annotation_guidelines__per_gpu_train_batch_size_7/checkpoint"
 
