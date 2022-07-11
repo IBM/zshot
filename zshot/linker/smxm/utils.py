@@ -44,6 +44,7 @@ def load_model(url: str, output_path: str, folder_name: str) -> BertTaggerMultiC
         download_file(url, output_path)
         with zipfile.ZipFile(model_zipfile_path, "r") as model_zip:
             model_zip.extractall(output_path)
+        os.remove(model_zipfile_path)
 
     model = BertTaggerMultiClass.from_pretrained(
         model_folder_path, output_hidden_states=True
