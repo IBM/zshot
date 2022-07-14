@@ -131,4 +131,4 @@ class LinkerBlink(Linker):
             doc = docs[data['id']]
             mention = doc._.mentions[data['mention_id']]
             doc.ents += (doc.char_span(mention.start_char, mention.end_char, label=pred[0],
-                                       kb_id=self.local_name2wikipedia_url(pred[0])))
+                                       kb_id=self.local_name2wikipedia_url(pred[0])),)
