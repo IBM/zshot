@@ -1,10 +1,6 @@
-from typing import Iterator
-
 import spacy
-from spacy.tokens.doc import Doc
 
 from zshot import PipelineConfig
-from zshot.relation_extractor.relations_extractor import RelationsExtractor
 from zshot.tests.config import EX_DOCS, EX_ENTITIES, EX_RELATIONS
 from zshot.tests.linker.test_linker import DummyLinkerEnd2End
 from zshot.tests.relations_extractor.test_relations_extractor import DummyRelationsExtractor
