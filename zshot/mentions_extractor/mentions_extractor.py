@@ -1,13 +1,17 @@
 import os
 import pickle as pkl
+import warnings
+
 import zlib
 from abc import ABC, abstractmethod
-from pydoc import Doc
+from spacy.tokens import Doc
 from typing import List, Iterator
 
 from spacy.util import ensure_path
 
-from zshot.entity import Entity
+from zshot.utils.data_models import Entity
+from zshot.utils.data_models import Span
+from zshot.utils.utils import filter_extended_spans
 
 
 class MentionsExtractor(ABC):
@@ -33,10 +37,34 @@ class MentionsExtractor(ABC):
         """
         pass
 
-    @abstractmethod
     def extract_mentions(self, docs: Iterator[Doc], batch_size=None):
         """
-        Perform the mentions extraction
+        Perform the mentions extraction. Call the predict function and add the mentions to the Spacy Doc
+        :param docs: A list of spacy Document
+        :param batch_size: The batch size
+        :return:
+        """
+        predictions_spans = self.predict(docs, batch_size)
+        for doc, doc_preds in zip(docs, predictions_spans):
+            spans_without_overlap = filter_extended_spans(doc_preds, doc)
+            doc_pred_spans = [
+                doc.char_span(
+                    pred.start,
+                    pred.end,
+                    alignment_mode="expand"
+                )
+                for pred in spans_without_overlap
+            ]
+            for span in doc_pred_spans:
+                try:
+                    doc._.mentions += (span,)
+                except TypeError or ValueError:
+                    warnings.warn("Entity couldn't be added.")
+
+    @abstractmethod
+    def predict(self, docs: Iterator[Doc], batch_size=None) -> List[List[Span]]:
+        """
+        Perform the mentions prediction
         :param docs: A list of spacy Document
         :param batch_size: The batch size
         :return:

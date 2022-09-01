@@ -8,7 +8,7 @@ from spacy.language import Language
 from spacy.tokens import Doc
 from spacy.util import registry as spacy_registry, ensure_path
 
-from zshot.entity import Entity
+from zshot.utils.data_models import Entity
 from zshot.linker import Linker
 from zshot.mentions_extractor import MentionsExtractor
 from zshot.pipeline_config import PipelineConfig

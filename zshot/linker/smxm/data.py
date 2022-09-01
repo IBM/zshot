@@ -25,19 +25,24 @@ def encode_data(
     entity_labels: List[str],
     entity_descriptions: List[str],
     tokenizer: BertTokenizerFast,
-) -> List[Dict[str, Any]]:
+) -> Tuple[List[Dict[str, Any]], int]:
     encoded_data = []
+    tokenized_descriptions = [
+        tokenizer.tokenize(description) for description in entity_descriptions
+    ]
+    max_descriptions_tokens = max([len(d) for d in tokenized_descriptions])
+    max_sentence_tokens = 512 - max_descriptions_tokens - 3
 
     for sentence in sentences:
-        tokenized_sentence = tokenizer.tokenize(sentence)
+        tokenized_sentence = tokenizer.tokenize(
+            sentence, truncation=True, max_length=max_sentence_tokens
+        )
         tokenized_texts_list = []
         input_ids_list = []
         input_masks_list = []
         segment_ids_list = []
 
-        for description in entity_descriptions:
-            tokenized_description = tokenizer.tokenize(description)
-
+        for tokenized_description in tokenized_descriptions:
             combined_tokenized_text = (
                 ["[CLS]"] + tokenized_sentence + ["[SEP]"] + tokenized_description + ["[SEP]"]
             )
@@ -53,30 +58,22 @@ def encode_data(
             input_masks_list.append(input_mask)
             segment_ids_list.append(segment_ids)
 
-        text_labels = ["NEG"] * split_index
-        text_labels_ids = [entity_labels.index("NEG")] * split_index
-        label_dict = {entity_labels.index("NEG"): "NEG"}
-
         encoded_data.append(
             {
                 "text": tokenized_texts_list,
                 "input_ids": input_ids_list,
                 "input_masks": input_masks_list,
                 "segment_ids": segment_ids_list,
-                "text_labels": text_labels,
-                "text_labels_ids": text_labels_ids,
-                "label_dict": label_dict,
                 "sep_index": split_index,
             }
         )
 
-    return encoded_data
+    return encoded_data, max_sentence_tokens
 
 
 def tagger_multiclass_collator(
     data: Union[List[Dict[str, Any]], Dict[str, Any]]
 ) -> Tuple[
-    torch.Tensor,
     torch.Tensor,
     torch.Tensor,
     torch.Tensor,
@@ -90,7 +87,6 @@ def tagger_multiclass_collator(
     input_ids_lists = [f["input_ids"] for f in data]
     input_masks_lists = [f["input_masks"] for f in data]
     segment_ids_lists = [f["segment_ids"] for f in data]
-    label_ids = [f["text_labels_ids"] for f in data]
     batch_size = len(data)
 
     sep_index = [f["sep_index"] for f in data]
@@ -100,7 +96,6 @@ def tagger_multiclass_collator(
     padded_bert_masks_list = []
     padded_bert_segments_list = []
 
-    padded_bert_labels = []
     padded_sequence_mask = []
 
     sentence_lengths = [
@@ -114,7 +109,6 @@ def tagger_multiclass_collator(
         padded_bert_masks = []
         padded_bert_segments = []
 
-        padding_label = [0] * (max_sep_index - len(label_ids[i]))
         for j in range(len(input_ids_lists[i])):
             padding = [0] * (longest_sent - len(input_ids_lists[i][j]))
             padded_bert_tokens.append(input_ids_lists[i][j] + padding)
@@ -129,7 +123,6 @@ def tagger_multiclass_collator(
         padded_bert_masks_list.append(bert_masks_t)
         padded_bert_segments_list.append(bert_segments_t)
 
-        padded_bert_labels.append(label_ids[i] + padding_label)
         padded_sequence_mask.append(
             sep_index[i] * [1] + (max_sep_index - sep_index[i]) * [0]
         )
@@ -137,7 +130,6 @@ def tagger_multiclass_collator(
     bert_tokens_t = torch.stack(padded_bert_tokens_list).transpose(1, 0)
     bert_masks_t = torch.stack(padded_bert_masks_list).transpose(1, 0)
     bert_segments_t = torch.stack(padded_bert_segments_list).transpose(1, 0)
-    bert_labels_t = torch.tensor(padded_bert_labels).to(device=device, dtype=torch.long)
     bert_seq_mask_t = torch.tensor(padded_sequence_mask).to(
         device=device, dtype=torch.uint8
     )
@@ -152,5 +144,4 @@ def tagger_multiclass_collator(
         bert_sep_t,
         bert_seq_mask_t,
         split,
-        bert_labels_t,
     )

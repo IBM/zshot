@@ -12,9 +12,9 @@ from zshot.tests.config import EX_DOCS, EX_ENTITIES
 
 
 def test_smxm_download():
-
-    if os.path.exists(MODELS_CACHE_PATH):
-        shutil.rmtree(MODELS_CACHE_PATH)
+    model_folder_path = os.path.join(MODELS_CACHE_PATH, SMXM_MODEL_FOLDER_NAME)
+    if os.path.exists(model_folder_path):
+        shutil.rmtree(model_folder_path)
 
     model = load_model(SMXM_MODEL_FILES_URL, MODELS_CACHE_PATH, SMXM_MODEL_FOLDER_NAME)
 

@@ -1,9 +1,9 @@
 import pkgutil
-from typing import Iterator
+from typing import Iterator, Optional, Union, List
 
 from spacy.tokens import Doc
 
-from zshot.entity import Entity
+from zshot.utils.data_models import Entity, Span
 from zshot.linker.linker import Linker
 from zshot.linker.linker_regen.trie import Trie
 from zshot.linker.linker_regen.utils import create_input
@@ -53,7 +53,7 @@ class LinkerRegen(Linker):
     def restrict_decode_vocab(self, _, prefix_beam):
         return self.trie.postfix(prefix_beam.tolist())
 
-    def link(self, docs: Iterator[Doc], batch_size=None):
+    def predict(self, docs: Iterator[Doc], batch_size: Optional[Union[int, None]] = None) -> List[List[Span]]:
         self.load_models()
         data_to_link = []
         docs = list(docs)
@@ -69,12 +69,11 @@ class LinkerRegen(Linker):
                         "text": sentence,
                     })
 
-        sentences = list(create_input(
-            [doc["text"] for doc in data_to_link],
-            self.max_input_len,
-            start_delimiter=START_ENT_TOKEN,
-            end_delimiter=END_ENT_TOKEN,
-        ))
+        sentences = [create_input(d['text'],
+                                  max_length=self.max_input_len,
+                                  start_delimiter=START_ENT_TOKEN,
+                                  end_delimiter=END_ENT_TOKEN,
+                                  ) for d in data_to_link]
         input_args = {
             k: v
             for k, v in self.tokenizer.batch_encode_plus(
@@ -95,8 +94,14 @@ class LinkerRegen(Linker):
             else self.restrict_decode_vocab,
         )
 
-        for data, out in zip(data_to_link, outputs.sequences):
-            doc = docs[data['id']]
-            mention = doc._.mentions[data['mention_id']]
+        docs_pred = {}
+
+        for data, out, score in zip(data_to_link, outputs.sequences, outputs.sequences_scores):
+            doc_id = data['id']
+            mention = docs[doc_id]._.mentions[data['mention_id']]
             label = self.tokenizer.decode(out, skip_special_tokens=True)
-            doc.ents += (doc.char_span(mention.start_char, mention.end_char, label=label),)
+            if doc_id not in docs_pred:
+                docs_pred[doc_id] = []
+            docs_pred[doc_id].append(Span(mention.start_char, mention.end_char, label=label,
+                                          score=score.detach().numpy().tolist()))
+        return [val for key, val in sorted(docs_pred.items(), reverse=False)]

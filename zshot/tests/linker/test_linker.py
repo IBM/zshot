@@ -4,16 +4,18 @@ import spacy
 from spacy.tokens import Doc
 
 from zshot import Linker, PipelineConfig
+from zshot.utils.data_models import Span
 from zshot.tests.config import EX_DOCS, EX_ENTITIES
 from zshot.tests.mentions_extractor.test_mention_extractor import DummyMentionsExtractor
 
 
 class DummyLinker(Linker):
 
-    def link(self, docs: Iterator[Doc], batch_size=None):
-        for doc in docs:
-            for mention in doc._.mentions:
-                doc.ents += (doc.char_span(mention.start_char, mention.end_char, label='label'),)
+    def predict(self, docs: Iterator[Doc], batch_size=None):
+        return [
+            [Span(mention.start_char, mention.end_char, label='label') for mention in doc._.mentions]
+            for doc in docs
+        ]
 
 
 class DummyLinkerEnd2End(Linker):
@@ -22,19 +24,21 @@ class DummyLinkerEnd2End(Linker):
     def is_end2end(self) -> bool:
         return True
 
-    def link(self, docs: Iterator[Doc], batch_size=None):
-        for doc in docs:
-            doc.ents += (doc.char_span(0, len(doc.text) - 1, label='label'),)
+    def predict(self, docs: Iterator[Doc], batch_size=None):
+        return [[Span(0, len(doc.text) - 1, label='label')] for doc in docs]
 
 
 class DummyLinkerWithEntities(Linker):
 
-    def link(self, docs: Iterator[Doc], batch_size=None):
+    def predict(self, docs: Iterator[Doc], batch_size=None):
         entities = self.entities
-        for doc in docs:
-            for idx, mention in enumerate(doc._.mentions):
-                doc.ents += (doc.char_span(mention.start_char, mention.end_char,
-                                           label=entities[idx % len(entities)].name),)
+        return [
+            [
+                Span(mention.start_char, mention.end_char, label=entities[idx].name)
+                for idx, mention in enumerate(doc._.mentions)
+            ]
+            for doc in docs
+        ]
 
 
 def test_dummy_linker():

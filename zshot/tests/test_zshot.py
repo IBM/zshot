@@ -6,7 +6,7 @@ from typing import List
 import spacy
 
 from zshot import Zshot, PipelineConfig
-from zshot.entity import Entity
+from zshot.utils.data_models import Entity
 from zshot.tests.config import EX_ENTITIES_DICT, EX_DOCS, EX_ENTITIES
 from zshot.tests.linker.test_linker import DummyLinker, DummyLinkerEnd2End
 from zshot.tests.mentions_extractor.test_mention_extractor import DummyMentionsExtractor, DummyMentionsExtractorWithNER

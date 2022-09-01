@@ -81,15 +81,15 @@ $ pip install git+https://github.com/facebookresearch/BLINK.git#egg=BLINK
 import spacy
 from spacy import displacy
 
-from zshot.mentions_extractor import SpacyMentionsExtractor
+from zshot.mentions_extractor import MentionsExtractorSpacy
 from zshot.linker import LinkerBlink
 
-text = "International Business Machines Corporation (IBM) is an American multinational technology corporation " \
+text = "International Business Machines Corporation (IBM) is an American multinational technology corporation "
        "headquartered in Armonk, New York, with operations in over 171 countries."
 
 nlp = spacy.load("en_core_web_trf")
 nlp.disable_pipes('ner')
-nlp.add_pipe("zshot", config={"mentions_extractor": SpacyMentionsExtractor.id(), "linker": LinkerBlink.id()}, last=True)
+nlp.add_pipe("zshot", config={"mentions_extractor": MentionsExtractorSpacy.id(), "linker": LinkerBlink.id()}, last=True)
 print(nlp.pipe_names)
 
 doc = nlp(text)

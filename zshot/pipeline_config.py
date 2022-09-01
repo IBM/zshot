@@ -2,7 +2,7 @@ from typing import Optional, Union, Dict, List
 
 import spacy
 
-from zshot.entity import Entity
+from zshot.utils.data_models import Entity
 from zshot.linker import Linker
 from zshot.mentions_extractor import MentionsExtractor
 
@@ -12,7 +12,7 @@ class PipelineConfig(dict):
     def __init__(self,
                  mentions_extractor: Optional[MentionsExtractor] = None,
                  linker: Optional[Union[Linker, str]] = None,
-                 entities: Optional[Union[Dict[str, str], List[Entity], str]] = None,
+                 entities: Optional[Union[Dict[str, str], List[Entity], List[str], str]] = None,
                  disable_default_ner: Optional[bool] = True) -> None:
         config = {}
 

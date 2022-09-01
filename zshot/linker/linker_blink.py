@@ -3,11 +3,12 @@ import os
 import pkgutil
 from enum import Enum
 from pathlib import Path
-from typing import List, Iterator
+from typing import List, Iterator, Optional, Union
 
 from appdata import AppDataPaths
 from spacy.tokens import Doc
 
+from zshot.utils.data_models import Span
 from zshot.linker.linker import Linker
 from zshot.utils.utils import download_file
 
@@ -108,7 +109,7 @@ class LinkerBlink(Linker):
             self.download_models()
             self.models = main_dense.load_models(self.config, logger=None)
 
-    def link(self, docs: Iterator[Doc], batch_size=None):
+    def predict(self, docs: Iterator[Doc], batch_size: Optional[Union[int, None]] = None) -> List[List[Span]]:
         import blink.main_dense as main_dense
         self.load_models()
         data_to_link = []
@@ -125,10 +126,21 @@ class LinkerBlink(Linker):
                         "context_right": doc.text[mention.end_char:].lower(),
                     })
         if not data_to_link:
-            return
+            return []
+
         _, _, _, _, _, predictions, scores, = main_dense.run(self.config, None, *self.models, test_data=data_to_link)
-        for data, pred in zip(data_to_link, predictions):
+        spans_annotations_values = {}
+        for data, pred, score in zip(data_to_link, predictions, scores):
             doc = docs[data['id']]
             mention = doc._.mentions[data['mention_id']]
-            doc.ents += (doc.char_span(mention.start_char, mention.end_char, label=pred[0],
-                                       kb_id=self.local_name2wikipedia_url(pred[0])),)
+            span = Span(mention.start_char, mention.end_char, label=pred[0], score=score,
+                        kb_id=self.local_name2wikipedia_url(pred[0]))
+            if data['id'] in spans_annotations_values:
+                spans_annotations_values['id'].append(span)
+            else:
+                spans_annotations_values['id'] = [span]
+
+        spans_annotations_keys = sorted(spans_annotations_values.keys())
+        spans_annotations = [spans_annotations_values[key] for key in spans_annotations_keys]
+
+        return spans_annotations

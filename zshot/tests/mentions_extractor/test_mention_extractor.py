@@ -4,13 +4,16 @@ import spacy
 from spacy.tokens.doc import Doc
 
 from zshot import MentionsExtractor, PipelineConfig
+from zshot.utils.data_models import Span
 from zshot.tests.config import EX_DOCS, EX_ENTITIES
 
 
 class DummyMentionsExtractor(MentionsExtractor):
-    def extract_mentions(self, docs: Iterator[Doc], batch_size=None):
-        for doc in docs:
-            doc._.mentions.append(doc.char_span(0, len(doc.text) - 1))
+    def predict(self, docs: Iterator[Doc], batch_size=None):
+        return [
+            [Span(0, len(doc.text) - 1)]
+            for doc in docs
+        ]
 
 
 class DummyMentionsExtractorWithNER(MentionsExtractor):
@@ -18,15 +21,19 @@ class DummyMentionsExtractorWithNER(MentionsExtractor):
     def require_existing_ner(self) -> bool:
         return True
 
-    def extract_mentions(self, docs: Iterator[Doc], batch_size=None):
-        for doc in docs:
-            doc._.mentions.append(doc.char_span(0, len(doc.text) - 1))
+    def predict(self, docs: Iterator[Doc], batch_size=None):
+        return [
+            [Span(0, len(doc.text) - 1)]
+            for doc in docs
+        ]
 
 
 class DummyMentionsExtractorWithEntities(MentionsExtractor):
-    def extract_mentions(self, docs: Iterator[Doc], batch_size=None):
-        for idx, doc in enumerate(docs):
-            doc._.mentions.append(doc.char_span(0, len(doc.text) - 1, label=self.entities[idx % len(self.entities)].name))
+    def predict(self, docs: Iterator[Doc], batch_size=None):
+        return [
+            [Span(0, len(doc.text) - 1)]
+            for idx, doc in enumerate(docs)
+        ]
 
 
 def test_dummy_mentions_extractor():
@@ -48,4 +55,3 @@ def test_dummy_mentions_extractor_with_entities_config():
     doc = nlp(EX_DOCS[1])
     assert doc.ents == ()
     assert len(doc._.mentions) > 0
-    assert all([bool(m.label_) for m in doc._.mentions])
