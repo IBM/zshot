@@ -8,35 +8,45 @@ from spacy.language import Language
 from spacy.tokens import Doc
 from spacy.util import registry as spacy_registry, ensure_path
 
+from zshot.relation_extractor.relations_extractor import RelationsExtractor
 from zshot.utils.data_models import Entity
 from zshot.linker import Linker
 from zshot.mentions_extractor import MentionsExtractor
 from zshot.pipeline_config import PipelineConfig
+from zshot.utils.data_models.relation import Relation
 
 
 @Language.factory("zshot", default_config={
     "entities": None,
+    "relations": None,
     "mentions_extractor": None,
     "linker": None,
+    "relations_extractor": None,
     "disable_default_ner": True
 })
 def create_zshot_component(nlp: Language, name: str,
                            entities: Optional[Union[Dict[str, str], List[Entity], str]],
+                           relations: Optional[Union[List[Relation], str]],
                            mentions_extractor: Optional[Union[MentionsExtractor, str]],
+                           relations_extractor: Optional[Union[RelationsExtractor, str]],
                            linker: Optional[Union[Linker, str]],
                            disable_default_ner: Optional[bool] = True):
-    return Zshot(nlp, entities, mentions_extractor, linker, disable_default_ner)
+    return Zshot(nlp, entities, relations, relations_extractor, mentions_extractor, linker, disable_default_ner)
 
 
 class Zshot:
 
     def __init__(self, nlp: Language,
                  entities,
+                 relations,
+                 relations_extractor,
                  mentions_extractor,
                  linker,
                  disable_default_ner: Optional[bool] = True):
         self.nlp = nlp
         self.entities = entities
+        self.relations = relations
+        self.relations_extractor = relations_extractor
         self.mentions_extractor = mentions_extractor
         self.linker = linker
         self.disable_default_ner = disable_default_ner
@@ -69,6 +79,13 @@ class Zshot:
             except RegistryError:
                 self.linker = None
 
+        # Load Relations Extractor from registered function ID if provided
+        if isinstance(self.relations_extractor, str):
+            try:
+                self.relations_extractor = spacy_registry.get(registry_name='misc', func_name=self.relations_extractor)()
+            except RegistryError:
+                self.relations_extractor = None
+
         if self.mentions_extractor and self.mentions_extractor.require_existing_ner \
                 and "ner" not in self.nlp.pipe_names:
             raise ValueError(f"The pipeline you are using does not contains a NER,"
@@ -88,10 +105,14 @@ class Zshot:
         if not Doc.has_extension("mentions"):
             Doc.set_extension("mentions", default=[])
 
+        if not Doc.has_extension("relations"):
+            Doc.set_extension("relations", default=[])
+
     def __call__(self, doc: Doc) -> Doc:
         # Add the matched spans when doc is processed
         self.extracts_mentions([doc])
         self.link_entities([doc])
+        self.extract_relations([doc])
         return doc
 
     def pipe(self, docs: Iterator[Doc], batch_size: int, **kwargs):
@@ -102,6 +123,7 @@ class Zshot:
         docs = list(docs)
         self.extracts_mentions(docs, batch_size=batch_size)
         self.link_entities(docs, batch_size=batch_size)
+        self.extract_relations(docs, batch_size=batch_size)
         for doc in docs:
             yield doc
 
@@ -114,6 +136,11 @@ class Zshot:
         if self.linker:
             self.linker.set_kg(self.entities)
             self.linker.link(docs, batch_size=batch_size)
+
+    def extract_relations(self, docs: Iterator[Doc], batch_size=None):
+        if self.relations_extractor:
+            self.relations_extractor.set_relations(self.relations)
+            self.relations_extractor.extract_relations(docs, batch_size=batch_size)
 
     def from_disk(self, path, exclude=()):
         with open(os.path.join(path, "config.cfg"), "r") as f:
