@@ -31,11 +31,9 @@ Can be used to perform:
 
 ## Requirements
 
-Python 3.6+
+* Python 3.6+
 
-Zshot stands on the shoulders of giants:
-
-* <a href="https://spacy.io/" class="external-link" target="_blank">Spacy</a>.
+* Zshot rely on <a href="https://spacy.io/" class="external-link" target="_blank">Spacy</a> for pipelining and visualization:
 
 ## Installation
 
@@ -49,26 +47,14 @@ $ pip install -r requirements.txt
 
 </div>
 
-You will also need a Spacy transformers model
+## Example: Zero-Shot Entity Recognition
 
-<div class="termy">
+### Install additional dependencies
 
-```console
-$ python -m spacy download en_core_web_trf 
-
----> 100%
-```
-
-</div>
-
-## Example
-
-### Install addiotional dependencies
-
-Install [Blink](https://github.com/facebookresearch/BLINK/tree/main/blink) to use the Blink linker
+Install the [transfomers](https://huggingface.co/docs/transformers/index) library to use pre-trained models
 
 ```console
-$ pip install git+https://github.com/facebookresearch/BLINK.git#egg=BLINK
+$ pip install transformers
 
 ---> 100%
 ```
@@ -78,31 +64,44 @@ $ pip install git+https://github.com/facebookresearch/BLINK.git#egg=BLINK
 * Create a file `main.py` with:
 
 ```Python
-import spacy
-from spacy import displacy
-
+from zshot import PipelineConfig, displacy
+from zshot.linker import LinkerRegen
 from zshot.mentions_extractor import MentionsExtractorSpacy
-from zshot.linker import LinkerBlink
+from zshot.utils.data_models import Entity
 
-text = "International Business Machines Corporation (IBM) is an American multinational technology corporation "
-       "headquartered in Armonk, New York, with operations in over 171 countries."
+nlp = spacy.load("en_core_web_sm")
+nlp_config = PipelineConfig(
+    mentions_extractor=MentionsExtractorSpacy(),
+    linker=LinkerRegen(),
+    entities=[
+        Entity(name="Paris",
+               description="Paris is located in northern central France, in a north-bending arc of the river Seine"),
+        Entity(name="IBM",
+               description="International Business Machines Corporation (IBM) is an American multinational technology corporation headquartered in Armonk, New York"),
+        Entity(name="New York", description="New York is a city in U.S. state"),
+        Entity(name="Florida", description="southeasternmost U.S. state"),
+        Entity(name="American",
+               description="American, something of, from, or related to the United States of America, commonly known as the United States or America"),
+        Entity(name="Chemical formula",
+               description="In chemistry, a chemical formula is a way of presenting information about the chemical proportions of atoms that constitute a particular chemical compound or molecule"),
+        Entity(name="Acetamide",
+               description="Acetamide (systematic name: ethanamide) is an organic compound with the formula CH3CONH2. It is the simplest amide derived from acetic acid. It finds some use as a plasticizer and as an industrial solvent."),
+        Entity(name="Armonk",
+               description="Armonk is a hamlet and census-designated place (CDP) in the town of North Castle, located in Westchester County, New York, United States."),
+        Entity(name="Acetic Acid",
+               description="Acetic acid, systematically named ethanoic acid, is an acidic, colourless liquid and organic compound with the chemical formula CH3COOH"),
+        Entity(name="Industrial solvent",
+               description="Acetamide (systematic name: ethanamide) is an organic compound with the formula CH3CONH2. It is the simplest amide derived from acetic acid. It finds some use as a plasticizer and as an industrial solvent."),
+    ]
+)
+nlp.add_pipe("zshot", config=nlp_config, last=True)
 
-nlp = spacy.load("en_core_web_trf")
-nlp.disable_pipes('ner')
-nlp.add_pipe("zshot", config={"mentions_extractor": MentionsExtractorSpacy.id(), "linker": LinkerBlink.id()}, last=True)
-print(nlp.pipe_names)
+text = "International Business Machines Corporation (IBM) is an American multinational technology corporation" \
+       " headquartered in Armonk, New York, with operations in over 171 countries."
 
 doc = nlp(text)
 displacy.serve(doc, style="ent")
 ```
-
-
-<details markdown="1">
-<summary>Or run the prepared example</summary>
-```console
-$ python -m zshot.examples.wikification
-```
-</details>
 
 
 ### Run it
@@ -129,9 +128,13 @@ You will see the annotated sentence:
 
 ## Optional Dependencies
 
+* <a href="https://pytorch.org/get-started" target="_blank"><code>PyTorch</code></a> - Required to run pytorch models.
+* <a href="https://huggingface.co/transformers" target="_blank"><code>transformers</code></a> - Required if you want to use pre-trained models.
+
 Mentions extraction:
 
 * <a href="https://github.com/flairNLP/flair" target="_blank"><code>Flair</code></a> - Required if you want to use Flair mentions extractor.
+
 Entity linking:
 
 * <a href="https://github.com/facebookresearch/BLINK" target="_blank"><code>Blink</code></a> - Required if you want to use Blink for linking to Wikipedia pages.
