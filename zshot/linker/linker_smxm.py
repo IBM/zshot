@@ -84,7 +84,7 @@ class LinkerSMXM(Linker):
                 probability = (
                     torch.nn.Softmax(dim=-1)(outputs).cpu().numpy().tolist()
                 )
-                probabilities += [p[1:] for p in probability]
+                probabilities += [p for p in probability]
                 outputs = torch.argmax(outputs, dim=2)
                 preds += outputs.detach().cpu().numpy().tolist()
 
