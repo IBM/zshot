@@ -24,5 +24,5 @@ class Span:
         return doc.char_span(self.start, self.end, **kwargs)
 
     @staticmethod
-    def from_spacy_span(spacy_span: Span):
-        return Span(spacy_span.start_char, spacy_span.end_char, spacy_span.label, kb_id=spacy_span.kb_id)
+    def from_spacy_span(spacy_span: Span, score=None):
+        return Span(spacy_span.start_char, spacy_span.end_char, spacy_span.label_, score=score, kb_id=spacy_span.kb_id)

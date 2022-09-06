@@ -43,36 +43,34 @@ def filter_extended_spans(spans: List[Span], doc: Doc = None) -> List[Span]:
     :param doc: The Spacy Document
     :return: List of spans without overlap
     """
+    spacy_spans = [span.to_spacy_span(doc) for span in spans]
+    spans = [Span.from_spacy_span(spacy_span, score=span.score) for spacy_span, span in zip(spacy_spans, spans)]
     if not all([s.score for s in spans]):
-        spans = spacy_filter_spans([span.to_spacy_span(doc) for span in spans])
+        spans = spacy_filter_spans(spacy_spans)
         spans = [Span.from_spacy_span(span) for span in spans]
         return spans
 
     # Find overlaps
-    final_mentions = []
-    to_check = []
+    rs = []
+    spans_grouped = []
     for i, span in enumerate(spans):
-        if any([span in pending for pending in to_check]):
+        r = range(span.start, span.end + 1)
+        group = [span]
+        if any([set(r) & set(r_) for r_ in rs]):
             continue
 
-        range_ = set(range(span.start,
-                           span.end))
-        overlaps = []
-        for mention in spans[i + 1:]:
-            range_2 = set(range(mention.start,
-                                mention.end))
-            if range_ & range_2:
-                overlaps.append(mention)
-        if not overlaps:
-            final_mentions.append(span)
-        else:
-            to_check += [(span, m) for m in overlaps]
+        for span_ in spans[i:]:
+            r_ = range(span_.start, span_.end + 1)
+            if set(r) & set(r_):
+                r = range(min(r[0], r_[0]), max(r[-1], r_[-1]))
+                group.append(span_)
+
+        rs.append(r)
+        spans_grouped.append(group)
 
     # Fix overlaps getting the one with higher score
-    for mention, mention_2, in to_check:
-        if mention_2.score > mention.score:
-            final_mentions.append(mention_2)
-        else:
-            final_mentions.append(mention)
+    final_mentions = []
+    for group in spans_grouped:
+        final_mentions.append(max(group, key=lambda x: x.score))
 
     return final_mentions
