@@ -12,7 +12,7 @@ class RelationsExtractorZSRC(RelationsExtractor):
         
     def load_models(self,):
         if self.model is None:
-            self.model = load_model('zshot/relation_extractor/zsrc/models/zsrc')
+            self.model = load_model()
         
     def extract_relations(self, docs: Iterator[Doc], batch_size=None):
         for doc in docs:
