@@ -65,6 +65,18 @@ class Zshot:
         elif isinstance(self.entities, dict):
             self.entities = [Entity(name=name, description=description) for name, description in self.entities.items()]
 
+        if isinstance(self.relations, str):
+            try:
+                self.relations = spacy_registry.get(registry_name='misc', func_name=self.relations)()
+            except RegistryError:
+                logging.warning(f"Missing relations: {self.relations}")
+                self.relations = None
+        if isinstance(self.relations, list) and len(self.relations) > 0 and isinstance(self.relations[0], dict):
+            self.relations = list(map(lambda r: Relation(**r), self.relations))
+        elif isinstance(self.relations, dict):
+            self.relations = [Relation(name=name, description=description) for name, description in self.relations.items()]
+
+
         # Load Mention Extractor from registered function ID if provided
         if isinstance(self.mentions_extractor, str):
             try:
