@@ -89,7 +89,7 @@ def predict(model, items_to_process, relation_description, batch_size=4):
 def softmax(x):
     return np.exp(x)/sum(np.exp(x))
 
-def load_model(fpath):
+def load_model(fpath='zshot/relation_extractor/zsrc/models/zsrc'):
     model = ZSBert()
     model.load_state_dict(torch.load(fpath))
     model.to(get_device())
