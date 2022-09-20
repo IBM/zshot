@@ -8,11 +8,11 @@ import random
 from transformers import BertConfig
 from torch.utils.data import DataLoader
 from zshot.relation_extractor.zsrc import data_helper
-import requests
+import urllib.request
 import os
 
 SEED = 42
-MODEL_REMOTE_URL = 'https://github.ibm.com/alp-ibm/ZSRC/blob/main/models/binary_4_5_wordnet_and_fewrel'
+MODEL_REMOTE_URL = 'https://ibm.box.com/shared/static/ig3yh4zt51i6i403336blaz6mm6stjk5'
 MODEL_PATH = 'relation_extractor/zsrc/models/zsrc'
 
 def get_device():
@@ -93,8 +93,7 @@ def softmax(x):
     return np.exp(x)/sum(np.exp(x))
 
 def download_file_to_path(source_url, dest_path):
-    response = requests.get(source_url)
-    open(dest_path, "wb").write(response.content)
+    urllib.request.urlretrieve(source_url, dest_path)
 
 def load_model():
     model = ZSBert()

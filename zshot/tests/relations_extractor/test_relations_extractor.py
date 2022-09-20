@@ -8,8 +8,6 @@ from zshot.relation_extractor.relations_extractor import RelationsExtractor
 from zshot.relation_extractor.relation_extractor_zsrc import RelationsExtractorZSRC
 from zshot.tests.config import EX_DOCS, EX_ENTITIES, EX_RELATIONS
 from zshot.tests.linker.test_linker import DummyLinkerEnd2End
-from zshot.mentions_extractor import MentionsExtractorSpacy
-from zshot.mentions_extractor.mentions_extractor_spacy import ExtractorType
 
 
 class DummyRelationsExtractor(RelationsExtractor):
