@@ -1,5 +1,6 @@
 from zshot.relation_extractor.relations_extractor import RelationsExtractor
 from zshot.relation_extractor.zsrc.zero_shot_rel_class import predict, ZSBert, load_model
+import numpy as np
 
 from typing import List, Iterator
 from spacy.tokens import Doc
@@ -19,16 +20,19 @@ class RelationsExtractorZSRC(RelationsExtractor):
             items_to_process = []
             for i, e1 in enumerate(doc.ents):
                 for j, e2 in enumerate(doc.ents):
-                    if i == j or (e1, e2, doc.text) in items_to_process or (e2, e1, doc.text) in items_to_process:
+                    if i == j or (e1, e2) in items_to_process or (e2, e1) in items_to_process:
                         continue
                     else:
-                        items_to_process.append((e1, e2, doc.text))
-            if len(items_to_process) > 0:
-                predicted = {}
-                for rel in self.relations:
-                    _, probs = predict(self.model, items_to_process, rel.description, batch_size)
-                    predicted[rel.name] = list(zip(probs, items_to_process))
-            doc._.relations.append(predicted)
+                        items_to_process.append((e1, e2))
+
+                    relations_probs = []
+                    for rel in self.relations:
+                        _, probs = predict(self.model, [(e1, e2, doc.text)], rel.description, batch_size)
+                        relations_probs.append(probs[0])
+                    pred_class_idx = np.argmax(np.array(relations_probs))
+                    p = relations_probs[pred_class_idx]
+                    doc._.relations.append((e1, e2, p, self.relations[pred_class_idx]))
+        
 
 
     

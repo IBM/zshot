@@ -8,9 +8,12 @@ import random
 from transformers import BertConfig
 from torch.utils.data import DataLoader
 from zshot.relation_extractor.zsrc import data_helper
+import urllib
+import os
 
 SEED = 42
-
+MODEL_REMOTE_URL = 'https://github.ibm.com/alp-ibm/ZSRC/blob/main/models/binary_4_5_wordnet_and_fewrel'
+MODEL_PATH = 'zshot/relation_extractor/zsrc/models/zsrc'
 
 def get_device():
     return 'cpu'
@@ -89,9 +92,16 @@ def predict(model, items_to_process, relation_description, batch_size=4):
 def softmax(x):
     return np.exp(x)/sum(np.exp(x))
 
-def load_model(fpath='zshot/relation_extractor/zsrc/models/zsrc'):
+def download_file_to_path(source_url, dest_path):
+    f = urllib.URLopener()
+    f.retrieve(source_url, dest_path)
+
+def load_model():
     model = ZSBert()
-    model.load_state_dict(torch.load(fpath))
+    if not os.path.isfile(MODEL_PATH):
+        download_file_to_path(MODEL_REMOTE_URL, MODEL_PATH)
+        
+    model.load_state_dict(torch.load(MODEL_PATH))
     model.to(get_device())
     model.eval()
     return model
