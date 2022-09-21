@@ -13,6 +13,10 @@ from zshot.utils.utils import filter_extended_spans
 
 
 class Linker(ABC):
+    """
+    Linker define a standard interface for entity linking. A Linker may relay on existing
+    extracted mentions or perform end-2-end extraction
+    """
 
     def __init__(self):
         self._entities = None

@@ -1,5 +1,18 @@
 site_name: Zshot
 site_description: Zero and Few shot Named Entities and Relationships recognition
+watch: [zshot]
+
+nav:
+- Home:
+  - Overview: index.md
+  - Usage: usage.md
+  - Code reference: mentions_extractor/
+- Code reference:
+  - Mentions Extraction:
+      - mentions_extractor.md
+  - Entity Linking:
+    - entity_linking.md
+
 markdown_extensions:
   - attr_list
   - pymdownx.emoji:
@@ -7,16 +20,24 @@ markdown_extensions:
       emoji_generator: !!python/name:materialx.emoji.to_svg
 theme:
     name: material
+    features:
+      - content.code.annotate
+      - navigation.tabs
+      - navigation.top
     palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
+      primary: black
+      accent: purple
       toggle:
-        icon: material/lightbulb
+        icon: material/weather-sunny
         name: Switch to light mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
+      primary: black
+      accent: lime
       toggle:
-        icon: material/lightbulb-outline
+        icon: material/weather-night
         name: Switch to dark mode
       features:
         - search.suggest
@@ -30,6 +51,20 @@ repo_url: https://github.ibm.com/Dublin-Research-Lab/zshot
 edit_uri: ''
 plugins:
 - search
+- mkdocstrings:
+    handlers:
+      python:
+        import:
+        - https://docs.python.org/3/objects.inv
+        - https://installer.readthedocs.io/en/stable/objects.inv  # demonstration purpose in the docs
+        - https://mkdocstrings.github.io/autorefs/objects.inv
+        options:
+          show_source: false
+          docstring_style: sphinx
+          docstring_options:
+            ignore_init_summary: yes
+          merge_init_into_class: yes
+          show_submodules: yes
 - markdownextradata:
     data: data
 markdown_extensions:

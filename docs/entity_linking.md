@@ -1,0 +1,3 @@
+# Linker
+
+::: zshot.Linker
