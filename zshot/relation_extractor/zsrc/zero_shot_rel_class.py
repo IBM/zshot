@@ -93,6 +93,9 @@ def softmax(x):
     return np.exp(x)/sum(np.exp(x))
 
 def download_file_to_path(source_url, dest_path):
+    dest_dir = os.path.dirname(dest_path)
+    if not os.path.exists(dest_dir):
+        os.makedirs(dest_dir)
     urllib.request.urlretrieve(source_url, dest_path)
 
 def load_model():
