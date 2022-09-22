@@ -21,7 +21,7 @@ script:
   - python -m pytest -v
 
 before_deploy:
-    - mkdocs build --verbose --clean --strict
+    - mkdocs build --verbose --clean
 
 deploy: # Deploy documentation to Github in the gh_pages branch
     provider: pages
