@@ -1,17 +1,16 @@
+import os
+import random
 import torch
-import torch.nn as nn
-from transformers import BertModel, BertPreTrainedModel
 import numpy as np
-import random
-import random
-from transformers import BertConfig
+import torch.nn as nn
+from transformers import BertModel, BertPreTrainedModel, BertConfig
 from torch.utils.data import DataLoader
 from zshot.relation_extractor.zsrc import data_helper
 import urllib.request
-import os
+
 
 SEED = 42
-MODEL_REMOTE_URL = 'https://huggingface.co/albep/zsrc/resolve/main/zsrc'
+MODEL_REMOTE_URL = 'https://ibm.box.com/s/vn0betuswfxfwuor1yjg05xezty2rn8e'
 MODEL_PATH = 'zshot/relation_extractor/zsrc/models/zsrc'
 
 def get_device():
@@ -197,5 +196,4 @@ device = get_device()
 
 if __name__ == '__main__':
     load_model()
-    
     

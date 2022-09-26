@@ -1,20 +1,21 @@
 from zshot.relation_extractor.relations_extractor import RelationsExtractor
-from zshot.relation_extractor.zsrc.zero_shot_rel_class import predict, ZSBert, load_model
+from zshot.relation_extractor.zsrc.zero_shot_rel_class import predict, load_model
 import numpy as np
 
-from typing import List, Iterator
+from typing import Iterator
 from spacy.tokens import Doc
+
 
 class RelationsExtractorZSRC(RelationsExtractor):
     def __init__(self):
         self.model = None
         self.load_models()
         super(RelationsExtractor, self).__init__()
-        
+
     def load_models(self,):
         if self.model is None:
             self.model = load_model()
-        
+
     def extract_relations(self, docs: Iterator[Doc], batch_size=None):
         for doc in docs:
             items_to_process = []
@@ -32,7 +33,3 @@ class RelationsExtractorZSRC(RelationsExtractor):
                     pred_class_idx = np.argmax(np.array(relations_probs))
                     p = relations_probs[pred_class_idx]
                     doc._.relations.append((e1, e2, p, self.relations[pred_class_idx]))
-        
-
-
-    

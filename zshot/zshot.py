@@ -76,7 +76,6 @@ class Zshot:
         elif isinstance(self.relations, dict):
             self.relations = [Relation(name=name, description=description) for name, description in self.relations.items()]
 
-
         # Load Mention Extractor from registered function ID if provided
         if isinstance(self.mentions_extractor, str):
             try:
