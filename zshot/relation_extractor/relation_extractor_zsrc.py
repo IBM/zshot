@@ -7,9 +7,10 @@ from spacy.tokens import Doc
 
 
 class RelationsExtractorZSRC(RelationsExtractor):
-    def __init__(self):
+    def __init__(self, thr=0.5):
         self.model = None
         self.load_models()
+        self.thr = thr
         super(RelationsExtractor, self).__init__()
 
     def load_models(
@@ -23,7 +24,11 @@ class RelationsExtractorZSRC(RelationsExtractor):
             items_to_process = []
             for i, e1 in enumerate(doc.ents):
                 for j, e2 in enumerate(doc.ents):
-                    if (i == j or (e1, e2) in items_to_process or (e2, e1) in items_to_process):
+                    if (
+                        i == j
+                        or (e1, e2) in items_to_process
+                        or (e2, e1) in items_to_process
+                    ):
                         continue
                     else:
                         items_to_process.append((e1, e2))
@@ -40,4 +45,7 @@ class RelationsExtractorZSRC(RelationsExtractor):
                             relations_probs.append(probs[0])
                         pred_class_idx = np.argmax(np.array(relations_probs))
                         p = relations_probs[pred_class_idx]
-                        doc._.relations.append((e1, e2, p, self.relations[pred_class_idx]))
+                        if p >= self.thr:
+                            doc._.relations.append(
+                                (e1, e2, p, self.relations[pred_class_idx])
+                            )
