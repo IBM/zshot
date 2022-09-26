@@ -1,4 +1,3 @@
-from argparse import ArgumentParser
 import torch
 import torch.nn as nn
 from transformers import BertModel, BertPreTrainedModel
@@ -12,8 +11,8 @@ import urllib.request
 import os
 
 SEED = 42
-MODEL_REMOTE_URL = 'https://ibm.box.com/s/vn0betuswfxfwuor1yjg05xezty2rn8e'
-MODEL_PATH = 'relation_extractor/zsrc/models/zsrc'
+MODEL_REMOTE_URL = 'https://huggingface.co/albep/zsrc/resolve/main/zsrc'
+MODEL_PATH = 'zshot/relation_extractor/zsrc/models/zsrc'
 
 def get_device():
     return 'cpu'
@@ -195,5 +194,8 @@ random.seed(seed)
 device = get_device()
 
 
+
+if __name__ == '__main__':
+    load_model()
     
     
