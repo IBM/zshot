@@ -12,7 +12,9 @@ class RelationsExtractorZSRC(RelationsExtractor):
         self.load_models()
         super(RelationsExtractor, self).__init__()
 
-    def load_models(self,):
+    def load_models(
+        self,
+    ):
         if self.model is None:
             self.model = load_model()
 
@@ -21,14 +23,19 @@ class RelationsExtractorZSRC(RelationsExtractor):
             items_to_process = []
             for i, e1 in enumerate(doc.ents):
                 for j, e2 in enumerate(doc.ents):
-                    if i == j or (e1, e2) in items_to_process or (e2, e1) in items_to_process:
+                    if (i == j or (e1, e2) in items_to_process or (e2, e1) in items_to_process):
                         continue
                     else:
                         items_to_process.append((e1, e2))
 
                     relations_probs = []
                     for rel in self.relations:
-                        _, probs = predict(self.model, [(e1, e2, doc.text)], rel.description, batch_size)
+                        _, probs = predict(
+                            self.model,
+                            [(e1, e2, doc.text)],
+                            rel.description,
+                            batch_size,
+                        )
                         relations_probs.append(probs[0])
                     pred_class_idx = np.argmax(np.array(relations_probs))
                     p = relations_probs[pred_class_idx]

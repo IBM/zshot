@@ -29,17 +29,9 @@ class ZSDataset(Dataset):
         e2_start = -1
 
         for i in range(0, len(sentence_tokens_positions)):
-            if (
-                e1_start == -1
-                and sentence_tokens_positions[i][0] >= e1_span[0]
-                and sentence_tokens_positions[i][0] < e1_span[1]
-            ):
+            if (e1_start == -1 and sentence_tokens_positions[i][0] >= e1_span[0] and sentence_tokens_positions[i][0] < e1_span[1]):
                 e1_start = start_of_sentence_tokens + i
-            elif (
-                e2_start == -1
-                and sentence_tokens_positions[i][0] >= e2_span[0]
-                and sentence_tokens_positions[i][0] < e2_span[1]
-            ):
+            elif (e2_start == -1 and sentence_tokens_positions[i][0] >= e2_span[0] and sentence_tokens_positions[i][0] < e2_span[1]):
                 e2_start = start_of_sentence_tokens + i
 
         e1_end = 0

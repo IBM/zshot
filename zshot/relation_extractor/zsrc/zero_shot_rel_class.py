@@ -13,6 +13,7 @@ SEED = 42
 MODEL_REMOTE_URL = 'https://ibm.box.com/s/vn0betuswfxfwuor1yjg05xezty2rn8e'
 MODEL_PATH = 'zshot/relation_extractor/zsrc/models/zsrc'
 
+
 def get_device():
     return 'cpu'
 
@@ -24,6 +25,7 @@ np.random.seed(0)
 torch.manual_seed(0)
 
 seed = 300
+
 
 def get_preds(model, testloader):
     model.eval()
@@ -88,7 +90,8 @@ def predict(model, items_to_process, relation_description, batch_size=4):
 
 
 def softmax(x):
-    return np.exp(x)/sum(np.exp(x))
+    return np.exp(x) / sum(np.exp(x))
+
 
 def download_file_to_path(source_url, dest_path):
     dest_dir = os.path.dirname(dest_path)
@@ -96,15 +99,17 @@ def download_file_to_path(source_url, dest_path):
         os.makedirs(dest_dir)
     urllib.request.urlretrieve(source_url, dest_path)
 
+
 def load_model():
     model = ZSBert()
     if not os.path.isfile(MODEL_PATH):
         download_file_to_path(MODEL_REMOTE_URL, MODEL_PATH)
-        
+
     model.load_state_dict(torch.load(MODEL_PATH))
     model.to(get_device())
     model.eval()
     return model
+
 
 class ZSBert(BertPreTrainedModel):
     def __init__(self):
@@ -115,7 +120,7 @@ class ZSBert(BertPreTrainedModel):
         self.num_labels = 2
         self.relation_emb_dim = 1024
         self.dropout = nn.Dropout(bertconfig.hidden_dropout_prob)
-        self.fclayer = nn.Linear(bertconfig.hidden_size*3, self.relation_emb_dim)
+        self.fclayer = nn.Linear(bertconfig.hidden_size * 3, self.relation_emb_dim)
         self.classifier = nn.Linear(
             self.relation_emb_dim, bertconfig.num_labels)
         self.batch_size = 4
@@ -178,22 +183,9 @@ class ZSBert(BertPreTrainedModel):
         return outputs
 
 
-# def get_model():
-#     bertconfig = BertConfig.from_pretrained(
-#         'bert-large-cased', num_labels=2, finetuning_task='fewrel-zero-shot')
-#     bertconfig.relation_emb_dim = 1024
-#     model = ZSBert.from_pretrained('bert-large-cased', config=bertconfig)
-#     print("device:", device)
-#     model = model.load_state_dict(
-#                 'zshot/relation_extractor/zsrc/models/zsrc', map_location=torch.device(get_device()))
-#     model = model.to(device)
-#     return model
-
 random.seed(seed)
 device = get_device()
 
 
-
 if __name__ == '__main__':
     load_model()
-    
