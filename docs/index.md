@@ -1,5 +1,5 @@
 <div align="center">
-  <img height="70px" src="./img/graph.png" />
+  <img height="130px" width="130px" src="./img/graph.png" />
 
   <h1>Zshot</h1>
 
