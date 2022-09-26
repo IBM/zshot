@@ -10,13 +10,13 @@
   <p>
 
 <a href="https://travis.ibm.com/Dublin-Research-Lab/zshot.svg?token=zSP5krJq4ryG4zqgNyms&branch=master"> <img alt="Tutorials" src="https://travis.ibm.com/Dublin-Research-Lab/zshot.svg?token=zSP5krJq4ryG4zqgNyms&branch=master" /></a>
-    <a href="https://pages.github.ibm.com/Dublin-Research-Lab/zshot/"> <img alt="Tutorials" src="https://img.shields.io/badge/docs-tutorials-green" /></a>
+    <a href="https://ibm.github.io/zshot"> <img alt="Tutorials" src="https://img.shields.io/badge/docs-tutorials-green" /></a>
   </p>
 </div>
 
-**Documentation**: <a href="https://pages.github.ibm.com/Dublin-Research-Lab/zshot" target="_blank">https://pages.github.ibm.com/Dublin-Research-Lab/zshot</a>
+**Documentation**: <a href="https://ibm.github.io/zshot" target="_blank">https://ibm.github.io/zshot</a>
 
-**Source Code**: <a href="https://github.ibm.com/Dublin-Research-Lab/zshot" target="_blank">https://github.ibm.com/Dublin-Research-Lab/zshot</a>
+**Source Code**: <a href="https://github.com/IBM/zshot/" target="_blank">https://github.com/IBM/zshot</a>
 
 
 Zshot is a highly customisable framework for performing Zero and Few shot named entity recognition.

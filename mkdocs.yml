@@ -53,8 +53,8 @@ theme:
       icon:
         repo: fontawesome/brands/github-alt
       language: en
-repo_name: Dublin-Research-Lab/zshot
-repo_url: https://github.ibm.com/Dublin-Research-Lab/zshot
+repo_name: IBM/zshot
+repo_url: https://github.com/IBM/zshot
 edit_uri: ''
 plugins:
 - search
@@ -96,4 +96,4 @@ markdown_extensions:
 extra:
   social:
   - icon: fontawesome/brands/github-alt
-    link: https://github.ibm.com/Dublin-Research-Lab/zshot
+    link: https://github.com/IBM/zshot
