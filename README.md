@@ -57,16 +57,6 @@ $ pip install -r requirements.txt
 
 </div>
 
-### Install additional dependencies
-
-Install the [transfomers](https://huggingface.co/docs/transformers/index) library to use pre-trained models
-
-```console
-$ pip install transformers
-
----> 100%
-```
-
 ## Zshot Approach
 
 ZShot contains two different components, the **mentions extractor** and the **linker**.
