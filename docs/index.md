@@ -1,5 +1,5 @@
 <div align="center">
-  <img height="170x" src="./docs/img/graph.png" />
+  <img height="170x" src="./img/graph.png" />
 
   <h1>Zshot</h1>
 
@@ -9,8 +9,8 @@
 
   <p>
 
-[![Build Status](https://travis.ibm.com/Dublin-Research-Lab/zshot.svg?token=zSP5krJq4ryG4zqgNyms&branch=master)](https://travis.ibm.com/Dublin-Research-Lab/zshot)
-    <a href="https://pages.github.ibm.com/Dublin-Research-Lab/zshot/"><img alt="Tutorials" src="https://img.shields.io/badge/docs-tutorials-green" /></a>
+<a href="https://travis.ibm.com/Dublin-Research-Lab/zshot.svg?token=zSP5krJq4ryG4zqgNyms&branch=master"> <img alt="Tutorials" src="https://travis.ibm.com/Dublin-Research-Lab/zshot.svg?token=zSP5krJq4ryG4zqgNyms&branch=master" /></a>
+    <a href="https://pages.github.ibm.com/Dublin-Research-Lab/zshot/"> <img alt="Tutorials" src="https://img.shields.io/badge/docs-tutorials-green" /></a>
   </p>
 </div>
 
