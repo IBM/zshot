@@ -27,6 +27,8 @@ SMXM_MODEL_FOLDER_NAME = "BertTaggerMultiClass_config03_mode_tagger_multiclass_f
 
 
 class LinkerSMXM(Linker):
+    """ SMXM linker """
+
     def __init__(self):
         super().__init__()
         self.check_optional_requirements()
@@ -42,15 +44,23 @@ class LinkerSMXM(Linker):
 
     @property
     def is_end2end(self) -> bool:
+        """ SMXM is end2end model"""
         return True
 
     def load_models(self):
+        """ Load SMXM model """
         if self.model is None:
             self.model = load_model(
                 SMXM_MODEL_FILES_URL, MODELS_CACHE_PATH, SMXM_MODEL_FOLDER_NAME
             )
 
     def predict(self, docs: Iterator[Doc], batch_size: Optional[Union[int, None]] = None) -> List[List[Span]]:
+        """
+        Perform the entity prediction
+        :param docs: A list of spacy Document
+        :param batch_size: The batch size
+        :return: List Spans for each Document in docs
+        """
         if not self._entities:
             return []
 
@@ -89,6 +99,7 @@ class LinkerSMXM(Linker):
 
     @staticmethod
     def check_optional_requirements():
+        """ Check for the optional dependencies """
         if not pkgutil.find_loader("transformers"):
             raise Exception("transformers module not installed. You need to install transformers in order to use this"
                             " Linker. Install it with: pip install transformers")

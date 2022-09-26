@@ -30,6 +30,7 @@ class Linker(ABC):
 
     @property
     def entities(self) -> List[Entity]:
+        """ Entities to link to """
         return self._entities
 
     def load_models(self):

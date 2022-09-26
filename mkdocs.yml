@@ -11,8 +11,14 @@ nav:
 - Code reference:
   - Mentions Extraction:
       - mentions_extractor.md
+      - spacy_mentions_extractor.md
+      - flair_mentions_extractor.md
   - Entity Linking:
     - entity_linking.md
+    - blink.md
+    - regen.md
+    - smxm.md
+    - tars.md
 
 markdown_extensions:
   - attr_list
