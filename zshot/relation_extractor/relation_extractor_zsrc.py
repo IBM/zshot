@@ -29,14 +29,15 @@ class RelationsExtractorZSRC(RelationsExtractor):
                         items_to_process.append((e1, e2))
 
                     relations_probs = []
-                    for rel in self.relations:
-                        _, probs = predict(
-                            self.model,
-                            [(e1, e2, doc.text)],
-                            rel.description,
-                            batch_size,
-                        )
-                        relations_probs.append(probs[0])
-                    pred_class_idx = np.argmax(np.array(relations_probs))
-                    p = relations_probs[pred_class_idx]
-                    doc._.relations.append((e1, e2, p, self.relations[pred_class_idx]))
+                    if self.relations is not None:
+                        for rel in self.relations:
+                            _, probs = predict(
+                                self.model,
+                                [(e1, e2, doc.text)],
+                                rel.description,
+                                batch_size,
+                            )
+                            relations_probs.append(probs[0])
+                        pred_class_idx = np.argmax(np.array(relations_probs))
+                        p = relations_probs[pred_class_idx]
+                        doc._.relations.append((e1, e2, p, self.relations[pred_class_idx]))
