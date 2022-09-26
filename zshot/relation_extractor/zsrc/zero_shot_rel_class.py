@@ -10,7 +10,7 @@ import urllib.request
 
 
 SEED = 42
-MODEL_REMOTE_URL = 'https://ibm.box.com/s/vn0betuswfxfwuor1yjg05xezty2rn8e'
+MODEL_REMOTE_URL = 'https://huggingface.co/albep/zsrc/resolve/main/zsrc'
 MODEL_PATH = 'zshot/relation_extractor/zsrc/models/zsrc'
 
 
