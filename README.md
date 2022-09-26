@@ -50,7 +50,7 @@ Can be used to perform:
 <div class="termy">
 
 ```console
-$ pip install -r requirements.txt
+$ pip install zshot
 
 ---> 100%
 ```
