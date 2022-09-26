@@ -25,9 +25,7 @@ class RelationsExtractorZSRC(RelationsExtractor):
             for i, e1 in enumerate(doc.ents):
                 for j, e2 in enumerate(doc.ents):
                     if (
-                        i == j
-                        or (e1, e2) in items_to_process
-                        or (e2, e1) in items_to_process
+                        i == j or (e1, e2) in items_to_process or (e2, e1) in items_to_process
                     ):
                         continue
                     else:
