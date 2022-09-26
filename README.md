@@ -1,8 +1,8 @@
 <div align="center">
   
+  <img height="170x" src="./docs/img/graph.png" />
+  
   <h1>Zshot</h1>
-    
-  <img height="100x" src="./docs/img/graph.png" />
 
   <p>
     <strong>Zero and Few shot named entity & relationships recognition</strong>
