@@ -1,12 +1,12 @@
-import pkgutil
 from typing import Iterator, Optional, Union, List
 
 from spacy.tokens import Doc
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
-from zshot.utils.data_models import Entity, Span
 from zshot.linker.linker import Linker
 from zshot.linker.linker_regen.trie import Trie
 from zshot.linker.linker_regen.utils import create_input
+from zshot.utils.data_models import Entity, Span
 
 MODEL_NAME = "gabriele-picco/regen-disambiguation"
 
@@ -23,10 +23,6 @@ class LinkerRegen(Linker):
         :param num_beams: Number of beans to use
         """
         super().__init__()
-
-        if not pkgutil.find_loader("transformers"):
-            raise Exception("transformers module not installed. You need to install transformers in order to use this"
-                            " Linker. Install it with: pip install transformers")
         self.model = None
         self.tokenizer = None
         self.trie = None
@@ -50,14 +46,12 @@ class LinkerRegen(Linker):
 
     def load_models(self):
         """ Load Model """
-        from transformers import AutoModelForSeq2SeqLM
         if self.model is None:
             self.model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME)
         self.load_tokenizer()
 
     def load_tokenizer(self):
         """ Load Tokenizer"""
-        from transformers import AutoTokenizer
         if self.tokenizer is None:
             self.tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, model_max_length=1024)
 

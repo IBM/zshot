@@ -1,9 +1,9 @@
-import pkgutil
 from typing import Iterator, List, Optional, Union
 
 import torch
 from spacy.tokens import Doc
 from torch.utils.data import DataLoader
+from transformers import BertTokenizerFast
 
 from zshot.config import MODELS_CACHE_PATH
 from zshot.linker.linker import Linker
@@ -31,9 +31,6 @@ class LinkerSMXM(Linker):
 
     def __init__(self):
         super().__init__()
-        self.check_optional_requirements()
-        from transformers import BertTokenizerFast
-        import torch
 
         self.tokenizer = BertTokenizerFast.from_pretrained(
             "bert-large-cased", truncation_side="left"
@@ -96,14 +93,3 @@ class LinkerSMXM(Linker):
         )
 
         return span_annotations
-
-    @staticmethod
-    def check_optional_requirements():
-        """ Check for the optional dependencies """
-        if not pkgutil.find_loader("transformers"):
-            raise Exception("transformers module not installed. You need to install transformers in order to use this"
-                            " Linker. Install it with: pip install transformers")
-
-        if not pkgutil.find_loader("torch"):
-            raise Exception("torch module not installed. You need to install pytorch in order to use this"
-                            " Linker. Install it following: https://pytorch.org/get-started")
