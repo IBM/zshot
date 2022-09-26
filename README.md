@@ -1,6 +1,6 @@
 <div align="center">
   
-  <img height="170x" src="./docs/img/graph.png" />
+  <img height="170x" src="https://ibm.github.io/zshot/img/graph.png" />
   
   <h1>Zshot</h1>
 
@@ -8,10 +8,13 @@
     <strong>Zero and Few shot named entity & relationships recognition</strong>
   </p>
 
-  <p>
+  <p>    
+    
+<a href="https://pages.github.ibm.com/Dublin-Research-Lab/zshot/"><img alt="Tutorials" src="https://img.shields.io/badge/docs-tutorials-green" /></a>
+<a href="https://pypi.org/project/zshot/"><img src="https://img.shields.io/pypi/v/zshot" /></a>
+<a href="https://pypi.org/project/zshot/"><img src="https://img.shields.io/pypi/dm/zshot" /></a>
+<a href="https://travis.ibm.com/Dublin-Research-Lab/zshot.svg?token=zSP5krJq4ryG4zqgNyms&branch=master"> <img alt="Tutorials" src="https://travis.ibm.com/Dublin-Research-Lab/zshot.svg?token=zSP5krJq4ryG4zqgNyms&branch=master" /></a>
 
-[![Build Status](https://travis.ibm.com/Dublin-Research-Lab/zshot.svg?token=zSP5krJq4ryG4zqgNyms&branch=master)](https://travis.ibm.com/Dublin-Research-Lab/zshot)
-    <a href="https://pages.github.ibm.com/Dublin-Research-Lab/zshot/"><img alt="Tutorials" src="https://img.shields.io/badge/docs-tutorials-green" /></a>
   </p>
 </div>
 
@@ -151,7 +154,7 @@ Open your browser at <a href="http://127.0.0.1:5000" class="external-link" targe
 
 You will see the annotated sentence:
 
-<img src="./docs/img/annotations.png" />
+<img src="https://ibm.github.io/zshot/img/annotations.png" />
 
 ### How to create a custom component
 
