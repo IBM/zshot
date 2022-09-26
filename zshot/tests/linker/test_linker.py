@@ -51,6 +51,7 @@ def test_dummy_linker():
     doc = nlp(EX_DOCS[1])
     assert len(doc._.mentions) > 0
     assert len(doc.ents) > 0
+    assert len(doc._.spans) > 0
 
 
 def test_dummy_linker_with_entities_config():
@@ -66,6 +67,7 @@ def test_dummy_linker_with_entities_config():
 
     assert len(doc._.mentions) > 0
     assert len(doc.ents) > 0
+    assert len(doc._.spans) > 0
     assert all([bool(ent.label_) for ent in doc.ents])
 
 
@@ -82,3 +84,4 @@ def test_dummy_linker_end2end():
 
     assert len(doc._.mentions) == 0
     assert len(doc.ents) > 0
+    assert len(doc._.spans) > 0

@@ -88,6 +88,9 @@ class Zshot:
         if not Doc.has_extension("mentions"):
             Doc.set_extension("mentions", default=[])
 
+        if not Doc.has_extension("spans"):
+            Doc.set_extension("spans", default=[])
+
     def __call__(self, doc: Doc) -> Doc:
         # Add the matched spans when doc is processed
         self.extracts_mentions([doc])

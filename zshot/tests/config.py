@@ -6,13 +6,6 @@ EX_DOCS = ["The Domain Name System (DNS) is the hierarchical and decentralized n
            "International Business Machines Corporation (IBM) is an American multinational technology corporation"
            " headquartered in Armonk, New York, with operations in over 171 countries."]
 
-EX_ENTITIES_DICT = {"apple": "The apple fruit",
-                    "DNS": "domain name system",
-                    "IBM": "technology corporation",
-                    "NYC": "New York city",
-                    "Florida": "southeasternmost U.S. state",
-                    "Paris": "Paris is located in northern central France, "
-                             "in a north-bending arc of the river Seine"}
 
 EX_ENTITIES = \
     [

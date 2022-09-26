@@ -1,18 +1,16 @@
-import os
 import pkgutil
-from pathlib import Path
 from typing import Iterator, List, Optional, Union
 
-from appdata import AppDataPaths
+import torch
 from spacy.tokens import Doc
 from torch.utils.data import DataLoader
 
-from zshot.utils.data_models import Span
+from zshot.config import MODELS_CACHE_PATH
 from zshot.linker.linker import Linker
 from zshot.linker.smxm.data import (
     ByDescriptionTaggerDataset,
     encode_data,
-    tagger_multiclass_collator,
+    tagger_multiclass_collator
 )
 from zshot.linker.smxm.utils import (
     SmxmInput,
@@ -20,12 +18,8 @@ from zshot.linker.smxm.utils import (
     load_model,
     predictions_to_span_annotations,
 )
+from zshot.utils.data_models import Span
 
-MODELS_CACHE_PATH = (
-    os.getenv("MODELS_CACHE_PATH")
-    if "MODELS_CACHE_PATH" in os.environ
-    else AppDataPaths(f"{Path(__file__).stem}").app_data_path + "/"
-)
 SMXM_MODEL_FILES_URL = (
     "https://ibm.box.com/shared/static/duni7p7i4gbk0prksc6zv5uahiemfy00.zip"
 )
@@ -57,7 +51,6 @@ class LinkerSMXM(Linker):
             )
 
     def predict(self, docs: Iterator[Doc], batch_size: Optional[Union[int, None]] = None) -> List[List[Span]]:
-        import torch
         if not self._entities:
             return []
 

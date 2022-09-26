@@ -1,15 +1,14 @@
 import os
 import pickle as pkl
-import warnings
+import zlib
 from abc import ABC, abstractmethod
 from typing import Iterator, List, Optional, Union
 
-import zlib
 from spacy.tokens import Doc
 from spacy.util import ensure_path
 
 from zshot.utils.data_models import Entity, Span
-from zshot.utils.utils import filter_extended_spans
+from zshot.utils.alignment_utils import filter_overlapping_spans, spacy_token_offsets
 
 
 class Linker(ABC):
@@ -70,28 +69,12 @@ class Linker(ABC):
         :return:
         """
         predictions_spans = self.predict(docs, batch_size)
-        for doc, doc_preds in zip(docs, predictions_spans):
-            spans_without_overlap = filter_extended_spans(doc_preds, doc=doc)
-            doc_pred_spans = [
-                doc.char_span(
-                    pred.start,
-                    pred.end,
-                    label=pred.label,
-                    alignment_mode="expand",
-                    kb_id=pred.kb_id
-                ) if pred.kb_id else doc.char_span(
-                    pred.start,
-                    pred.end,
-                    label=pred.label,
-                    alignment_mode="expand"
-                )
-                for pred in spans_without_overlap
-            ]
-            for span in doc_pred_spans:
-                try:
-                    doc.ents += (span,)
-                except TypeError or ValueError:
-                    warnings.warn("Entity couldn't be added.")
+
+        for d, preds in zip(docs, predictions_spans):
+            d._.spans = preds
+            d.ents = map(lambda p: p.to_spacy_span(d), filter_overlapping_spans(preds, list(d),
+                                                                                tokens_offsets=spacy_token_offsets(d)))
+            # d.spans = map(lambda p: p.to_spacy_span(d), preds)
 
     @staticmethod
     def _get_serialize_file(path):

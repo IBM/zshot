@@ -2,18 +2,14 @@ import argparse
 import os
 import pkgutil
 from enum import Enum
-from pathlib import Path
 from typing import List, Iterator, Optional, Union
 
-from appdata import AppDataPaths
 from spacy.tokens import Doc
 
-from zshot.utils.data_models import Span
+from zshot.config import MODELS_CACHE_PATH
 from zshot.linker.linker import Linker
-from zshot.utils.utils import download_file
-
-MODELS_CACHE_PATH = os.getenv("MODELS_CACHE_PATH") if "MODELS_CACHE_PATH" in os.environ \
-    else AppDataPaths(f"{Path(__file__).stem}").app_data_path + "/"
+from zshot.utils.data_models import Span
+from zshot.utils.file_utils import download_file
 
 BLINK_ENTITIES = "http://dl.fbaipublicfiles.com/BLINK/entity.jsonl"
 

@@ -7,7 +7,7 @@ import spacy
 
 from zshot import Zshot, PipelineConfig
 from zshot.utils.data_models import Entity
-from zshot.tests.config import EX_ENTITIES_DICT, EX_DOCS, EX_ENTITIES
+from zshot.tests.config import EX_DOCS, EX_ENTITIES
 from zshot.tests.linker.test_linker import DummyLinker, DummyLinkerEnd2End
 from zshot.tests.mentions_extractor.test_mention_extractor import DummyMentionsExtractor, DummyMentionsExtractorWithNER
 
@@ -75,7 +75,7 @@ def test_call_pipe_with_registered_function_configuration():
     nlp.add_pipe("zshot", config=config_zshot, last=True)
     assert "zshot" in nlp.pipe_names
     zshot_component: Zshot = [comp for name, comp in nlp.pipeline if name == 'zshot'][0]
-    assert len(zshot_component.entities) == len(EX_ENTITIES_DICT)
+    assert len(zshot_component.entities) == len(EX_ENTITIES)
     assert type(zshot_component.entities[0]) == Entity
 
 
@@ -87,7 +87,7 @@ def test_call_pipe_with_piepeline_configuration():
         entities=EX_ENTITIES), last=True)
     assert "zshot" in nlp.pipe_names
     zshot_component: Zshot = [comp for name, comp in nlp.pipeline if name == 'zshot'][0]
-    assert len(zshot_component.entities) == len(EX_ENTITIES_DICT)
+    assert len(zshot_component.entities) == len(EX_ENTITIES)
     assert type(zshot_component.entities[0]) == Entity
 
 

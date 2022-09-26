@@ -75,7 +75,6 @@ $ pip install transformers
 
 ```Python
 import spacy
-
 from zshot import PipelineConfig, displacy
 from zshot.linker import LinkerRegen
 from zshot.mentions_extractor import MentionsExtractorSpacy
