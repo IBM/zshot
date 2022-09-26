@@ -49,22 +49,12 @@ Can be used to perform:
 <div class="termy">
 
 ```console
-$ pip install -r requirements.txt
+$ pip install zshot
 
 ---> 100%
 ```
 
 </div>
-
-### Install additional dependencies
-
-Install the [transfomers](https://huggingface.co/docs/transformers/index) library to use pre-trained models
-
-```console
-$ pip install transformers
-
----> 100%
-```
 
 
 ## Example: Zero-Shot Entity Recognition
