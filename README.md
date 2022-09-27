@@ -14,6 +14,7 @@
 <a href="https://pypi.org/project/zshot/"><img src="https://img.shields.io/pypi/v/zshot" /></a>
 <a href="https://pypi.org/project/zshot/"><img src="https://img.shields.io/pypi/dm/zshot" /></a>
 <a href="https://github.com/IBM/zshot/actions/workflows/python-tests.yml"> <img alt="Build" src="https://github.com/IBM/zshot/actions/workflows/python-tests.yml/badge.svg" /></a>
+<a href="https://app.codecov.io/github/ibm/zshot"> <img alt="Build" src="https://codecov.io/github/ibm/zshot/branch/main/graph/badge.svg" /></a>
 
   </p>
 </div>
