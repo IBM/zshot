@@ -11,7 +11,7 @@
 <a href="https://pages.github.ibm.com/Dublin-Research-Lab/zshot/"><img alt="Tutorials" src="https://img.shields.io/badge/docs-tutorials-green" /></a>
 <a href="https://pypi.org/project/zshot/"><img src="https://img.shields.io/pypi/v/zshot" /></a>
 <a href="https://pypi.org/project/zshot/"><img src="https://img.shields.io/pypi/dm/zshot" /></a>
-<a href="https://travis.ibm.com/Dublin-Research-Lab/zshot.svg?token=zSP5krJq4ryG4zqgNyms&branch=master"> <img alt="Tutorials" src="https://travis.ibm.com/Dublin-Research-Lab/zshot.svg?token=zSP5krJq4ryG4zqgNyms&branch=master" /></a>
+<a href="https://github.com/IBM/zshot/actions/workflows/python-tests.yml"> <img alt="Build" src="https://github.com/IBM/zshot/actions/workflows/python-tests.yml/badge.svg" /></a>
 
   </p>
 </div>
