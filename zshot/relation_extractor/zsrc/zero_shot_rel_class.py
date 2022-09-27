@@ -1,17 +1,23 @@
 import os
 import random
 import torch
+from pathlib import Path
 import numpy as np
 import torch.nn as nn
 from transformers import BertModel, BertPreTrainedModel, BertConfig
 from torch.utils.data import DataLoader
 from zshot.relation_extractor.zsrc import data_helper
-import urllib.request
+# import urllib.request
+from appdata import AppDataPaths
 
+from zshot.utils.utils import download_file
 
 SEED = 42
 MODEL_REMOTE_URL = 'https://huggingface.co/albep/zsrc/resolve/main/zsrc'
-MODEL_PATH = 'zshot/relation_extractor/zsrc/models/zsrc'
+
+MODELS_CACHE_PATH = os.getenv("MODELS_CACHE_PATH") if "MODELS_CACHE_PATH" in os.environ \
+    else AppDataPaths(f"{Path(__file__).stem}").app_data_path + "/"
+MODEL_PATH = os.path.join(MODELS_CACHE_PATH, 'zsrc')
 
 
 def get_device():
@@ -93,17 +99,17 @@ def softmax(x):
     return np.exp(x) / sum(np.exp(x))
 
 
-def download_file_to_path(source_url, dest_path):
-    dest_dir = os.path.dirname(dest_path)
-    if not os.path.exists(dest_dir):
-        os.makedirs(dest_dir)
-    urllib.request.urlretrieve(source_url, dest_path)
+# def download_file_to_path(source_url, dest_path):
+#     dest_dir = os.path.dirname(dest_path)
+#     if not os.path.exists(dest_dir):
+#         os.makedirs(dest_dir)
+#     urllib.request.urlretrieve(source_url, dest_path)
 
 
 def load_model():
     model = ZSBert()
     if not os.path.isfile(MODEL_PATH):
-        download_file_to_path(MODEL_REMOTE_URL, MODEL_PATH)
+        download_file(MODEL_REMOTE_URL, MODELS_CACHE_PATH)
 
     model.load_state_dict(torch.load(MODEL_PATH))
     model.to(get_device())
