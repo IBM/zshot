@@ -30,6 +30,9 @@ jobs:
     - name: Lint with flake8
       run: |
         flake8 --ignore E501 zshot/
+    - name: Install Spacy pipeline
+      run: |
+        python -m spacy download en_core_web_sm
     - name: Test with pytest
       run: |
         python -m pytest -v
