@@ -30,4 +30,4 @@ class DatasetWithEntities(datasets.Dataset):
 
     def __repr__(self):
         return f"Dataset({{\n    features: {list(self.features.keys())},\n    num_rows: {self.num_rows}," \
-               f"\n    entities: {[ent['label'] for ent in self.entities if self.entities is not None]}\n}})"
+               f"\n    entities: {[ent.name for ent in self.entities if self.entities is not None]}\n}})"
