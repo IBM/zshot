@@ -27,6 +27,7 @@ jobs:
     - name: Cache models
       uses: actions/cache@v3
       with:
+        key: ${{ runner.os }}-build-models-cache
         path: |
           ~/.cache/huggingface
           ~/linker_smxm
