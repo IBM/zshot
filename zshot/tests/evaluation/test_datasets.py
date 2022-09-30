@@ -1,4 +1,14 @@
+import shutil
+from pathlib import Path
+import pytest
 from zshot.evaluation import load_ontonotes, load_medmentions
+
+
+@pytest.fixture(scope="module", autouse=True)
+def teardown():
+    yield True
+    shutil.rmtree(f"{Path.home()}/.cache/huggingface", ignore_errors=True)
+    shutil.rmtree(f"{Path.home()}/.cache/zshot", ignore_errors=True)
 
 
 def test_ontonotes():
