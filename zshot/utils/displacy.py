@@ -27,12 +27,12 @@ def ents_colors(doc: Doc):
 class displacy:
 
     @staticmethod
-    def render(doc, options: Dict = None, **kwargs):
+    def render(doc, options: Dict = None, **kwargs) -> str:
         if options:
             options['colors'] = ents_colors(doc)
         else:
             options = {'colors': ents_colors(doc)}
-        s_displacy.render(doc, options=options, **kwargs)
+        return s_displacy.render(doc, options=options, **kwargs)
 
     @staticmethod
     def serve(doc, options: Dict = None, **kwargs):
