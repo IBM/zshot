@@ -30,7 +30,7 @@ Can be used to perform:
 
 - **Mentions extraction**: Identify globally relevant mentions or mentions relevant for a given domain 
 - **Wikification**: The task of linking textual mentions to entities in Wikipedia
-- **Zero and Few Shot named entity recognition**: using language description perform NER to generalize to unseen domains (work in progress)
+- **Zero and Few Shot named entity recognition**: using language description perform NER to generalize to unseen domains
 - **Zero and Few Shot named relationship recognition** (work in progress)
 
 ## Requirements
@@ -90,7 +90,9 @@ Again, there are 4 **linkers** available currently, 2 of them are *end-to-end* a
 
 ### How to use it
 
-* Create a file `main.py` with:
+* Install requirements: `pip install -r requirements.txt`
+* Install a spacy pipeline to use it for mentions extraction: `python -m spacy download en_core_web_sm`
+* Create a file `main.py` with the pipeline configuration and entities definition (*Wikipedia abstract are usually a good starting point for descriptions*):
 
 ```Python
 import spacy
