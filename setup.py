@@ -23,7 +23,6 @@ setup(name='zshot',
       install_requires=[
           "spacy>=3.4.1",
           "requests>=2.28",
-          "appdata~=2.1.2",
           "tqdm>=4.62.3",
           "setuptools~=60.0.0",  # Needed to install dynamic packages from source (e.g. Blink)
           "prettytable>=3.4",
