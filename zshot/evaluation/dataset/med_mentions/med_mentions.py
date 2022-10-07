@@ -6,7 +6,7 @@ from huggingface_hub import hf_hub_download
 from zshot.evaluation.dataset.dataset import DatasetWithEntities
 from zshot.utils.data_models import Entity
 
-REPO_ID = "gabriele-picco/medmentionsZS"
+REPO_ID = "ibm/medmentionsZS"
 ENTITIES_FN = "entities.json"
 
 
