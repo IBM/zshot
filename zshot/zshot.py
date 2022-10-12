@@ -21,7 +21,7 @@ from zshot.pipeline_config import PipelineConfig
     "disable_default_ner": True
 })
 def create_zshot_component(nlp: Language, name: str,
-                           entities: Optional[Union[Dict[str, str], List[Entity], str]],
+                           entities: Optional[Union[List[Entity], str]],
                            mentions_extractor: Optional[Union[MentionsExtractor, str]],
                            linker: Optional[Union[Linker, str]],
                            disable_default_ner: Optional[bool] = True):
@@ -45,29 +45,17 @@ class Zshot:
     def setup(self):
         # Load Entities from registered function ID if provided
         if isinstance(self.entities, str):
-            try:
-                self.entities = spacy_registry.get(registry_name='misc', func_name=self.entities)()
-            except RegistryError:
-                logging.warning(f"Missing entities: {self.entities}")
-                self.entities = None
+            self.entities = spacy_registry.get(registry_name='misc', func_name=self.entities)()
         if isinstance(self.entities, list) and len(self.entities) > 0 and isinstance(self.entities[0], dict):
             self.entities = list(map(lambda e: Entity(**e), self.entities))
-        elif isinstance(self.entities, dict):
-            self.entities = [Entity(name=name, description=description) for name, description in self.entities.items()]
 
         # Load Mention Extractor from registered function ID if provided
         if isinstance(self.mentions_extractor, str):
-            try:
-                self.mentions_extractor = spacy_registry.get(registry_name='misc', func_name=self.mentions_extractor)()
-            except RegistryError:
-                self.mentions_extractor = None
+            self.mentions_extractor = spacy_registry.get(registry_name='misc', func_name=self.mentions_extractor)()
 
         # Load Linker from registered function ID if provided
         if isinstance(self.linker, str):
-            try:
-                self.linker = spacy_registry.get(registry_name='misc', func_name=self.linker)()
-            except RegistryError:
-                self.linker = None
+            self.linker = spacy_registry.get(registry_name='misc', func_name=self.linker)()
 
         if self.mentions_extractor and self.mentions_extractor.require_existing_ner \
                 and "ner" not in self.nlp.pipe_names:

@@ -25,6 +25,16 @@ def test_disable_ner():
     assert "ner" not in nlp.pipe_names
 
 
+def test_wrong_pipeline():
+    nlp = spacy.blank("en")
+    assert "ner" not in nlp.pipe_names
+    config_zshot = PipelineConfig(mentions_extractor=DummyMentionsExtractorWithNER())
+    try:
+        nlp.add_pipe("zshot", config=config_zshot, last=True)
+    except ValueError:
+        assert True
+
+
 def test_disable_mentions_extractor():
     nlp = spacy.load("en_core_web_sm")
     config_zshot = PipelineConfig(mentions_extractor=DummyMentionsExtractorWithNER(), linker=DummyLinkerEnd2End())
@@ -35,7 +45,8 @@ def test_disable_mentions_extractor():
 
 def test_serialization_zshot():
     nlp = spacy.blank("en")
-    nlp.add_pipe("zshot", last=True)
+    config_zshot = PipelineConfig(mentions_extractor=DummyMentionsExtractor(), linker=DummyLinker())
+    nlp.add_pipe("zshot", config=config_zshot, last=True)
     assert "zshot" in nlp.pipe_names
     assert "ner" not in nlp.pipe_names
     pipes = [p for p in nlp.pipe_names if p != "zshot"]
@@ -79,7 +90,7 @@ def test_call_pipe_with_registered_function_configuration():
     assert type(zshot_component.entities[0]) == Entity
 
 
-def test_call_pipe_with_piepeline_configuration():
+def test_call_pipe_with_pipeline_configuration():
     nlp = spacy.load("en_core_web_sm")
     nlp.add_pipe("zshot", config=PipelineConfig(
         mentions_extractor=DummyMentionsExtractor(),

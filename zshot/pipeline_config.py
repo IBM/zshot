@@ -12,7 +12,7 @@ class PipelineConfig(dict):
     def __init__(self,
                  mentions_extractor: Optional[MentionsExtractor] = None,
                  linker: Optional[Union[Linker, str]] = None,
-                 entities: Optional[Union[Dict[str, str], List[Entity], List[str], str]] = None,
+                 entities: Optional[Union[List[Entity], List[str], str]] = None,
                  disable_default_ner: Optional[bool] = True) -> None:
         config = {}
 
