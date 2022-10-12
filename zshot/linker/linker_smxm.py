@@ -19,7 +19,7 @@ from zshot.linker.smxm.utils import (
 )
 from zshot.utils.data_models import Span
 
-MODEL_NAME = "gabriele-picco/smxm"
+MODEL_NAME = "ibm/smxm"
 
 
 class LinkerSMXM(Linker):
