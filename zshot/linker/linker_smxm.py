@@ -5,25 +5,21 @@ from spacy.tokens import Doc
 from torch.utils.data import DataLoader
 from transformers import BertTokenizerFast
 
-from zshot.config import MODELS_CACHE_PATH
 from zshot.linker.linker import Linker
 from zshot.linker.smxm.data import (
     ByDescriptionTaggerDataset,
     encode_data,
     tagger_multiclass_collator
 )
+from zshot.linker.smxm.model import BertTaggerMultiClass, device
 from zshot.linker.smxm.utils import (
     SmxmInput,
     get_entities_names_descriptions,
-    load_model,
     predictions_to_span_annotations,
 )
 from zshot.utils.data_models import Span
 
-SMXM_MODEL_FILES_URL = (
-    "https://ibm.box.com/shared/static/duni7p7i4gbk0prksc6zv5uahiemfy00.zip"
-)
-SMXM_MODEL_FOLDER_NAME = "BertTaggerMultiClass_config03_mode_tagger_multiclass_filtered_classes__entity_descriptions_mode_annotation_guidelines__per_gpu_train_batch_size_7/checkpoint"
+MODEL_NAME = "ibm/smxm"
 
 
 class LinkerSMXM(Linker):
@@ -47,9 +43,9 @@ class LinkerSMXM(Linker):
     def load_models(self):
         """ Load SMXM model """
         if self.model is None:
-            self.model = load_model(
-                SMXM_MODEL_FILES_URL, MODELS_CACHE_PATH, SMXM_MODEL_FOLDER_NAME
-            )
+            self.model = BertTaggerMultiClass.from_pretrained(
+                MODEL_NAME, output_hidden_states=True
+            ).to(device)
 
     def predict(self, docs: Iterator[Doc], batch_size: Optional[Union[int, None]] = None) -> List[List[Span]]:
         """

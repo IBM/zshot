@@ -1,16 +1,11 @@
-import os
-import zipfile
 from typing import List, Tuple
 
 import torch
 from transformers import BertTokenizerFast
 
+from zshot.linker.smxm.model import device
 from zshot.utils.data_models import Entity
 from zshot.utils.data_models import Span
-from zshot.linker.smxm.model import BertTaggerMultiClass
-from zshot.utils import download_file
-
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 class SmxmInput(dict):
@@ -32,24 +27,6 @@ class SmxmInput(dict):
             "split": split.to(device),
         }
         super().__init__(**config)
-
-
-def load_model(url: str, output_path: str, folder_name: str) -> BertTaggerMultiClass:
-    filename = url.rsplit("/", 1)[1]
-    model_zipfile_path = os.path.join(output_path, filename)
-    model_folder_path = os.path.join(output_path, folder_name)
-
-    if not os.path.isdir(model_folder_path):
-        download_file(url, output_path)
-        with zipfile.ZipFile(model_zipfile_path, "r") as model_zip:
-            model_zip.extractall(output_path)
-        os.remove(model_zipfile_path)
-
-    model = BertTaggerMultiClass.from_pretrained(
-        model_folder_path, output_hidden_states=True
-    ).to(device)
-
-    return model
 
 
 def predictions_to_span_annotations(
