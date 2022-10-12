@@ -1,10 +1,10 @@
-from typing import Optional, Union, Dict, List
+from typing import Optional, Union, List
 
 import spacy
 
-from zshot.utils.data_models import Entity
 from zshot.linker import Linker
 from zshot.mentions_extractor import MentionsExtractor
+from zshot.utils.data_models import Entity
 
 
 class PipelineConfig(dict):
