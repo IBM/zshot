@@ -30,7 +30,8 @@ jobs:
         key: ${{ runner.os }}-build-models-cache
         path: |
           ~/.cache/huggingface
-          ~/linker_smxm
+          ~/.cache/zshot
+          ~/.pytest_cache
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -43,6 +44,8 @@ jobs:
         python -m spacy download en_core_web_sm
     - name: Test with pytest
       run: |
-        python -m pytest --cov -v
+        python -m pytest --cov -v --cov-report xml:/home/runner/coverage.xml
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v3.1.1
+      with:
+        files: /home/runner/coverage.xml

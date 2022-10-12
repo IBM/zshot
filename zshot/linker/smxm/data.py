@@ -4,7 +4,7 @@ import torch
 from torch.utils.data import Dataset
 from transformers import BertTokenizerFast
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+from zshot.linker.smxm.model import device
 
 
 class ByDescriptionTaggerDataset(Dataset):
