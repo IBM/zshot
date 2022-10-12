@@ -30,7 +30,8 @@ jobs:
         key: ${{ runner.os }}-build-models-cache
         path: |
           ~/.cache/huggingface
-          ~/linker_smxm
+          ~/.cache/zshot
+          ~/.pytest_cache
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
