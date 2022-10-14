@@ -11,7 +11,6 @@ from spacy.util import ensure_path
 
 from zshot.utils.data_models import Entity
 from zshot.utils.data_models import Span
-from zshot.utils.utils import filter_extended_spans
 
 
 class MentionsExtractor(ABC):
@@ -46,14 +45,13 @@ class MentionsExtractor(ABC):
         """
         predictions_spans = self.predict(docs, batch_size)
         for doc, doc_preds in zip(docs, predictions_spans):
-            spans_without_overlap = filter_extended_spans(doc_preds, doc)
             doc_pred_spans = [
                 doc.char_span(
                     pred.start,
                     pred.end,
                     alignment_mode="expand"
                 )
-                for pred in spans_without_overlap
+                for pred in doc_preds
             ]
             for span in doc_pred_spans:
                 try:

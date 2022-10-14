@@ -2,18 +2,14 @@ import argparse
 import os
 import pkgutil
 from enum import Enum
-from pathlib import Path
 from typing import List, Iterator, Optional, Union
 
-from appdata import AppDataPaths
 from spacy.tokens import Doc
 
-from zshot.utils.data_models import Span
+from zshot.config import MODELS_CACHE_PATH
 from zshot.linker.linker import Linker
-from zshot.utils.utils import download_file
-
-MODELS_CACHE_PATH = os.getenv("MODELS_CACHE_PATH") if "MODELS_CACHE_PATH" in os.environ \
-    else AppDataPaths(f"{Path(__file__).stem}").app_data_path + "/"
+from zshot.utils.data_models import Span
+from zshot.utils.file_utils import download_file
 
 BLINK_ENTITIES = "http://dl.fbaipublicfiles.com/BLINK/entity.jsonl"
 
@@ -57,8 +53,14 @@ blink_index2url = {BlinkIndex.FLAT: BLINK_FAISS_FLAT_INDEX, BlinkIndex.HNSW: BLI
 
 
 class LinkerBlink(Linker):
+    """ Blink linker """
 
     def __init__(self, index=BlinkIndex.FLAT):
+        """
+        :param index: Index to use to perform the entity linking. One of:
+            - BlinkIndex.FLAT
+            - BlinkIndex.HNSW
+        """
         super().__init__()
 
         if not pkgutil.find_loader("blink"):
@@ -75,12 +77,14 @@ class LinkerBlink(Linker):
 
     @property
     def entities_list(self) -> List[str]:
+        """ Get list of entities """
         if len(self.models) < 6:
             raise Exception('model not yet initialized')
         return list(self.models[5].keys())
 
     @property
     def local_id2wikipedia_id(self):
+        """ Get the Wikipedia ID from the label predicted """
         if len(self.models) < 9:
             raise Exception('model not yet initialized')
         if not self._wikipedia_id2local_id:
@@ -88,10 +92,16 @@ class LinkerBlink(Linker):
         return self._wikipedia_id2local_id
 
     def local_name2wikipedia_url(self, label: str) -> str:
+        """ Get the Wikipedia URL of the label predicted to perform wikification
+
+        :param label: Label to get URL of
+        :return: URL of the Wikipedia article
+        """
         wiki_id = self.local_id2wikipedia_id[self.models[5][label]]
         return f"https://en.wikipedia.org/wiki?curid={wiki_id}"
 
     def download_models(self):
+        """ Download Blink files """
         files_to_download = BLINK_BI_ENCODER_FILES + [BLINK_ENTITIES]
         if self.index:
             files_to_download.append(blink_index2url[self.index])
@@ -104,12 +114,19 @@ class LinkerBlink(Linker):
                 download_file(f, output_dir=MODELS_CACHE_PATH)
 
     def load_models(self):
+        """ Load models """
         import blink.main_dense as main_dense
         if self.models is None:
             self.download_models()
             self.models = main_dense.load_models(self.config, logger=None)
 
     def predict(self, docs: Iterator[Doc], batch_size: Optional[Union[int, None]] = None) -> List[List[Span]]:
+        """
+        Perform the entity prediction
+        :param docs: A list of spacy Document
+        :param batch_size: The batch size
+        :return: List Spans for each Document in docs
+        """
         import blink.main_dense as main_dense
         self.load_models()
         data_to_link = []

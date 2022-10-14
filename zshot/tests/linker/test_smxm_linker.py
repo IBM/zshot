@@ -4,8 +4,9 @@ import shutil
 import spacy
 
 from zshot import PipelineConfig
+from zshot.config import MODELS_CACHE_PATH
 from zshot.linker import LinkerSMXM
-from zshot.linker.linker_smxm import MODELS_CACHE_PATH, SMXM_MODEL_FILES_URL, SMXM_MODEL_FOLDER_NAME
+from zshot.linker.linker_smxm import SMXM_MODEL_FILES_URL, SMXM_MODEL_FOLDER_NAME
 from zshot.linker.smxm.model import BertTaggerMultiClass
 from zshot.linker.smxm.utils import load_model
 from zshot.tests.config import EX_DOCS, EX_ENTITIES

@@ -1,18 +1,16 @@
-import os
-import pkgutil
-from pathlib import Path
 from typing import Iterator, List, Optional, Union
 
-from appdata import AppDataPaths
+import torch
 from spacy.tokens import Doc
 from torch.utils.data import DataLoader
+from transformers import BertTokenizerFast
 
-from zshot.utils.data_models import Span
+from zshot.config import MODELS_CACHE_PATH
 from zshot.linker.linker import Linker
 from zshot.linker.smxm.data import (
     ByDescriptionTaggerDataset,
     encode_data,
-    tagger_multiclass_collator,
+    tagger_multiclass_collator
 )
 from zshot.linker.smxm.utils import (
     SmxmInput,
@@ -20,12 +18,8 @@ from zshot.linker.smxm.utils import (
     load_model,
     predictions_to_span_annotations,
 )
+from zshot.utils.data_models import Span
 
-MODELS_CACHE_PATH = (
-    os.getenv("MODELS_CACHE_PATH")
-    if "MODELS_CACHE_PATH" in os.environ
-    else AppDataPaths(f"{Path(__file__).stem}").app_data_path + "/"
-)
 SMXM_MODEL_FILES_URL = (
     "https://ibm.box.com/shared/static/duni7p7i4gbk0prksc6zv5uahiemfy00.zip"
 )
@@ -33,11 +27,10 @@ SMXM_MODEL_FOLDER_NAME = "BertTaggerMultiClass_config03_mode_tagger_multiclass_f
 
 
 class LinkerSMXM(Linker):
+    """ SMXM linker """
+
     def __init__(self):
         super().__init__()
-        self.check_optional_requirements()
-        from transformers import BertTokenizerFast
-        import torch
 
         self.tokenizer = BertTokenizerFast.from_pretrained(
             "bert-large-cased", truncation_side="left"
@@ -48,16 +41,23 @@ class LinkerSMXM(Linker):
 
     @property
     def is_end2end(self) -> bool:
+        """ SMXM is end2end model"""
         return True
 
     def load_models(self):
+        """ Load SMXM model """
         if self.model is None:
             self.model = load_model(
                 SMXM_MODEL_FILES_URL, MODELS_CACHE_PATH, SMXM_MODEL_FOLDER_NAME
             )
 
     def predict(self, docs: Iterator[Doc], batch_size: Optional[Union[int, None]] = None) -> List[List[Span]]:
-        import torch
+        """
+        Perform the entity prediction
+        :param docs: A list of spacy Document
+        :param batch_size: The batch size
+        :return: List Spans for each Document in docs
+        """
         if not self._entities:
             return []
 
@@ -84,7 +84,7 @@ class LinkerSMXM(Linker):
                 probability = (
                     torch.nn.Softmax(dim=-1)(outputs).cpu().numpy().tolist()
                 )
-                probabilities += [p[1:] for p in probability]
+                probabilities += [p for p in probability]
                 outputs = torch.argmax(outputs, dim=2)
                 preds += outputs.detach().cpu().numpy().tolist()
 
@@ -93,13 +93,3 @@ class LinkerSMXM(Linker):
         )
 
         return span_annotations
-
-    @staticmethod
-    def check_optional_requirements():
-        if not pkgutil.find_loader("transformers"):
-            raise Exception("transformers module not installed. You need to install transformers in order to use this"
-                            " Linker. Install it with: pip install transformers")
-
-        if not pkgutil.find_loader("torch"):
-            raise Exception("torch module not installed. You need to install pytorch in order to use this"
-                            " Linker. Install it following: https://pytorch.org/get-started")

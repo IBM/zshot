@@ -1,1 +1,1 @@
-from zshot.utils.utils import download_file  # noqa: F401
+from zshot.utils.file_utils import download_file  # noqa: F401

@@ -8,11 +8,10 @@ from zshot.linker.linker import Linker
 
 
 class LinkerTARS(Linker):
-
+    """ TARS end2end Linker """
     def __init__(self, default_entities: Optional[str] = "conll-short"):
         """
-        Init the TARS end2end Linker
-        :param default_entities:
+        :param default_entities: Default entities to use in case no custom ones are set
         One of:
             - 'conll-short'
             - 'ontonotes-long'
