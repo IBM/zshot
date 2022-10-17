@@ -1,23 +1,20 @@
 from setuptools import setup, find_packages
 from pathlib import Path
 
-from zshot import name, version, author, url, license_
-
 this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
 
 
-setup(name=name,
-      version=version,
+setup(name='zshot',
       description="Zero and Few shot named entity recognition",
       long_description_content_type='text/markdown',
       long_description=long_description,
       classifiers=[],
       keywords='NER Zero-Shot Few-Shot',
-      author=author,
+      author='IBM Research',
       author_email='',
-      url=url,
-      license=license_,
+      url='https://ibm.github.io/zshot',
+      license='MIT',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
       include_package_data=True,
       zip_safe=False,
