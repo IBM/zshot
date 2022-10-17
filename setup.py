@@ -25,7 +25,7 @@ setup(name='zshot',
           "torch>=1",
           "transformers>=4.20",
           "datasets>=2.2.2",
-          "evaluate>=0.2.2",
+          "evaluate==0.2.2",
           "seqeval>=1.2.2",
       ],
       entry_points="""
