@@ -10,7 +10,7 @@ from zshot.relation_extractor.zsrc import data_helper
 # import urllib.request
 from appdata import AppDataPaths
 
-from zshot.utils.utils import download_file
+from zshot.utils.file_utils import download_file
 
 SEED = 42
 MODEL_REMOTE_URL = 'https://huggingface.co/albep/zsrc/resolve/main/zsrc'
