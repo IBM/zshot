@@ -4,10 +4,8 @@ from pathlib import Path
 this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
 
-version = '0.0.2'
 
 setup(name='zshot',
-      version=version,
       description="Zero and Few shot named entity recognition",
       long_description_content_type='text/markdown',
       long_description=long_description,

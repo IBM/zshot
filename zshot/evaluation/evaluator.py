@@ -34,7 +34,8 @@ class ZeroShotTokenClassificationEvaluator(TokenClassificationEvaluator):
             feature_extractor=None,  # noqa: F821
             device: int = None,
     ):
-        pipe = super(TokenClassificationEvaluator, self).prepare_pipeline(model_or_pipeline, tokenizer, feature_extractor, device)
+        pipe = super(TokenClassificationEvaluator, self).prepare_pipeline(model_or_pipeline, tokenizer,
+                                                                          feature_extractor, device)
         return pipe
 
 

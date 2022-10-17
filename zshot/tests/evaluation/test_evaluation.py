@@ -113,7 +113,7 @@ class TestZeroShotTokenClassificationEvaluation:
         dataset = get_dataset(gt, sentences)
 
         custom_evaluator = ZeroShotTokenClassificationEvaluator("token-classification")
-        metrics = custom_evaluator.compute(get_linker_pipe([('New York', 'FAC', 1)]), dataset, "seqeval")
+        metrics = custom_evaluator.compute(get_linker_pipe([('New York', 'FAC', 1)]), dataset, metric="seqeval")
 
         assert float(metrics["overall_precision"]) == 1.0
         assert float(metrics["overall_precision"]) == 1.0
@@ -128,7 +128,7 @@ class TestZeroShotTokenClassificationEvaluation:
 
         custom_evaluator = ZeroShotTokenClassificationEvaluator("token-classification")
         metrics = custom_evaluator.compute(get_linker_pipe([('New York', 'FAC', 1), ('York', 'LOC', 0.7)]), dataset,
-                                           "seqeval")
+                                           metric="seqeval")
 
         assert float(metrics["overall_precision"]) == 1.0
         assert float(metrics["overall_precision"]) == 1.0
@@ -144,7 +144,7 @@ class TestZeroShotTokenClassificationEvaluation:
         custom_evaluator = ZeroShotTokenClassificationEvaluator("token-classification",
                                                                 alignment_mode=AlignmentMode.expand)
         pipe = get_linker_pipe([('New Yo', 'FAC', 1)])
-        metrics = custom_evaluator.compute(pipe, dataset, "seqeval")
+        metrics = custom_evaluator.compute(pipe, dataset, metric="seqeval")
 
         assert float(metrics["overall_precision"]) == 1.0
         assert float(metrics["overall_precision"]) == 1.0
@@ -160,7 +160,7 @@ class TestZeroShotTokenClassificationEvaluation:
         custom_evaluator = ZeroShotTokenClassificationEvaluator("token-classification",
                                                                 alignment_mode=AlignmentMode.contract)
         pipe = get_linker_pipe([('New York i', 'FAC', 1)])
-        metrics = custom_evaluator.compute(pipe, dataset, "seqeval")
+        metrics = custom_evaluator.compute(pipe, dataset, metric="seqeval")
 
         assert float(metrics["overall_precision"]) == 1.0
         assert float(metrics["overall_precision"]) == 1.0
@@ -176,7 +176,7 @@ class TestZeroShotTokenClassificationEvaluation:
         custom_evaluator = ZeroShotTokenClassificationEvaluator("token-classification",
                                                                 alignment_mode=AlignmentMode.contract)
         pipe = get_linker_pipe([('New York i', 'FAC', 1), ('w York', 'LOC', 0.7)])
-        metrics = custom_evaluator.compute(pipe, dataset, "seqeval")
+        metrics = custom_evaluator.compute(pipe, dataset, metric="seqeval")
 
         assert float(metrics["overall_precision"]) == 1.0
         assert float(metrics["overall_precision"]) == 1.0
@@ -207,7 +207,8 @@ class TestMentionsExtractorEvaluator:
         dataset = get_dataset(gt, sentences)
 
         custom_evaluator = MentionsExtractorEvaluator("token-classification")
-        metrics = custom_evaluator.compute(get_mentions_extractor_pipe([('New York', 'FAC', 1)]), dataset, "seqeval")
+        metrics = custom_evaluator.compute(get_mentions_extractor_pipe([('New York', 'FAC', 1)]), dataset,
+                                           metric="seqeval")
 
         assert float(metrics["overall_precision"]) == 1.0
         assert float(metrics["overall_precision"]) == 1.0
@@ -222,7 +223,7 @@ class TestMentionsExtractorEvaluator:
 
         custom_evaluator = MentionsExtractorEvaluator("token-classification")
         metrics = custom_evaluator.compute(get_mentions_extractor_pipe([('New York', 'FAC', 1), ('York', 'LOC', 0.7)]),
-                                           dataset, "seqeval")
+                                           dataset, metric="seqeval")
 
         assert float(metrics["overall_precision"]) == 1.0
         assert float(metrics["overall_precision"]) == 1.0
@@ -238,7 +239,7 @@ class TestMentionsExtractorEvaluator:
         custom_evaluator = MentionsExtractorEvaluator("token-classification",
                                                       alignment_mode=AlignmentMode.expand)
         pipe = get_mentions_extractor_pipe([('New Yo', 'FAC', 1)])
-        metrics = custom_evaluator.compute(pipe, dataset, "seqeval")
+        metrics = custom_evaluator.compute(pipe, dataset, metric="seqeval")
 
         assert float(metrics["overall_precision"]) == 1.0
         assert float(metrics["overall_precision"]) == 1.0
