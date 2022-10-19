@@ -132,15 +132,18 @@ class LinkerBlink(Linker):
         data_to_link = []
         for doc_id, doc in enumerate(docs):
             for mention_id, mention in enumerate(doc._.mentions):
+                left_context = doc.text[:mention.start].lower()
+                right_context = doc.text[mention.end:].lower()
+                text = doc.text[mention.start:mention.end].lower()
                 data_to_link.append(
                     {
                         "id": doc_id,
                         "mention_id": mention_id,
                         "label": "unknown",
                         "label_id": -1,
-                        "context_left": doc.text[:mention.start_char].lower(),
-                        "mention": mention.text.lower(),
-                        "context_right": doc.text[mention.end_char:].lower(),
+                        "context_left": left_context,
+                        "mention": text,
+                        "context_right": right_context,
                     })
         if not data_to_link:
             return []
@@ -150,7 +153,7 @@ class LinkerBlink(Linker):
         for data, pred, score in zip(data_to_link, predictions, scores):
             doc = docs[data['id']]
             mention = doc._.mentions[data['mention_id']]
-            span = Span(mention.start_char, mention.end_char, label=pred[0], score=score,
+            span = Span(mention.start, mention.end, label=pred[0], score=score,
                         kb_id=self.local_name2wikipedia_url(pred[0]))
             if data['id'] in spans_annotations_values:
                 spans_annotations_values['id'].append(span)

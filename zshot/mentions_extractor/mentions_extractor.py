@@ -45,17 +45,9 @@ class MentionsExtractor(ABC):
         """
         predictions_spans = self.predict(docs, batch_size)
         for doc, doc_preds in zip(docs, predictions_spans):
-            doc_pred_spans = [
-                doc.char_span(
-                    pred.start,
-                    pred.end,
-                    alignment_mode="expand"
-                )
-                for pred in doc_preds
-            ]
-            for span in doc_pred_spans:
+            for pred in doc_preds:
                 try:
-                    doc._.mentions += (span,)
+                    doc._.mentions += (pred,)
                 except TypeError or ValueError:
                     warnings.warn("Entity couldn't be added.")
 

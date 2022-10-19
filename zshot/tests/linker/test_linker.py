@@ -13,7 +13,7 @@ class DummyLinker(Linker):
 
     def predict(self, docs: Iterator[Doc], batch_size=None):
         return [
-            [Span(mention.start_char, mention.end_char, label='label') for mention in doc._.mentions]
+            [Span(mention.start, mention.end, label='label') for mention in doc._.mentions]
             for doc in docs
         ]
 
@@ -34,7 +34,7 @@ class DummyLinkerWithEntities(Linker):
         entities = self.entities
         return [
             [
-                Span(mention.start_char, mention.end_char, label=entities[idx].name)
+                Span(mention.start, mention.end, label=entities[idx].name)
                 for idx, mention in enumerate(doc._.mentions)
             ]
             for doc in docs

@@ -71,9 +71,10 @@ class LinkerRegen(Linker):
         docs = list(docs)
         for doc_id, doc in enumerate(docs):
             for mention_id, mention in enumerate(doc._.mentions):
-                left_context = doc.text[:mention.start_char]
-                right_context = doc.text[mention.end_char:]
-                sentence = f"{left_context} {START_ENT_TOKEN} {mention.text} {END_ENT_TOKEN} {right_context}"
+                left_context = doc.text[:mention.start]
+                right_context = doc.text[mention.end:]
+                text = doc.text[mention.start:mention.end]
+                sentence = f"{left_context} {START_ENT_TOKEN} {text} {END_ENT_TOKEN} {right_context}"
                 data_to_link.append(
                     {
                         "id": doc_id,
@@ -114,6 +115,6 @@ class LinkerRegen(Linker):
             label = self.tokenizer.decode(out, skip_special_tokens=True)
             if doc_id not in docs_pred:
                 docs_pred[doc_id] = []
-            docs_pred[doc_id].append(Span(mention.start_char, mention.end_char, label=label,
+            docs_pred[doc_id].append(Span(mention.start, mention.end, label=label,
                                           score=score.detach().numpy().tolist()))
         return [val for key, val in sorted(docs_pred.items(), reverse=False)]
