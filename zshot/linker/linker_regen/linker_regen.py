@@ -87,6 +87,9 @@ class LinkerRegen(Linker):
                                   start_delimiter=START_ENT_TOKEN,
                                   end_delimiter=END_ENT_TOKEN,
                                   ) for d in data_to_link]
+        if not sentences:
+            return []
+
         input_args = {
             k: v
             for k, v in self.tokenizer.batch_encode_plus(
