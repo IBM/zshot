@@ -45,6 +45,8 @@ def align_spans(spans: List[Span], tokens: List[str], tokens_offsets: List[Tuple
                 alignments[idt].append(ids)
             if t_start >= s.start and t_end <= s.end and alignment_mode == AlignmentMode.contract:
                 alignments[idt].append(ids)
+            if t_start > s.start and t_end < s.end:
+                alignments[idt].append(ids)
     if return_dict:
         return {
             'tokens_offsets': tokens_offsets,
@@ -85,6 +87,7 @@ def filter_overlapping_spans(spans: List[Span], tokens: List[str],
         if idx > 0 and filtered_spans[idx - 1] is not None and filtered_spans[idx - 1].label == best_span.label:
             filtered_spans[idx - 1].end = tokens_offsets[idx][1]
             bio_token[idx] = f"I-{filtered_spans[idx - 1].label}"
+            filtered_spans[idx], filtered_spans[idx - 1] = filtered_spans[idx - 1], None
         else:
             filtered_spans[idx] = Span(start=tokens_offsets[idx][0], end=tokens_offsets[idx][1],
                                        label=best_span.label, kb_id=best_span.kb_id)
