@@ -4,7 +4,7 @@ import torch
 from torch.utils.data import Dataset
 from transformers import BertTokenizerFast
 
-from zshot.linker.smxm.model import device
+from zshot.utils.models.smxm.model import device
 
 
 class ByDescriptionTaggerDataset(Dataset):

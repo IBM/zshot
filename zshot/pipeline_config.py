@@ -11,6 +11,7 @@ class PipelineConfig(dict):
 
     def __init__(self,
                  mentions_extractor: Optional[MentionsExtractor] = None,
+                 mentions: Optional[Union[List[Entity], List[str], str]] = None,
                  linker: Optional[Union[Linker, str]] = None,
                  entities: Optional[Union[List[Entity], List[str], str]] = None,
                  disable_default_ner: Optional[bool] = True) -> None:
@@ -19,6 +20,10 @@ class PipelineConfig(dict):
         if mentions_extractor:
             mention_extractor_id = PipelineConfig.param(mentions_extractor)
             config.update({'mentions_extractor': mention_extractor_id})
+
+        if mentions:
+            mentions_id = PipelineConfig.param(mentions)
+            config.update({'mentions': mentions_id})
 
         if linker:
             linker_id = PipelineConfig.param(linker)
