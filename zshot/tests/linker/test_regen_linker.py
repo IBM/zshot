@@ -1,3 +1,4 @@
+import gc
 import logging
 import shutil
 from pathlib import Path
@@ -20,6 +21,7 @@ def teardown():
     logger.warning("Removing cache")
     shutil.rmtree(f"{Path.home()}/.cache/huggingface", ignore_errors=True)
     shutil.rmtree(f"{Path.home()}/.cache/zshot", ignore_errors=True)
+    gc.collect()
 
 
 def test_regen_linker():
@@ -34,6 +36,11 @@ def test_regen_linker():
 
     doc = nlp(EX_DOCS[1])
     assert len(doc.ents) > 0
+    del nlp.get_pipe('zshot').mentions_extractor, nlp.get_pipe('zshot').entities, nlp.get_pipe('zshot').nlp
+    del nlp.get_pipe('zshot').linker.tokenizer, nlp.get_pipe('zshot').linker.trie, \
+        nlp.get_pipe('zshot').linker.model, nlp.get_pipe('zshot').linker
+    nlp.remove_pipe('zshot')
+    del doc, nlp, config
 
 
 def test_regen_linker_pipeline():
@@ -48,3 +55,8 @@ def test_regen_linker_pipeline():
 
     docs = [doc for doc in nlp.pipe(EX_DOCS)]
     assert all(len(doc.ents) > 0 for doc in docs)
+    del nlp.get_pipe('zshot').mentions_extractor, nlp.get_pipe('zshot').entities, nlp.get_pipe('zshot').nlp
+    del nlp.get_pipe('zshot').linker.tokenizer, nlp.get_pipe('zshot').linker.trie, \
+        nlp.get_pipe('zshot').linker.model, nlp.get_pipe('zshot').linker
+    nlp.remove_pipe('zshot')
+    del docs, nlp, config

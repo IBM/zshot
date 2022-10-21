@@ -6,8 +6,8 @@ from pathlib import Path
 import pytest
 import spacy
 
-from zshot import PipelineConfig, Linker
-from zshot.linker import LinkerSMXM
+from zshot import PipelineConfig, MentionsExtractor
+from zshot.mentions_extractor import MentionsExtractorSMXM
 from zshot.tests.config import EX_DOCS, EX_ENTITIES
 
 logger = logging.getLogger(__name__)
@@ -24,55 +24,52 @@ def teardown():
 
 
 def test_smxm_download():
-    linker = LinkerSMXM()
-    linker.load_models()
-    assert isinstance(linker, Linker)
-    del linker.tokenizer, linker.model, linker
+    mentions_extractor = MentionsExtractorSMXM()
+    mentions_extractor.load_models()
+    assert isinstance(mentions_extractor, MentionsExtractor)
+    del mentions_extractor
 
 
-def test_smxm_linker():
+def test_smxm_mentions_extractor():
     nlp = spacy.blank("en")
     smxm_config = PipelineConfig(
-        linker=LinkerSMXM(),
-        entities=EX_ENTITIES
+        mentions_extractor=MentionsExtractorSMXM(),
+        mentions=EX_ENTITIES
     )
     nlp.add_pipe("zshot", config=smxm_config, last=True)
     assert "zshot" in nlp.pipe_names
 
     doc = nlp(EX_DOCS[1])
-    assert len(doc.ents) > 0
-    del nlp.get_pipe('zshot').linker.tokenizer, nlp.get_pipe('zshot').linker.model, nlp.get_pipe('zshot').linker
+    assert len(doc._.mentions) > 0
     nlp.remove_pipe('zshot')
-    del doc, nlp, smxm_config
+    del doc, nlp
 
 
-def test_smxm_linker_pipeline():
+def test_smxm_mentions_extractor_pipeline():
     nlp = spacy.blank("en")
     smxm_config = PipelineConfig(
-        linker=LinkerSMXM(),
-        entities=EX_ENTITIES
+        mentions_extractor=MentionsExtractorSMXM(),
+        mentions=EX_ENTITIES
     )
     nlp.add_pipe("zshot", config=smxm_config, last=True)
     assert "zshot" in nlp.pipe_names
 
     docs = [doc for doc in nlp.pipe(EX_DOCS)]
-    assert all(len(doc.ents) > 0 for doc in docs)
-    del nlp.get_pipe('zshot').linker.tokenizer, nlp.get_pipe('zshot').linker.model, nlp.get_pipe('zshot').linker
+    assert all(len(doc._.mentions) > 0 for doc in docs)
     nlp.remove_pipe('zshot')
-    del docs, nlp, smxm_config
+    del docs, nlp
 
 
-def test_smxm_linker_no_entities():
+def test_smxm_mentions_extractor_no_entities():
     nlp = spacy.blank("en")
     smxm_config = PipelineConfig(
-        linker=LinkerSMXM(),
-        entities=[]
+        mentions_extractor=MentionsExtractorSMXM(),
+        mentions=[]
     )
     nlp.add_pipe("zshot", config=smxm_config, last=True)
     assert "zshot" in nlp.pipe_names
 
     doc = nlp(EX_DOCS[1])
-    assert len(doc.ents) == 0
-    del nlp.get_pipe('zshot').linker.tokenizer, nlp.get_pipe('zshot').linker.model, nlp.get_pipe('zshot').linker
+    assert len(doc._.mentions) == 0
     nlp.remove_pipe('zshot')
-    del doc, nlp, smxm_config
+    del doc, nlp
