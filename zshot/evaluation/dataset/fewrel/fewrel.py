@@ -52,8 +52,8 @@ def get_few_rel_data(split_name="val_wiki", limit=-1):
         sentences = sentences[:limit]
 
     gt = [item[0] for item in relations_descriptions]
-    label_mapping = {l: idx for idx, l in enumerate(list(set(gt)))}
-    gt = [label_mapping.get(item) for item in gt]
+    # label_mapping = {l: idx for idx, l in enumerate(list(set(gt)))}
+    # gt = [label_mapping.get(item) for item in gt]
 
     entities_data = []
     for idx in tqdm(range(len(tokenized_sentences))):
@@ -66,7 +66,7 @@ def get_few_rel_data(split_name="val_wiki", limit=-1):
             ]
         )
 
-    return entities_data, sentences, relations_descriptions, label_mapping, gt
+    return entities_data, sentences, relations_descriptions, gt
 
 
 if __name__ == "__main__":

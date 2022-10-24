@@ -59,9 +59,8 @@ class MentionsExtractorEvaluator(ZeroShotTokenClassificationEvaluator):
 
 
 class RelationExtractorEvaluator(Evaluator):
-    def __init__(self, task="relation-extraction", default_metric_name=None, label_mapping=None):
+    def __init__(self, task="relation-extraction", default_metric_name=None):
         super().__init__(task, default_metric_name)
-        self.label_mapping = label_mapping
 
     def predictions_processor(self, predictions: List[List[Dict]], sentences: List[List[str]]):
         return {"predictions": predictions}

@@ -16,7 +16,7 @@ class LinkerPipeline:
                 label = {
                     "entity": span.label,
                     "score": span.score,
-                    "word": doc.text[span.start: span.end],
+                    "word": doc.text[span.start : span.end],
                     "start": span.start,
                     "end": span.end,
                 }
@@ -40,7 +40,7 @@ class MentionsExtractorPipeline:
             for span in doc._.mentions:
                 label = {
                     "entity": "MENTION",
-                    "word": doc.text[span.start_char: span.end_char],
+                    "word": doc.text[span.start_char : span.end_char],
                     "start": span.start_char,
                     "end": span.end_char,
                 }
@@ -51,11 +51,10 @@ class MentionsExtractorPipeline:
 
 
 class RelationExtractorPipeline:
-    def __init__(self, nlp, label_mapping, batch_size=100):
+    def __init__(self, nlp, batch_size=100):
         self.nlp = nlp
         self.task = "text-classification"
         self.batch_size = batch_size
-        self.label_mapping = label_mapping
 
     def __call__(self, *args, **kwargs):
         res = []
@@ -70,5 +69,5 @@ class RelationExtractorPipeline:
                 rels.append(r.relation)
             best_idx = np.argmax(probs)
             rel = rels[best_idx]
-            res.append(self.label_mapping[rel.name])
+            res.append(rel.name)
         return res

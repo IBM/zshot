@@ -21,6 +21,7 @@ from zshot.relation_extractor.relation_extractor_zsrc import RelationsExtractorZ
 from zshot.utils.alignment_utils import AlignmentMode
 from zshot.utils.data_models import Entity, Span
 from zshot.utils.data_models.relation import Relation
+from zshot.evaluation.metrics.rel_eval import RelEval
 
 ENTITIES = [
     Entity(name="FAC", description="A facility"),
@@ -115,7 +116,7 @@ def get_mentions_extractor_pipe(predictions: List[Tuple[str, str, float]]):
     return MentionsExtractorPipeline(nlp)
 
 
-def get_relation_extraction_pipeline(predictions, relations, label_mapping):
+def get_relation_extraction_pipeline(predictions, relations):
     nlp = spacy.blank("en")
     nlp_config = PipelineConfig(
         relations_extractor=RelationsExtractorZSRC(thr=0.0),
@@ -123,7 +124,7 @@ def get_relation_extraction_pipeline(predictions, relations, label_mapping):
         relations=relations,
     )  # [Relation(name="part_of", description="is an instance of something or part of it"), Relation(name="is_in", description="located in, based in"),],)
     nlp.add_pipe("zshot", config=nlp_config, last=True)
-    return RelationExtractorPipeline(nlp, label_mapping=label_mapping)
+    return RelationExtractorPipeline(nlp)
 
 
 def get_spans_predictions(span: str, label: str, sentence: str):
@@ -330,14 +331,11 @@ class TestZeroShotTextClassificationEvaluation:
             entities_data,
             sentences,
             relations_descriptions,
-            label_mapping,
             gt,
         ) = get_few_rel_data(split_name="val_wiki", limit=5)
 
         # pdb.set_trace()
-        custom_evaluator = RelationExtractorEvaluator(
-            task="text-classification", label_mapping=label_mapping
-        )
+        custom_evaluator = RelationExtractorEvaluator(task="text-classification")
         # pdb.set_trace()
         pipe = get_relation_extraction_pipeline(
             entities_data,
@@ -345,7 +343,6 @@ class TestZeroShotTextClassificationEvaluation:
                 Relation(name=name, description=desc)
                 for name, desc in set([(i, j) for i, j in relations_descriptions])
             ],
-            label_mapping=label_mapping,
         )
         # pdb.set_trace()
         metrics = custom_evaluator.compute(
@@ -353,8 +350,8 @@ class TestZeroShotTextClassificationEvaluation:
             self.get_dataset(gt, sentences),
             input_column="sentences",
             label_column="labels",
-            metric="accuracy",
+            metric=RelEval(),
         )
-        print("metrics: {}".format(metrics))
+        # print("metrics: {}".format(metrics))
         # pdb.set_trace()
         assert True

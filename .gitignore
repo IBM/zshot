@@ -130,3 +130,5 @@ dmypy.json
 .idea/
 .DS_Store
 codecov
+.vscode/
+zshot/.vscode/
