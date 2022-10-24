@@ -345,7 +345,7 @@ class TestZeroShotTextClassificationEvaluation:
             ],
         )
         # pdb.set_trace()
-        metrics = custom_evaluator.compute(
+        custom_evaluator.compute(
             pipe,
             self.get_dataset(gt, sentences),
             input_column="sentences",

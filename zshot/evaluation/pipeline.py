@@ -16,7 +16,7 @@ class LinkerPipeline:
                 label = {
                     "entity": span.label,
                     "score": span.score,
-                    "word": doc.text[span.start : span.end],
+                    "word": doc.text[span.start: span.end],
                     "start": span.start,
                     "end": span.end,
                 }
@@ -40,7 +40,7 @@ class MentionsExtractorPipeline:
             for span in doc._.mentions:
                 label = {
                     "entity": "MENTION",
-                    "word": doc.text[span.start_char : span.end_char],
+                    "word": doc.text[span.start_char: span.end_char],
                     "start": span.start_char,
                     "end": span.end_char,
                 }
