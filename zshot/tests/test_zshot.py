@@ -76,10 +76,15 @@ def test_call_pipe_with_registered_function_configuration():
     def get_entities() -> List[Entity]:
         return EX_ENTITIES
 
+    @spacy.registry.misc("get.mentions.v1")
+    def get_mentions() -> List[Entity]:
+        return EX_ENTITIES
+
     config_zshot = {
         "mentions_extractor": {"@misc": "dummy.mentions-extractor"},
         "linker": {"@misc": "dummy.linker"},
-        "entities": {"@misc": "get.entities.v1"}
+        "entities": {"@misc": "get.entities.v1"},
+        "mentions": {"@misc": "get.mentions.v1"}
     }
 
     nlp = spacy.blank("en")
@@ -87,7 +92,9 @@ def test_call_pipe_with_registered_function_configuration():
     assert "zshot" in nlp.pipe_names
     zshot_component: Zshot = [comp for name, comp in nlp.pipeline if name == 'zshot'][0]
     assert len(zshot_component.entities) == len(EX_ENTITIES)
+    assert len(zshot_component.mentions) == len(EX_ENTITIES)
     assert type(zshot_component.entities[0]) == Entity
+    assert type(zshot_component.mentions[0]) == Entity
 
 
 def test_call_pipe_with_pipeline_configuration():
@@ -95,11 +102,14 @@ def test_call_pipe_with_pipeline_configuration():
     nlp.add_pipe("zshot", config=PipelineConfig(
         mentions_extractor=DummyMentionsExtractor(),
         linker=DummyLinker(),
-        entities=EX_ENTITIES), last=True)
+        entities=EX_ENTITIES,
+        mentions=EX_ENTITIES), last=True)
     assert "zshot" in nlp.pipe_names
     zshot_component: Zshot = [comp for name, comp in nlp.pipeline if name == 'zshot'][0]
     assert len(zshot_component.entities) == len(EX_ENTITIES)
     assert type(zshot_component.entities[0]) == Entity
+    assert len(zshot_component.mentions) == len(EX_ENTITIES)
+    assert type(zshot_component.mentions[0]) == Entity
 
 
 def test_process_single_document():
