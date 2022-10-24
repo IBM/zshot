@@ -1,4 +1,5 @@
 import os
+import pdb
 import random
 import torch
 from pathlib import Path
@@ -66,6 +67,7 @@ def test(model, best_model_path, testloader):
 
 
 def predict(model, items_to_process, relation_description, batch_size=4):
+    # pdb.set_trace()
     trainset = data_helper.ZSDataset(
         'test', items_to_process, relation_description)
     trainloader = DataLoader(trainset, batch_size=batch_size,

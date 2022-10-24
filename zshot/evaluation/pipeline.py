@@ -1,7 +1,11 @@
+import pdb
+import numpy as np
+
+
 class LinkerPipeline:
     def __init__(self, nlp, batch_size=100):
         self.nlp = nlp
-        self.task = 'token-classification'
+        self.task = "token-classification"
         self.batch_size = batch_size
 
     def __call__(self, *args, **kwargs):
@@ -11,9 +15,11 @@ class LinkerPipeline:
             res_doc = []
             for span in doc._.spans:
                 label = {
-                    'entity': span.label, 'score': span.score,
-                    'word': doc.text[span.start:span.end],
-                    'start': span.start, 'end': span.end
+                    "entity": span.label,
+                    "score": span.score,
+                    "word": doc.text[span.start : span.end],
+                    "start": span.start,
+                    "end": span.end,
                 }
                 res_doc.append(label)
             res.append(res_doc)
@@ -24,7 +30,7 @@ class LinkerPipeline:
 class MentionsExtractorPipeline:
     def __init__(self, nlp, batch_size=100):
         self.nlp = nlp
-        self.task = 'token-classification'
+        self.task = "token-classification"
         self.batch_size = batch_size
 
     def __call__(self, *args, **kwargs):
@@ -34,11 +40,38 @@ class MentionsExtractorPipeline:
             res_doc = []
             for span in doc._.mentions:
                 label = {
-                    'entity': "MENTION",
-                    'word': doc.text[span.start_char:span.end_char],
-                    'start': span.start_char, 'end': span.end_char
+                    "entity": "MENTION",
+                    "word": doc.text[span.start_char : span.end_char],
+                    "start": span.start_char,
+                    "end": span.end_char,
                 }
                 res_doc.append(label)
             res.append(res_doc)
 
+        return res
+
+
+class RelationExtractorPipeline:
+    def __init__(self, nlp, label_mapping, batch_size=100):
+        self.nlp = nlp
+        self.task = "text-classification"
+        self.batch_size = batch_size
+        self.label_mapping = label_mapping
+
+    def __call__(self, *args, **kwargs):
+        res = []
+        # pdb.set_trace()
+        docs = self.nlp.pipe(args[0], batch_size=self.batch_size)
+        for doc in docs:
+            probs = []
+            rels = []
+            for e1, e2, p, rel in doc._.relations:
+                probs.append(p)
+                rels.append(rel)
+            # only allow the prediction of one relation per document
+            # if len(probs) > 1:
+            #     pdb.set_trace()
+            best_idx = np.argmax(probs)
+            rel = rels[best_idx]
+            res.append(self.label_mapping[rel.name])
         return res

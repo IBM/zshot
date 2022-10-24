@@ -1,7 +1,8 @@
+import pdb
 from typing import Dict, List, Union
 
 from datasets import Dataset
-from evaluate import TokenClassificationEvaluator
+from evaluate import TokenClassificationEvaluator, TextClassificationEvaluator
 
 from zshot.utils.alignment_utils import filter_overlapping_spans, AlignmentMode
 from zshot.utils.data_models import Span
@@ -55,3 +56,32 @@ class MentionsExtractorEvaluator(ZeroShotTokenClassificationEvaluator):
                                        for sent in metric_inputs['references']]
 
         return metric_inputs, pipeline_inputs
+
+
+
+class ZeroShotTextClassificationEvaluator(TextClassificationEvaluator):
+    def __init__(self, task="text-classification", default_metric_name='accuracy', label_mapping=None):
+        super().__init__(task, default_metric_name)
+        self.label_mapping = label_mapping
+
+    def predictions_processor(self, predictions: List[List[Dict]], sentences: List[List[str]]):
+        # predictions_pr = []
+        import pdb
+        pdb.set_trace()
+        return {"predictions": predictions}
+
+    def prepare_pipeline(
+            self,
+            model_or_pipeline,  # noqa: F821
+            tokenizer=None,  # noqa: F821
+            feature_extractor=None,  # noqa: F821
+            device: int = None,
+    ):
+        # pdb.set_trace()
+        pipe = super(TextClassificationEvaluator, self).prepare_pipeline(model_or_pipeline)
+        return pipe
+
+
+class RelationExtractorEvaluator(ZeroShotTextClassificationEvaluator):
+    def __init__(self):
+        return

@@ -1,3 +1,4 @@
+import pdb
 import torch
 import numpy as np
 from torch.utils.data import Dataset
@@ -100,7 +101,9 @@ class ZSDataset(Dataset):
 
 
 def create_mini_batch_fewrel_aio(samples):
-    samples = [samples]
+    # pdb.set_trace()
+    if len(samples[0]) != 5:
+        samples = [samples]
     tokens_tensors = [s[0] for s in samples]
     segments_tensors = [s[1] for s in samples]
     marked_e1 = [s[2] for s in samples]

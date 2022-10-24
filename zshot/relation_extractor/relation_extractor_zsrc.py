@@ -22,7 +22,7 @@ class RelationsExtractorZSRC(RelationsExtractor):
     def extract_relations(self, docs: Iterator[Doc], batch_size=None):
         for doc in docs:
             items_to_process = []
-            for i, e1 in enumerate(doc.ents):
+            for i, e1 in enumerate(doc.ents): # @TODO use doc._.spans
                 for j, e2 in enumerate(doc.ents):
                     if (
                         i == j or (e1, e2) in items_to_process or (e2, e1) in items_to_process
