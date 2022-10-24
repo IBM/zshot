@@ -1,9 +1,11 @@
 from typing import List, Tuple
 
 import torch
+from torch.utils.data import DataLoader
 from transformers import BertTokenizerFast
 
-from zshot.linker.smxm.model import device
+from zshot.utils.models.smxm.data import encode_data, ByDescriptionTaggerDataset, tagger_multiclass_collator
+from zshot.utils.models.smxm.model import device
 from zshot.utils.data_models import Entity
 from zshot.utils.data_models import Span
 
@@ -116,3 +118,32 @@ def get_entities_names_descriptions(
     entity_descriptions = [e.description for e in entities]
 
     return entity_labels, entity_descriptions
+
+
+def smxm_predict(model, tokenizer, sentences, entity_labels, entity_descriptions, batch_size):
+    encoded_data, max_sentence_tokens = encode_data(
+        sentences, entity_labels, entity_descriptions, tokenizer
+    )
+    dataset = ByDescriptionTaggerDataset(encoded_data)
+    dataloader = DataLoader(
+        dataset, batch_size=batch_size, collate_fn=tagger_multiclass_collator
+    )
+
+    preds = []
+    probabilities = []
+    for batch in dataloader:
+        with torch.no_grad():
+            inputs = SmxmInput(*batch)
+            outputs = model(**inputs)
+            probability = (
+                torch.nn.Softmax(dim=-1)(outputs).cpu().numpy().tolist()
+            )
+            probabilities += [p for p in probability]
+            outputs = torch.argmax(outputs, dim=2)
+            preds += outputs.detach().cpu().numpy().tolist()
+
+    span_annotations = predictions_to_span_annotations(
+        sentences, preds, probabilities, entity_labels, tokenizer, max_sentence_tokens
+    )
+
+    return span_annotations

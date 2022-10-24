@@ -4,19 +4,19 @@ import torch
 from spacy.tokens import Doc
 from transformers import BertTokenizerFast
 
-from zshot.linker.linker import Linker
+from zshot.mentions_extractor.mentions_extractor import MentionsExtractor
 from zshot.utils.models.smxm.model import BertTaggerMultiClass, device
 from zshot.utils.models.smxm.utils import (
     get_entities_names_descriptions,
-    smxm_predict
+    smxm_predict,
 )
 from zshot.utils.data_models import Span
 
 MODEL_NAME = "ibm/smxm"
 
 
-class LinkerSMXM(Linker):
-    """ SMXM linker """
+class MentionsExtractorSMXM(MentionsExtractor):
+    """ SMXM Mentions Extractor """
 
     def __init__(self):
         super().__init__()
@@ -27,11 +27,6 @@ class LinkerSMXM(Linker):
 
         self.model = None
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-    @property
-    def is_end2end(self) -> bool:
-        """ SMXM is end2end model"""
-        return True
 
     def load_models(self):
         """ Load SMXM model """
@@ -47,10 +42,10 @@ class LinkerSMXM(Linker):
         :param batch_size: The batch size
         :return: List Spans for each Document in docs
         """
-        if not self._entities:
+        if not self._mentions:
             return []
 
-        entity_labels, entity_descriptions = get_entities_names_descriptions(self._entities)
+        entity_labels, entity_descriptions = get_entities_names_descriptions(self._mentions)
         sentences = [doc.text for doc in docs]
 
         self.load_models()

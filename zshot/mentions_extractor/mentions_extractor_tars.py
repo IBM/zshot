@@ -3,12 +3,12 @@ from typing import Iterator, Optional, Union, List
 
 from spacy.tokens.doc import Doc
 
-from zshot.linker.linker import Linker
+from zshot.mentions_extractor.mentions_extractor import MentionsExtractor
 from zshot.utils.models.tars.utils import tars_predict
 from zshot.utils.data_models import Entity, Span
 
 
-class LinkerTARS(Linker):
+class MentionsExtractorTARS(MentionsExtractor):
     """ TARS end2end Linker """
     def __init__(self, default_entities: Optional[str] = "conll-short"):
         """
@@ -30,29 +30,29 @@ class LinkerTARS(Linker):
         self.model = None
         self.task = None
 
-    def set_kg(self, entities: Iterator[Entity]):
+    def set_kg(self, mentions: Iterator[Entity]):
         """ Set new entities in the model
 
-        :param entities: New entities to use
+        :param mentions: New entities to use
         """
-        old_entities = self._entities
-        super().set_kg(entities)
-        if old_entities != entities:
+        old_entities = self._mentions
+        super().set_kg(mentions)
+        if old_entities != mentions:
             self.flat_entities()
-            self.task = f'zshot.ner.{hash(tuple(self._entities))}'
+            self.task = f'zshot.ner.{hash(tuple(self._mentions))}'
             if not self.model:
                 self.load_models()
             self.model.add_and_switch_to_new_task(self.task,
-                                                  self._entities, label_type='ner')
+                                                  self._mentions, label_type='ner')
 
     def flat_entities(self):
         """ As TARS use only the labels, take just the name of the entities and not the description """
-        if isinstance(self._entities, dict):
-            self._entities = list(self._entities.keys())
-        if isinstance(self._entities, list):
-            self._entities = [e.name if type(e) == Entity else e for e in self._entities]
-        if self._entities is None:
-            self._entities = []
+        if isinstance(self._mentions, dict):
+            self._mentions = list(self._mentions.keys())
+        if isinstance(self._mentions, list):
+            self._mentions = [e.name if type(e) == Entity else e for e in self._mentions]
+        if self._mentions is None:
+            self._mentions = []
 
     def load_models(self):
         """ Load TARS model if its not initialized"""
@@ -60,14 +60,14 @@ class LinkerTARS(Linker):
             from flair.models import TARSTagger
             self.model = TARSTagger.load('tars-ner')
 
-            if not self.entities:
+            if not self.mentions:
                 self.model.switch_to_task(self.default_entities)
                 self.task = self.default_entities
             else:
                 self.flat_entities()
-                self.task = f'zshot.ner.{hash(tuple(self._entities))}'
+                self.task = f'zshot.ner.{hash(tuple(self._mentions))}'
                 self.model.add_and_switch_to_new_task(self.task,
-                                                      self._entities, label_type='ner')
+                                                      self._mentions, label_type='ner')
 
     def predict(self, docs: Iterator[Doc], batch_size: Optional[Union[int, None]] = None) -> List[List[Span]]:
         """

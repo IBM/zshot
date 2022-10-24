@@ -4,8 +4,8 @@ import pkgutil
 import pytest
 import spacy
 
-from zshot import PipelineConfig, Linker
-from zshot.linker import LinkerTARS
+from zshot import PipelineConfig, MentionsExtractor
+from zshot.mentions_extractor import MentionsExtractorTARS
 from zshot.tests.config import EX_DOCS, EX_ENTITIES
 
 OVERLAP_TEXT = "Senator McConnell in addition to this the New York Times editors wrote in reaction to the " \
@@ -25,55 +25,53 @@ def teardown():
 
 
 def test_tars_download():
-    linker = LinkerTARS()
-    linker.load_models()
-    assert isinstance(linker, Linker)
-    del linker.model, linker
+    mentions_extractor = MentionsExtractorTARS()
+    mentions_extractor.load_models()
+    assert isinstance(mentions_extractor, MentionsExtractor)
+    del mentions_extractor
 
 
-def test_tars_end2end_with_entities():
+def test_tars_mentions_extractor_with_entities():
     if not pkgutil.find_loader("flair"):
         return
     nlp = spacy.blank("en")
 
-    config_zshot = PipelineConfig(linker=LinkerTARS(), entities=EX_ENTITIES)
+    config_zshot = PipelineConfig(mentions_extractor=MentionsExtractorTARS(), mentions=EX_ENTITIES)
     nlp.add_pipe("zshot", config=config_zshot, last=True)
     assert "zshot" in nlp.pipe_names
     doc = nlp(EX_DOCS[1])
-    assert doc.ents != ()
-    del nlp.get_pipe('zshot').linker.model, nlp.get_pipe('zshot').linker
+    assert doc._.mentions != ()
     nlp.remove_pipe('zshot')
-    del nlp, config_zshot
+    del doc, nlp
 
 
-def test_tars_end2end_pipeline_with_entities():
+def test_tars_mentions_extractor_pipeline_with_entities():
     if not pkgutil.find_loader("flair"):
         return
     nlp = spacy.blank("en")
 
-    config_zshot = PipelineConfig(linker=LinkerTARS(), entities=EX_ENTITIES)
+    config_zshot = PipelineConfig(mentions_extractor=MentionsExtractorTARS(), mentions=EX_ENTITIES)
     nlp.add_pipe("zshot", config=config_zshot, last=True)
     assert "zshot" in nlp.pipe_names
     docs = [doc for doc in nlp.pipe(EX_DOCS)]
-    assert all(doc.ents != () for doc in docs)
-    del nlp.get_pipe('zshot').linker.model, nlp.get_pipe('zshot').linker
+    assert all(doc._.mentions != () for doc in docs)
     nlp.remove_pipe('zshot')
-    del nlp, config_zshot
+    del docs, nlp
 
 
-def test_tars_end2end_overlap():
+def test_tars_mentions_extractor_overlap():
     if not pkgutil.find_loader("flair"):
         return
     nlp = spacy.blank("en")
 
-    config_zshot = PipelineConfig(linker=LinkerTARS(), entities=["company", "location", "organic compound"])
+    config_zshot = PipelineConfig(mentions_extractor=MentionsExtractorTARS(),
+                                  mentions=["company", "location", "organic compound"])
     nlp.add_pipe("zshot", config=config_zshot, last=True)
     assert "zshot" in nlp.pipe_names
     doc = nlp(OVERLAP_TEXT)
-    assert len(doc.ents) > 0
-    del nlp.get_pipe('zshot').linker.model, nlp.get_pipe('zshot').linker
+    assert len(doc._.mentions) > 0
     nlp.remove_pipe('zshot')
-    del nlp, config_zshot
+    del doc, nlp
 
 
 def test_tars_end2end_incomplete_spans():
@@ -81,11 +79,10 @@ def test_tars_end2end_incomplete_spans():
         return
     nlp = spacy.blank("en")
 
-    config_zshot = PipelineConfig(linker=LinkerTARS())
+    config_zshot = PipelineConfig(mentions_extractor=MentionsExtractorTARS())
     nlp.add_pipe("zshot", config=config_zshot, last=True)
     assert "zshot" in nlp.pipe_names
     doc = nlp(INCOMPLETE_SPANS_TEXT)
-    assert len(doc.ents) > 0
-    del nlp.get_pipe('zshot').linker.model, nlp.get_pipe('zshot').linker
+    assert len(doc._.mentions) > 0
     nlp.remove_pipe('zshot')
-    del nlp, config_zshot
+    del doc, nlp

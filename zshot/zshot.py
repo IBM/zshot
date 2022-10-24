@@ -14,27 +14,31 @@ from zshot.utils.data_models import Entity
 
 
 @Language.factory("zshot", default_config={
+    "mentions": None,
     "entities": None,
     "mentions_extractor": None,
     "linker": None,
     "disable_default_ner": True
 })
 def create_zshot_component(nlp: Language, name: str,
+                           mentions: Optional[Union[List[Entity], str]],
                            entities: Optional[Union[List[Entity], str]],
                            mentions_extractor: Optional[Union[MentionsExtractor, str]],
                            linker: Optional[Union[Linker, str]],
                            disable_default_ner: Optional[bool] = True):
-    return Zshot(nlp, entities, mentions_extractor, linker, disable_default_ner)
+    return Zshot(nlp, mentions, entities, mentions_extractor, linker, disable_default_ner)
 
 
 class Zshot:
 
     def __init__(self, nlp: Language,
+                 mentions,
                  entities,
                  mentions_extractor,
                  linker,
                  disable_default_ner: Optional[bool] = True):
         self.nlp = nlp
+        self.mentions = mentions
         self.entities = entities
         self.mentions_extractor = mentions_extractor
         self.linker = linker
@@ -43,6 +47,10 @@ class Zshot:
 
     def setup(self):
         # Load Entities from registered function ID if provided
+        if isinstance(self.mentions, str):
+            self.mentions = spacy_registry.get(registry_name='misc', func_name=self.mentions)()
+        if isinstance(self.mentions, list) and len(self.mentions) > 0 and isinstance(self.mentions[0], dict):
+            self.mentions = list(map(lambda e: Entity(**e), self.mentions))
         if isinstance(self.entities, str):
             self.entities = spacy_registry.get(registry_name='misc', func_name=self.entities)()
         if isinstance(self.entities, list) and len(self.entities) > 0 and isinstance(self.entities[0], dict):
@@ -97,7 +105,7 @@ class Zshot:
 
     def extracts_mentions(self, docs: Iterator[Doc], batch_size=None):
         if self.mentions_extractor and not (self.linker is not None and self.linker.is_end2end):
-            self.mentions_extractor.set_kg(self.entities)
+            self.mentions_extractor.set_kg(self.mentions)
             self.mentions_extractor.extract_mentions(docs, batch_size=batch_size)
 
     def link_entities(self, docs, batch_size=None):
