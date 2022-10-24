@@ -63,8 +63,8 @@ class ZSDataset(Dataset):
         g = self.data[idx]
         sentence = g[-1]
 
-        e1_span = (g[0].start_char, g[0].end_char)
-        e2_span = (g[1].start_char, g[1].end_char)
+        e1_span = (g[0].start, g[0].end)
+        e2_span = (g[1].start, g[1].end)
         tokens = self.tokenizer.tokenize(sentence, return_offsets_mapping=True)
         encodings = self.tokenizer(sentence, return_offsets_mapping=True)
         # tokens = encodings['input_ids']

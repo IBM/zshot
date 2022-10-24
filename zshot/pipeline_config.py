@@ -1,12 +1,11 @@
-from typing import Optional, Union, Dict, List
+from typing import Optional, Union, List
 
 import spacy
 
-from zshot.relation_extractor.relations_extractor import RelationsExtractor
-from zshot.utils.data_models import Entity
 from zshot.linker import Linker
 from zshot.mentions_extractor import MentionsExtractor
-from zshot.utils.data_models.relation import Relation
+from zshot.relation_extractor import RelationsExtractor
+from zshot.utils.data_models import Entity, Relation
 
 
 class PipelineConfig(dict):
@@ -15,7 +14,7 @@ class PipelineConfig(dict):
                  mentions_extractor: Optional[MentionsExtractor] = None,
                  linker: Optional[Union[Linker, str]] = None,
                  relations_extractor: Optional[Union[RelationsExtractor, str]] = None,
-                 entities: Optional[Union[Dict[str, str], List[Entity], List[str], str]] = None,
+                 entities: Optional[Union[List[Entity], List[str], str]] = None,
                  relations: Optional[Union[List[Relation], str]] = None,
                  disable_default_ner: Optional[bool] = True) -> None:
         config = {}

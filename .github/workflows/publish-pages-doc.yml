@@ -1,0 +1,17 @@
+name: Publish docs via GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - master
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+      - run: pip install mkdocs mkdocs-material mkdocstrings[python] mkdocs-markdownextradata-plugin mdx_include
+      - run: mkdocs gh-deploy --force

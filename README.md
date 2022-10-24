@@ -1,6 +1,6 @@
 <div align="center">
   
-  <img height="170x" src="./docs/img/graph.png" />
+  <img height="170x" src="https://ibm.github.io/zshot/img/graph.png" />
   
   <h1>Zshot</h1>
 
@@ -8,16 +8,20 @@
     <strong>Zero and Few shot named entity & relationships recognition</strong>
   </p>
 
-  <p>
+  <p>    
+    
+<a href="https://ibm.github.io/zshot/"><img alt="Tutorials" src="https://img.shields.io/badge/docs-tutorials-green" /></a>
+<a href="https://pypi.org/project/zshot/"><img src="https://img.shields.io/pypi/v/zshot" /></a>
+<a href="https://pypi.org/project/zshot/"><img src="https://img.shields.io/pypi/dm/zshot" /></a>
+<a href="https://github.com/IBM/zshot/actions/workflows/python-tests.yml"> <img alt="Build" src="https://github.com/IBM/zshot/actions/workflows/python-tests.yml/badge.svg" /></a>
+<a href="https://app.codecov.io/github/ibm/zshot"> <img alt="Build" src="https://codecov.io/github/ibm/zshot/branch/main/graph/badge.svg" /></a>
 
-[![Build Status](https://travis.ibm.com/Dublin-Research-Lab/zshot.svg?token=zSP5krJq4ryG4zqgNyms&branch=master)](https://travis.ibm.com/Dublin-Research-Lab/zshot)
-    <a href="https://pages.github.ibm.com/Dublin-Research-Lab/zshot/"><img alt="Tutorials" src="https://img.shields.io/badge/docs-tutorials-green" /></a>
   </p>
 </div>
 
-**Documentation**: <a href="https://pages.github.ibm.com/Dublin-Research-Lab/zshot" target="_blank">https://pages.github.ibm.com/Dublin-Research-Lab/zshot</a>
+**Documentation**: <a href="https://ibm.github.io/zshot/" target="_blank">https://ibm.github.io/zshot</a>
 
-**Source Code**: <a href="https://github.ibm.com/Dublin-Research-Lab/zshot" target="_blank">https://github.ibm.com/Dublin-Research-Lab/zshot</a>
+**Source Code**: <a href="https://github.com/IBM/zshot" target="_blank">https://github.com/IBM/zshot</a>
 
 
 Zshot is a highly customisable framework for performing Zero and Few shot named entity recognition.
@@ -26,7 +30,7 @@ Can be used to perform:
 
 - **Mentions extraction**: Identify globally relevant mentions or mentions relevant for a given domain 
 - **Wikification**: The task of linking textual mentions to entities in Wikipedia
-- **Zero and Few Shot named entity recognition**: using language description perform NER to generalize to unseen domains (work in progress)
+- **Zero and Few Shot named entity recognition**: using language description perform NER to generalize to unseen domains
 - **Zero and Few Shot named relationship recognition** (work in progress)
 
 ## Requirements
@@ -50,7 +54,7 @@ Can be used to perform:
 <div class="termy">
 
 ```console
-$ pip install -r requirements.txt
+$ pip install zshot
 
 ---> 100%
 ```
@@ -86,7 +90,9 @@ Again, there are 4 **linkers** available currently, 2 of them are *end-to-end* a
 
 ### How to use it
 
-* Create a file `main.py` with:
+* Install requirements: `pip install -r requirements.txt`
+* Install a spacy pipeline to use it for mentions extraction: `python -m spacy download en_core_web_sm`
+* Create a file `main.py` with the pipeline configuration and entities definition (*Wikipedia abstract are usually a good starting point for descriptions*):
 
 ```Python
 import spacy
@@ -151,7 +157,7 @@ Open your browser at <a href="http://127.0.0.1:5000" class="external-link" targe
 
 You will see the annotated sentence:
 
-<img src="./docs/img/annotations.png" />
+<img src="https://ibm.github.io/zshot/img/annotations.png" />
 
 ### How to create a custom component
 

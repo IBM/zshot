@@ -2,13 +2,13 @@ import os
 import pickle as pkl
 import zlib
 from abc import ABC, abstractmethod
-from typing import List, Iterator
+from typing import List, Iterator, Optional, Union
 
 from spacy.tokens import Doc
 from spacy.util import ensure_path
 
-from zshot.utils.data_models import Entity
 from zshot.utils.data_models.relation import Relation
+from zshot.utils.data_models.relation_span import RelationSpan
 
 
 class RelationsExtractor(ABC):
@@ -24,7 +24,7 @@ class RelationsExtractor(ABC):
         self._relations = relations
 
     @property
-    def relations(self) -> List[Entity]:
+    def relations(self) -> List[Relation]:
         return self._relations
 
     def load_models(self):
@@ -35,14 +35,25 @@ class RelationsExtractor(ABC):
         pass
 
     @abstractmethod
-    def extract_relations(self, docs: Iterator[Doc], batch_size=None):
+    def predict(self, docs: Iterator[Doc], batch_size: Optional[Union[int, None]] = None) -> List[List[RelationSpan]]:
+        """
+        Perform the relations extraction.
+        :param docs: A list of spacy Document
+        :param batch_size: The batch size
+        :return: the predicted relations
+        """
+        pass
+
+    def extract_relations(self, docs: Iterator[Doc], batch_size: Optional[Union[int, None]] = None):
         """
         Perform the relations extraction. Call the predict function and add the mentions to the Spacy Doc
         :param docs: A list of spacy Document
         :param batch_size: The batch size
         :return:
         """
-        pass
+        predicted_relations = self.predict(docs, batch_size)
+        for d, preds in zip(docs, predicted_relations):
+            d._.relations = preds
 
     @staticmethod
     def version() -> str:

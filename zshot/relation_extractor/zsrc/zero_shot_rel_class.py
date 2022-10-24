@@ -1,22 +1,19 @@
 import os
 import random
-import torch
-from pathlib import Path
-import numpy as np
-import torch.nn as nn
-from transformers import BertModel, BertPreTrainedModel, BertConfig
-from torch.utils.data import DataLoader
-from zshot.relation_extractor.zsrc import data_helper
-# import urllib.request
-from appdata import AppDataPaths
 
+import numpy as np
+import torch
+import torch.nn as nn
+from torch.utils.data import DataLoader
+from transformers import BertModel, BertPreTrainedModel, BertConfig
+
+from zshot.config import MODELS_CACHE_PATH
+from zshot.relation_extractor.zsrc import data_helper
 from zshot.utils.file_utils import download_file
 
 SEED = 42
 MODEL_REMOTE_URL = 'https://huggingface.co/albep/zsrc/resolve/main/zsrc'
 
-MODELS_CACHE_PATH = os.getenv("MODELS_CACHE_PATH") if "MODELS_CACHE_PATH" in os.environ \
-    else AppDataPaths(f"{Path(__file__).stem}").app_data_path + "/"
 MODEL_PATH = os.path.join(MODELS_CACHE_PATH, 'zsrc')
 
 

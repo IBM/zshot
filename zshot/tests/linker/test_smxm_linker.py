@@ -1,25 +1,30 @@
-import os
+import logging
 import shutil
+from pathlib import Path
 
+import pytest
 import spacy
 
-from zshot import PipelineConfig
-from zshot.config import MODELS_CACHE_PATH
+from zshot import PipelineConfig, Linker
 from zshot.linker import LinkerSMXM
-from zshot.linker.linker_smxm import SMXM_MODEL_FILES_URL, SMXM_MODEL_FOLDER_NAME
-from zshot.linker.smxm.model import BertTaggerMultiClass
-from zshot.linker.smxm.utils import load_model
 from zshot.tests.config import EX_DOCS, EX_ENTITIES
+
+logger = logging.getLogger(__name__)
+
+
+@pytest.fixture(scope="module", autouse=True)
+def teardown():
+    logger.warning("Starting smxm tests")
+    yield True
+    logger.warning("Removing cache")
+    shutil.rmtree(f"{Path.home()}/.cache/huggingface", ignore_errors=True)
+    shutil.rmtree(f"{Path.home()}/.cache/zshot", ignore_errors=True)
 
 
 def test_smxm_download():
-    model_folder_path = os.path.join(MODELS_CACHE_PATH, SMXM_MODEL_FOLDER_NAME)
-    if os.path.exists(model_folder_path):
-        shutil.rmtree(model_folder_path)
-
-    model = load_model(SMXM_MODEL_FILES_URL, MODELS_CACHE_PATH, SMXM_MODEL_FOLDER_NAME)
-
-    assert isinstance(model, BertTaggerMultiClass)
+    linker = LinkerSMXM()
+    linker.load_models()
+    assert isinstance(linker, Linker)
 
 
 def test_smxm_linker():

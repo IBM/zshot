@@ -5,13 +5,12 @@ from evaluate import EvaluationModule
 from prettytable import PrettyTable
 
 from zshot.evaluation import load_medmentions, load_ontonotes
-from zshot.evaluation.dataset.dataset import DatasetWithEntities
 from zshot.evaluation.evaluator import ZeroShotTokenClassificationEvaluator, MentionsExtractorEvaluator
 from zshot.evaluation.pipeline import LinkerPipeline, MentionsExtractorPipeline
 
 
 def evaluate(nlp: spacy.language.Language,
-             datasets: Union[DatasetWithEntities, List[DatasetWithEntities]],
+             datasets: Union[str, List[str]],
              splits: Optional[Union[str, List[str]]] = None,
              metric: Optional[Union[str, EvaluationModule]] = None,
              batch_size: Optional[int] = 16) -> str:
@@ -30,6 +29,9 @@ def evaluate(nlp: spacy.language.Language,
 
     if type(splits) == str:
         splits = [splits]
+
+    if type(datasets) == str:
+        datasets = [datasets]
 
     result = {}
     field_names = ["Metric"]

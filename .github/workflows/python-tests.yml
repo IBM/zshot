@@ -1,0 +1,51 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Python tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+        cache: 'pip' # caching pip dependencies
+    - name: Cache models
+      uses: actions/cache@v3
+      with:
+        key: ${{ runner.os }}-build-models-cache
+        path: |
+          ~/.cache/huggingface
+          ~/.cache/zshot
+          ~/.pytest_cache
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements/devel.txt
+    - name: Lint with flake8
+      run: |
+        flake8 --ignore E501 zshot/
+    - name: Install Spacy pipeline
+      run: |
+        python -m spacy download en_core_web_sm
+    - name: Test with pytest
+      run: |
+        python -m pytest --cov -v --cov-report xml:/home/runner/coverage.xml
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3.1.1
+      with:
+        files: /home/runner/coverage.xml
