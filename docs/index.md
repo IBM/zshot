@@ -1,22 +1,25 @@
 <div align="center">
-  <img height="70px" src="./img/graph.png" />
+  <img height="130px" width="130px" src="./img/graph.png" />
 
   <h1>Zshot</h1>
 
   <p>
     <strong>Zero and Few shot named entity & relationships recognition</strong>
   </p>
+  <p>    
+    
+<a href="https://pages.github.ibm.com/Dublin-Research-Lab/zshot/"><img alt="Tutorials" src="https://img.shields.io/badge/docs-tutorials-green" /></a>
+<a href="https://pypi.org/project/zshot/"><img src="https://img.shields.io/pypi/v/zshot" /></a>
+<a href="https://pypi.org/project/zshot/"><img src="https://img.shields.io/pypi/dm/zshot" /></a>
+<a href="https://github.com/IBM/zshot/actions/workflows/python-tests.yml"> <img alt="Build" src="https://github.com/IBM/zshot/actions/workflows/python-tests.yml/badge.svg" /></a>
+<a href="https://app.codecov.io/github/ibm/zshot"> <img alt="Build" src="https://codecov.io/github/ibm/zshot/branch/main/graph/badge.svg" /></a>
 
-  <p>
-
-<a href="https://travis.ibm.com/Dublin-Research-Lab/zshot.svg?token=zSP5krJq4ryG4zqgNyms&branch=master"> <img alt="Tutorials" src="https://travis.ibm.com/Dublin-Research-Lab/zshot.svg?token=zSP5krJq4ryG4zqgNyms&branch=master" /></a>
-    <a href="https://pages.github.ibm.com/Dublin-Research-Lab/zshot/"> <img alt="Tutorials" src="https://img.shields.io/badge/docs-tutorials-green" /></a>
   </p>
 </div>
 
-**Documentation**: <a href="https://pages.github.ibm.com/Dublin-Research-Lab/zshot" target="_blank">https://pages.github.ibm.com/Dublin-Research-Lab/zshot</a>
+**Documentation**: <a href="https://ibm.github.io/zshot" target="_blank">https://ibm.github.io/zshot</a>
 
-**Source Code**: <a href="https://github.ibm.com/Dublin-Research-Lab/zshot" target="_blank">https://github.ibm.com/Dublin-Research-Lab/zshot</a>
+**Source Code**: <a href="https://github.com/IBM/zshot/" target="_blank">https://github.com/IBM/zshot</a>
 
 
 Zshot is a highly customisable framework for performing Zero and Few shot named entity recognition.
@@ -49,22 +52,12 @@ Can be used to perform:
 <div class="termy">
 
 ```console
-$ pip install -r requirements.txt
+$ pip install zshot
 
 ---> 100%
 ```
 
 </div>
-
-### Install additional dependencies
-
-Install the [transfomers](https://huggingface.co/docs/transformers/index) library to use pre-trained models
-
-```console
-$ pip install transformers
-
----> 100%
-```
 
 
 ## Example: Zero-Shot Entity Recognition

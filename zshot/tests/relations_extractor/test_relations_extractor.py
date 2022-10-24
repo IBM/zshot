@@ -1,22 +1,26 @@
-from typing import Iterator
+from typing import Iterator, Optional, Union, List
 
 import spacy
 from spacy.tokens.doc import Doc
 
-from zshot import PipelineConfig
-from zshot.relation_extractor.relations_extractor import RelationsExtractor
-from zshot.relation_extractor.relation_extractor_zsrc import RelationsExtractorZSRC
+from zshot import PipelineConfig, RelationsExtractor
+from zshot.relation_extractor import RelationsExtractorZSRC
 from zshot.tests.config import EX_DOCS, EX_ENTITIES, EX_RELATIONS
 from zshot.tests.linker.test_linker import DummyLinkerEnd2End
+from zshot.utils.data_models import Relation
+from zshot.utils.data_models.relation_span import RelationSpan
 
 
 class DummyRelationsExtractor(RelationsExtractor):
-    def extract_relations(self, docs: Iterator[Doc], batch_size=None):
+    def predict(self, docs: Iterator[Doc], batch_size: Optional[Union[int, None]] = None) -> List[List[RelationSpan]]:
+        relations_pred = []
         for doc in docs:
-            for e in doc.ents:
-                # TODO: Use Spacy relationships format: https://www.youtube.com/watch?v=8HL-Ap5_Axo
-                # or follow https://github.com/jakelever/kindred
-                doc._.relations += ["test"]
+            relations = []
+            for span in doc._.spans:
+                relations.append(RelationSpan(start=span, end=span,
+                                              relation=Relation(name="rel", description="desc"), score=1))
+            relations_pred.append(relations)
+        return relations_pred
 
 
 def test_dummy_relations_extractor_with_entities_config():

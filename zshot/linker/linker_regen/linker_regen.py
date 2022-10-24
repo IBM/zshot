@@ -8,7 +8,7 @@ from zshot.linker.linker_regen.trie import Trie
 from zshot.linker.linker_regen.utils import create_input
 from zshot.utils.data_models import Entity, Span
 
-MODEL_NAME = "gabriele-picco/regen-disambiguation"
+MODEL_NAME = "ibm/regen-disambiguation"
 
 START_ENT_TOKEN = "[START_ENT]"
 END_ENT_TOKEN = "[END_ENT]"

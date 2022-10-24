@@ -1,4 +1,3 @@
-import zlib
 from pydantic import BaseModel
 
 
@@ -7,5 +6,4 @@ class Relation(BaseModel):
     description: str
 
     def __hash__(self):
-        self_repr = f"{self.__class__.__name__}.{str(self.__dict__)}"
-        return zlib.crc32(self_repr.encode())
+        return hash(self.__repr__())

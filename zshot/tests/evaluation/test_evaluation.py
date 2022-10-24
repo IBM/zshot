@@ -5,6 +5,12 @@ import spacy
 from datasets import Dataset
 from spacy.tokens import Doc
 
+from zshot import PipelineConfig, Linker, MentionsExtractor
+from zshot.evaluation.evaluator import ZeroShotTokenClassificationEvaluator, MentionsExtractorEvaluator
+from zshot.evaluation.pipeline import LinkerPipeline, MentionsExtractorPipeline
+from zshot.utils.alignment_utils import AlignmentMode
+from zshot.utils.data_models import Entity, Span
+from zshot.utils.data_models.relation import Relation
 from zshot import PipelineConfig, Linker
 from zshot.evaluation.dataset.fewrel.fewrel import get_few_rel_data
 from zshot.evaluation.evaluator import (
@@ -13,9 +19,6 @@ from zshot.evaluation.evaluator import (
 )
 from zshot.evaluation.pipeline import LinkerPipeline, RelationExtractorPipeline
 from zshot.relation_extractor.relation_extractor_zsrc import RelationsExtractorZSRC
-from zshot.utils.alignment_utils import AlignmentMode
-from zshot.utils.data_models import Entity, Span
-from zshot.utils.data_models.relation import Relation
 
 ENTITIES = [
     Entity(name="FAC", description="A facility"),
@@ -46,7 +49,6 @@ class DummyLinker(Linker):
 
         return sentences
 
-
 class DummyLinkerEnd2EndForEval(Linker):
     @property
     def is_end2end(self) -> bool:
@@ -65,8 +67,26 @@ class DummyLinkerEnd2EndForEval(Linker):
             )
         return rval
 
+class DummyMentionsExtractor(MentionsExtractor):
 
-def get_pipe(predictions: List[Tuple[str, str, float]]):
+    def __init__(self, predictions: List[Tuple[str, str, float]]):
+        super().__init__()
+        self.predictions = predictions
+
+    def predict(self, docs: Iterator[Doc], batch_size=None):
+        sentences = []
+        for doc in docs:
+            preds = []
+            for span, label, score in self.predictions:
+                if span in doc.text:
+                    preds.append(
+                        Span(doc.text.find(span), doc.text.find(span) + len(span), label="MENTION", score=score))
+            sentences.append(preds)
+
+        return sentences
+
+
+def get_linker_pipe(predictions: List[Tuple[str, str, float]]):
     nlp = spacy.blank("en")
     nlp_config = PipelineConfig(linker=DummyLinker(predictions), entities=ENTITIES)
 
@@ -74,6 +94,17 @@ def get_pipe(predictions: List[Tuple[str, str, float]]):
 
     return LinkerPipeline(nlp)
 
+
+def get_mentions_extractor_pipe(predictions: List[Tuple[str, str, float]]):
+    nlp = spacy.blank("en")
+    nlp_config = PipelineConfig(
+        mentions_extractor=DummyMentionsExtractor(predictions),
+        entities=ENTITIES
+    )
+
+    nlp.add_pipe("zshot", config=nlp_config, last=True)
+
+    return MentionsExtractorPipeline(nlp)
 
 def get_relation_extraction_pipeline(predictions, relations, label_mapping):
     nlp = spacy.blank("en")
@@ -84,7 +115,6 @@ def get_relation_extraction_pipeline(predictions, relations, label_mapping):
     )  # [Relation(name="part_of", description="is an instance of something or part of it"), Relation(name="is_in", description="located in, based in"),],)
     nlp.add_pipe("zshot", config=nlp_config, last=True)
     return RelationExtractorPipeline(nlp, label_mapping=label_mapping)
-
 
 def get_spans_predictions(span: str, label: str, sentence: str):
     return [
@@ -127,9 +157,7 @@ class TestZeroShotTokenClassificationEvaluation:
         dataset = get_dataset(gt, sentences)
 
         custom_evaluator = ZeroShotTokenClassificationEvaluator("token-classification")
-        metrics = custom_evaluator.compute(
-            get_pipe([("New York", "FAC", 1)]), dataset, "seqeval"
-        )
+        metrics = custom_evaluator.compute(get_linker_pipe([('New York', 'FAC', 1)]), dataset, metric="seqeval")
 
         assert float(metrics["overall_precision"]) == 1.0
         assert float(metrics["overall_precision"]) == 1.0
@@ -143,9 +171,8 @@ class TestZeroShotTokenClassificationEvaluation:
         dataset = get_dataset(gt, sentences)
 
         custom_evaluator = ZeroShotTokenClassificationEvaluator("token-classification")
-        metrics = custom_evaluator.compute(
-            get_pipe([("New York", "FAC", 1), ("York", "LOC", 0.7)]), dataset, "seqeval"
-        )
+        metrics = custom_evaluator.compute(get_linker_pipe([('New York', 'FAC', 1), ('York', 'LOC', 0.7)]), dataset,
+                                           metric="seqeval")
 
         assert float(metrics["overall_precision"]) == 1.0
         assert float(metrics["overall_precision"]) == 1.0
@@ -158,11 +185,10 @@ class TestZeroShotTokenClassificationEvaluation:
 
         dataset = get_dataset(gt, sentences)
 
-        custom_evaluator = ZeroShotTokenClassificationEvaluator(
-            "token-classification", alignment_mode=AlignmentMode.expand
-        )
-        pipe = get_pipe([("New Yo", "FAC", 1)])
-        metrics = custom_evaluator.compute(pipe, dataset, "seqeval")
+        custom_evaluator = ZeroShotTokenClassificationEvaluator("token-classification",
+                                                                alignment_mode=AlignmentMode.expand)
+        pipe = get_linker_pipe([('New Yo', 'FAC', 1)])
+        metrics = custom_evaluator.compute(pipe, dataset, metric="seqeval")
 
         assert float(metrics["overall_precision"]) == 1.0
         assert float(metrics["overall_precision"]) == 1.0
@@ -175,11 +201,10 @@ class TestZeroShotTokenClassificationEvaluation:
 
         dataset = get_dataset(gt, sentences)
 
-        custom_evaluator = ZeroShotTokenClassificationEvaluator(
-            "token-classification", alignment_mode=AlignmentMode.contract
-        )
-        pipe = get_pipe([("New York i", "FAC", 1)])
-        metrics = custom_evaluator.compute(pipe, dataset, "seqeval")
+        custom_evaluator = ZeroShotTokenClassificationEvaluator("token-classification",
+                                                                alignment_mode=AlignmentMode.contract)
+        pipe = get_linker_pipe([('New York i', 'FAC', 1)])
+        metrics = custom_evaluator.compute(pipe, dataset, metric="seqeval")
 
         assert float(metrics["overall_precision"]) == 1.0
         assert float(metrics["overall_precision"]) == 1.0
@@ -192,11 +217,73 @@ class TestZeroShotTokenClassificationEvaluation:
 
         dataset = get_dataset(gt, sentences)
 
-        custom_evaluator = ZeroShotTokenClassificationEvaluator(
-            "token-classification", alignment_mode=AlignmentMode.contract
-        )
-        pipe = get_pipe([("New York i", "FAC", 1), ("w York", "LOC", 0.7)])
-        metrics = custom_evaluator.compute(pipe, dataset, "seqeval")
+        custom_evaluator = ZeroShotTokenClassificationEvaluator("token-classification",
+                                                                alignment_mode=AlignmentMode.contract)
+        pipe = get_linker_pipe([('New York i', 'FAC', 1), ('w York', 'LOC', 0.7)])
+        metrics = custom_evaluator.compute(pipe, dataset, metric="seqeval")
+
+        assert float(metrics["overall_precision"]) == 1.0
+        assert float(metrics["overall_precision"]) == 1.0
+        assert float(metrics["overall_f1"]) == 1.0
+        assert float(metrics["overall_accuracy"]) == 1.0
+
+
+class TestMentionsExtractorEvaluator:
+
+    def test_prepare_data(self):
+        sentences = ['New York is beautiful']
+        gt = [['B-FAC', 'I-FAC', 'O', 'O']]
+        processed_gt = [['B-MENTION', 'I-MENTION', 'O', 'O']]
+
+        dataset = get_dataset(gt, sentences)
+
+        custom_evaluator = MentionsExtractorEvaluator("token-classification")
+
+        preds = custom_evaluator.prepare_data(dataset,
+                                              input_column="tokens", label_column="ner_tags",
+                                              join_by=" ")
+        assert preds[0]['references'] == processed_gt
+
+    def test_prediction_token_based_evaluation_all_matching(self):
+        sentences = ['New York is beautiful']
+        gt = [['B-FAC', 'I-FAC', 'O', 'O']]
+
+        dataset = get_dataset(gt, sentences)
+
+        custom_evaluator = MentionsExtractorEvaluator("token-classification")
+        metrics = custom_evaluator.compute(get_mentions_extractor_pipe([('New York', 'FAC', 1)]), dataset,
+                                           metric="seqeval")
+
+        assert float(metrics["overall_precision"]) == 1.0
+        assert float(metrics["overall_precision"]) == 1.0
+        assert float(metrics["overall_f1"]) == 1.0
+        assert float(metrics["overall_accuracy"]) == 1.0
+
+    def test_prediction_token_based_evaluation_overlapping_spans(self):
+        sentences = ['New York is beautiful']
+        gt = [['B-FAC', 'I-FAC', 'O', 'O']]
+
+        dataset = get_dataset(gt, sentences)
+
+        custom_evaluator = MentionsExtractorEvaluator("token-classification")
+        metrics = custom_evaluator.compute(get_mentions_extractor_pipe([('New York', 'FAC', 1), ('York', 'LOC', 0.7)]),
+                                           dataset, metric="seqeval")
+
+        assert float(metrics["overall_precision"]) == 1.0
+        assert float(metrics["overall_precision"]) == 1.0
+        assert float(metrics["overall_f1"]) == 1.0
+        assert float(metrics["overall_accuracy"]) == 1.0
+
+    def test_prediction_token_based_evaluation_partial_match_spans_expand(self):
+        sentences = ['New York is beautiful']
+        gt = [['B-FAC', 'I-FAC', 'O', 'O']]
+
+        dataset = get_dataset(gt, sentences)
+
+        custom_evaluator = MentionsExtractorEvaluator("token-classification",
+                                                      alignment_mode=AlignmentMode.expand)
+        pipe = get_mentions_extractor_pipe([('New Yo', 'FAC', 1)])
+        metrics = custom_evaluator.compute(pipe, dataset, metric="seqeval")
 
         assert float(metrics["overall_precision"]) == 1.0
         assert float(metrics["overall_precision"]) == 1.0

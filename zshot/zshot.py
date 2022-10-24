@@ -1,19 +1,17 @@
 import json
 import logging
 import os
-from typing import Dict, Optional, List, Union, Iterator
+from typing import Optional, List, Union, Iterator
 
-from catalogue import RegistryError
 from spacy.language import Language
 from spacy.tokens import Doc
 from spacy.util import registry as spacy_registry, ensure_path
 
-from zshot.relation_extractor.relations_extractor import RelationsExtractor
-from zshot.utils.data_models import Entity
 from zshot.linker import Linker
 from zshot.mentions_extractor import MentionsExtractor
 from zshot.pipeline_config import PipelineConfig
-from zshot.utils.data_models.relation import Relation
+from zshot.relation_extractor import RelationsExtractor
+from zshot.utils.data_models import Entity, Relation
 
 
 @Language.factory("zshot", default_config={
@@ -25,13 +23,13 @@ from zshot.utils.data_models.relation import Relation
     "disable_default_ner": True
 })
 def create_zshot_component(nlp: Language, name: str,
-                           entities: Optional[Union[Dict[str, str], List[Entity], str]],
+                           entities: Optional[Union[List[Entity], str]],
                            relations: Optional[Union[List[Relation], str]],
                            mentions_extractor: Optional[Union[MentionsExtractor, str]],
-                           relations_extractor: Optional[Union[RelationsExtractor, str]],
                            linker: Optional[Union[Linker, str]],
+                           relations_extractor: Optional[Union[RelationsExtractor, str]],
                            disable_default_ner: Optional[bool] = True):
-    return Zshot(nlp, entities, relations, relations_extractor, mentions_extractor, linker, disable_default_ner)
+    return Zshot(nlp, entities, relations, mentions_extractor, linker, relations_extractor, disable_default_ner)
 
 
 class Zshot:
@@ -39,63 +37,40 @@ class Zshot:
     def __init__(self, nlp: Language,
                  entities,
                  relations,
-                 relations_extractor,
                  mentions_extractor,
                  linker,
+                 relations_extractor,
                  disable_default_ner: Optional[bool] = True):
         self.nlp = nlp
         self.entities = entities
         self.relations = relations
-        self.relations_extractor = relations_extractor
         self.mentions_extractor = mentions_extractor
         self.linker = linker
+        self.relations_extractor = relations_extractor
         self.disable_default_ner = disable_default_ner
         self.setup()
 
     def setup(self):
         # Load Entities from registered function ID if provided
         if isinstance(self.entities, str):
-            try:
-                self.entities = spacy_registry.get(registry_name='misc', func_name=self.entities)()
-            except RegistryError:
-                logging.warning(f"Missing entities: {self.entities}")
-                self.entities = None
+            self.entities = spacy_registry.get(registry_name='misc', func_name=self.entities)()
         if isinstance(self.entities, list) and len(self.entities) > 0 and isinstance(self.entities[0], dict):
             self.entities = list(map(lambda e: Entity(**e), self.entities))
-        elif isinstance(self.entities, dict):
-            self.entities = [Entity(name=name, description=description) for name, description in self.entities.items()]
 
+        # Load Relations from registered function ID if provided
         if isinstance(self.relations, str):
-            try:
-                self.relations = spacy_registry.get(registry_name='misc', func_name=self.relations)()
-            except RegistryError:
-                logging.warning(f"Missing relations: {self.relations}")
-                self.relations = None
-        if isinstance(self.relations, list) and len(self.relations) > 0 and isinstance(self.relations[0], dict):
-            self.relations = list(map(lambda r: Relation(**r), self.relations))
-        elif isinstance(self.relations, dict):
-            self.relations = [Relation(name=name, description=description) for name, description in self.relations.items()]
+            self.relations = spacy_registry.get(registry_name='misc', func_name=self.relations)()
 
         # Load Mention Extractor from registered function ID if provided
         if isinstance(self.mentions_extractor, str):
-            try:
-                self.mentions_extractor = spacy_registry.get(registry_name='misc', func_name=self.mentions_extractor)()
-            except RegistryError:
-                self.mentions_extractor = None
+            self.mentions_extractor = spacy_registry.get(registry_name='misc', func_name=self.mentions_extractor)()
 
         # Load Linker from registered function ID if provided
         if isinstance(self.linker, str):
-            try:
-                self.linker = spacy_registry.get(registry_name='misc', func_name=self.linker)()
-            except RegistryError:
-                self.linker = None
+            self.linker = spacy_registry.get(registry_name='misc', func_name=self.linker)()
 
-        # Load Relations Extractor from registered function ID if provided
         if isinstance(self.relations_extractor, str):
-            try:
-                self.relations_extractor = spacy_registry.get(registry_name='misc', func_name=self.relations_extractor)()
-            except RegistryError:
-                self.relations_extractor = None
+            self.relations_extractor = spacy_registry.get(registry_name='misc', func_name=self.relations_extractor)()
 
         if self.mentions_extractor and self.mentions_extractor.require_existing_ner \
                 and "ner" not in self.nlp.pipe_names:
@@ -116,11 +91,11 @@ class Zshot:
         if not Doc.has_extension("mentions"):
             Doc.set_extension("mentions", default=[])
 
-        if not Doc.has_extension("relations"):
-            Doc.set_extension("relations", default=[])
-
         if not Doc.has_extension("spans"):
             Doc.set_extension("spans", default=[])
+
+        if not Doc.has_extension("relations"):
+            Doc.set_extension("relations", default=[])
 
     def __call__(self, doc: Doc) -> Doc:
         # Add the matched spans when doc is processed
