@@ -1,12 +1,11 @@
 import os
-import pdb
 import random
 
 import numpy as np
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
-from transformers import BertModel, BertPreTrainedModel, BertConfig
+from transformers import BertConfig, BertModel, BertPreTrainedModel
 
 from zshot.config import MODELS_CACHE_PATH
 from zshot.relation_extractor.zsrc import data_helper
