@@ -110,6 +110,8 @@ def test_call_pipe_with_pipeline_configuration():
     assert type(zshot_component.entities[0]) == Entity
     assert len(zshot_component.mentions) == len(EX_ENTITIES)
     assert type(zshot_component.mentions[0]) == Entity
+    assert len(zshot_component.mentions) == len(EX_ENTITIES)
+    assert type(zshot_component.mentions[0]) == Entity
 
 
 def test_process_single_document():
