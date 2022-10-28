@@ -1,3 +1,4 @@
+import random
 from typing import Optional, Union, List
 
 import spacy
@@ -41,7 +42,8 @@ class PipelineConfig(dict):
     @staticmethod
     def param(param) -> str:
         if isinstance(param, list):
-            instance_hash = hash(hash(param[0]) + hash(param[-1]))
+            params_to_hash = random.sample(param, k=min(len(param), 10))
+            instance_hash = hash(sum([hash(param_to_hash) for param_to_hash in params_to_hash]))
         else:
             instance_hash = hash(param)
 
