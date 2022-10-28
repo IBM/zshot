@@ -51,10 +51,14 @@ class Zshot:
             self.mentions = spacy_registry.get(registry_name='misc', func_name=self.mentions)()
         if isinstance(self.mentions, list) and len(self.mentions) > 0 and isinstance(self.mentions[0], dict):
             self.mentions = list(map(lambda e: Entity(**e), self.mentions))
+        if isinstance(self.mentions, list) and len(self.mentions) > 0 and isinstance(self.mentions[0], str):
+            self.mentions = list(map(lambda e: Entity(name=e, description=""), self.mentions))
         if isinstance(self.entities, str):
             self.entities = spacy_registry.get(registry_name='misc', func_name=self.entities)()
         if isinstance(self.entities, list) and len(self.entities) > 0 and isinstance(self.entities[0], dict):
             self.entities = list(map(lambda e: Entity(**e), self.entities))
+        if isinstance(self.entities, list) and len(self.entities) > 0 and isinstance(self.entities[0], str):
+            self.entities = list(map(lambda e: Entity(name=e, description=""), self.entities))
 
         # Load Mention Extractor from registered function ID if provided
         if isinstance(self.mentions_extractor, str):
