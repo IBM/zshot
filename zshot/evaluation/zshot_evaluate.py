@@ -1,10 +1,10 @@
 from typing import Optional, List, Union
 
 import spacy
+from datasets import Dataset, NamedSplit
 from evaluate import EvaluationModule
 from prettytable import PrettyTable
 
-from zshot.evaluation import load_medmentions, load_ontonotes
 from zshot.evaluation.evaluator import (
     ZeroShotTokenClassificationEvaluator,
     MentionsExtractorEvaluator,
@@ -14,8 +14,8 @@ from zshot.evaluation.pipeline import LinkerPipeline, MentionsExtractorPipeline
 
 def evaluate(
     nlp: spacy.language.Language,
-    datasets: Union[str, List[str]],
-    splits: Optional[Union[str, List[str]]] = None,
+    datasets: Union[Dataset, List[Dataset]],
+    splits: Optional[Union[NamedSplit, List[NamedSplit]]] = None,
     metric: Optional[Union[str, EvaluationModule]] = None,
     batch_size: Optional[int] = 16,
 ) -> str:
@@ -32,22 +32,17 @@ def evaluate(
     linker_evaluator = ZeroShotTokenClassificationEvaluator("token-classification")
     mentions_extractor_evaluator = MentionsExtractorEvaluator("token-classification")
 
-    if type(splits) == str:
+    if not isinstance(splits, list):
         splits = [splits]
 
-    if type(datasets) == str:
+    if not isinstance(datasets, list):
         datasets = [datasets]
 
     result = {}
     field_names = ["Metric"]
-    for dataset_name in datasets:
-        if dataset_name.lower() == "medmentions":
-            dataset = load_medmentions()
-        else:
-            dataset = load_ontonotes()
-
+    for dataset in datasets:
         for split in splits:
-            field_name = f"{dataset_name} {split}"
+            field_name = f"{dataset.description} {split}"
             field_names.append(field_name)
             nlp.get_pipe("zshot").entities = dataset[split].entities
             if nlp.get_pipe("zshot").linker:
@@ -61,7 +56,6 @@ def evaluate(
                         }
                     }
                 )
-            # TODO: Add support for mentions_extractor pipelines and evaluation
             if nlp.get_pipe("zshot").mentions_extractor:
                 pipe = MentionsExtractorPipeline(nlp, batch_size)
                 result.update(

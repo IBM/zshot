@@ -38,7 +38,6 @@ IOB2
 IOE1
 IOE2
 IOBES
-See the [README.md] file at https://github.com/chakki-works/seqeval for more information.
 """
 
 _KWARGS_DESCRIPTION = """
