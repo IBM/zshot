@@ -123,4 +123,4 @@ TPL_SCRIPT = """
         positionArc(arcs[i])
     }
 </script>
-"""
+"""  # noqa

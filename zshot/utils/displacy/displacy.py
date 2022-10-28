@@ -60,7 +60,7 @@ class displacy:
                 try:
                     httpd.serve_forever()
                 except KeyboardInterrupt:
-                    print(f"Shutting down server on port 9777.")
+                    print("Shutting down server on port 9777.")
                 finally:
                     httpd.server_close()
             return html

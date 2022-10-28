@@ -34,4 +34,3 @@ def test_displacy_rel_style():
     assert "displacy-token" in html
     assert "displacy-tag" in html
     assert "displacy-arrow" in html
-

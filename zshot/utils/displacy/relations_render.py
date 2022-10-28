@@ -74,7 +74,7 @@ class RelationsRenderer:
         self.lang = DEFAULT_LANG
 
     def render(
-        self, parsed: List[Dict[str, Any]], page: bool = False, minify: bool = False
+            self, parsed: List[Dict[str, Any]], page: bool = False, minify: bool = False
     ) -> str:
         """Render complete markup.
 
@@ -107,10 +107,10 @@ class RelationsRenderer:
         return markup
 
     def render_svg(
-        self,
-        render_id: Union[int, str],
-        words: List[Dict[str, Any]],
-        arcs: List[Dict[str, Any]],
+            self,
+            render_id: Union[int, str],
+            words: List[Dict[str, Any]],
+            arcs: List[Dict[str, Any]],
     ) -> str:
         """Render SVG.
 
@@ -130,7 +130,7 @@ class RelationsRenderer:
             for i, w in enumerate(words)
         ]
         arcs_svg = [
-            self.render_arrow(a["label"], a["start"], a["end"], a["dir"],  a["score"], i)
+            self.render_arrow(a["label"], a["start"], a["end"], a["dir"], a["score"], i)
             for i, a in enumerate(arcs)
         ]
         content = "".join(words_svg) + "".join(arcs_svg)
@@ -161,10 +161,12 @@ class RelationsRenderer:
         if self.direction == "rtl":
             x = self.width - x
         html_text = escape_html(text)
-        return TPL_REL_WORDS.format(text=html_text, tag=tag + (" ({:.1f})".format(score) if score and self.score else ""), x=x, y=y, id=i, bg=color)
+        return TPL_REL_WORDS.format(text=html_text,
+                                    tag=tag + (" ({:.1f})".format(score) if score and self.score else ""), x=x, y=y,
+                                    id=i, bg=color)
 
     def render_arrow(
-        self, label: str, start: int, end: int, direction: str, score: float, i: int
+            self, label: str, start: int, end: int, direction: str, score: float, i: int
     ) -> str:
         """Render individual arrow.
 
@@ -183,12 +185,8 @@ class RelationsRenderer:
         if self.direction == "rtl":
             x_start = self.width - x_start
         y = self.offset_y
-        x_end = (
-            self.offset_x
-            + (end - start) * self.distance
-            + start * self.distance
-            - self.arrow_spacing * (self.highest_level - level) / 4
-        )
+        x_end = (self.offset_x + (end - start) * self.distance + start * self.
+                 distance - self.arrow_spacing * (self.highest_level - level) / 4)
         if self.direction == "rtl":
             x_end = self.width - x_end
         y_curve = self.offset_y - level * self.distance / 2
@@ -250,7 +248,7 @@ class RelationsRenderer:
         max_level = [0] * length
         levels = {}
         for arc in sorted(arcs, key=lambda arc: arc["end"] - arc["start"]):
-            level = max(max_level[arc["start"] : arc["end"]]) + 1
+            level = max(max_level[arc["start"]: arc["end"]]) + 1
             for i in range(arc["start"], arc["end"]):
                 max_level[i] = level
             levels[(arc["start"], arc["end"], arc["label"])] = level
