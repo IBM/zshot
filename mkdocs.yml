@@ -13,12 +13,14 @@ nav:
       - mentions_extractor.md
       - spacy_mentions_extractor.md
       - flair_mentions_extractor.md
+      - smxm_mentions_extractor.md
+      - tars_mentions_extractor.md
   - Entity Linking:
     - entity_linking.md
     - blink.md
     - regen.md
-    - smxm.md
-    - tars.md
+    - smxm_linker.md
+    - tars_linker.md
 
 markdown_extensions:
   - attr_list
