@@ -13,7 +13,8 @@ from spacy.tokens import Doc
 from spacy import displacy
 
 from zshot.utils.data_models import Entity, Span
-from zshot.mentions_extractor import MentionsExtractor, MentionsExtractorSpacy, MentionsExtractorFlair
+from zshot.mentions_extractor import (MentionsExtractor, MentionsExtractorSpacy, MentionsExtractorFlair, 
+                                      MentionsExtractorTARS, MentionsExtractorSMXM)
 from zshot.mentions_extractor.utils import ExtractorType
 from zshot.linker import Linker, LinkerSMXM, LinkerTARS, LinkerBlink
 from zshot import PipelineConfig
@@ -101,23 +102,51 @@ entities = [
 
 The `mentions_extractor` is the component that will extract broad mentions without a specific `entity` assigned. 
 
-Currently, 2 different `mentions_extractor` are provided:
+Currently, 4 different `mentions_extractor` are provided:
 
  - `MentionsExtractorSpacy`
  - `MentionsExtractorFlair`
+ - `MentionsExtractorSMXM`
+ - `MentionsExtractorTARS`
   
-To create a `mentions_extractor` just instantiate the class with the version to be used. There are two different versions for each `mentions_extractor`:
+To create a `mentions_extractor` just instantiate the class with the version to be used. There are two different versions for the *SpaCy* and *Flair* `mentions_extractor`:
 
   - NER-Based: Will use a NER model to extract the mentions. 
   - POS-Based: Will use PoS tagging to extract the mentions.
   
 You can obtain them from the `ExtractorType`.
 
-
 ```python
+# Using Spacy NER Mentions Extractor
 mentions_extractor = MentionsExtractorSpacy(ExtractorType.NER)
+# Using Spacy PoS Mentions Extractor
+mentions_extractor = MentionsExtractorSpacy(ExtractorType.POS)
+# Using Flair NER Mentions Extractor
+mentions_extractor = MentionsExtractorFlair(ExtractorType.NER)
+# Using Flair PoS Mentions Extractor
+mentions_extractor = MentionsExtractorFlair(ExtractorType.POS)
 ```
 
+The `MentionsExtractorSMXM` will use *descriptions* of the mentions to extract them. See[this](https://github.com/Raldir/Zero-shot-NERC)
+
+The `MentionsExtractorTARS` will use the *labels* of the mentions to extract them. See [this](https://github.com/flairNLP/flair/blob/master/resources/docs/TUTORIAL_10_TRAINING_ZERO_SHOT_MODEL.md)
+
+Both `MentionsExtractorSMXM` and `MentionsExtractorTARS` will use the *mentions* specified in the `zshot.PipelineConfig`, which is a list of `zshot.data_models.Entity`:
+
+```python
+nlp = spacy.blank("en")
+
+nlp_config = PipelineConfig(
+    mentions_extractor=MentionsExtractorSMXM(),
+    mentions=[
+        Entity(name="company", description="The name of a company"),
+        Entity(name="location", description="A physical location"),
+        Entity(name="chemical compound", description="Any of a large class of chemical compounds in which one or more atoms of carbon are covalently linked to atoms of other elements, most commonly hydrogen, oxygen, or nitrogen")
+    ]
+)
+nlp.add_pipe("zshot", config=nlp_config, last=True)
+
+```
 #### Select Linker
 
 The `linker` is the component that will link the extracted mentions to a specific `entity`. Some of them are `end2end`, this is, they don't need and won't use the `mentions_extractor`. 
@@ -147,7 +176,7 @@ config = PipelineConfig(
 )
 ```
 
-Or you can create everythin on the fly:
+Or you can create everything on the fly:
 
 
 ```python
@@ -226,7 +255,7 @@ If you don't like the gray color of displacy, or you want different colors for e
 
 
 ```python
-from zshot.utils.displacy import displacy
+from zshot import displacy
 ```
 
 

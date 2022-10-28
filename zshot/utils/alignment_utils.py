@@ -90,7 +90,7 @@ def filter_overlapping_spans(spans: List[Span], tokens: List[str],
             filtered_spans[idx], filtered_spans[idx - 1] = filtered_spans[idx - 1], None
         else:
             filtered_spans[idx] = Span(start=tokens_offsets[idx][0], end=tokens_offsets[idx][1],
-                                       label=best_span.label, kb_id=best_span.kb_id, score=best_span.score)
+                                       label=best_span.label, kb_id=best_span.kb_id)
             bio_token[idx] = f"B-{filtered_spans[idx].label}"
 
     filtered_spans = list(filter(None, filtered_spans))

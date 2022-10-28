@@ -16,18 +16,18 @@ from zshot.utils.data_models import Span
 class MentionsExtractor(ABC):
 
     def __init__(self):
-        self._entities = None
+        self._mentions = None
 
-    def set_kg(self, entities: Iterator[Entity]):
+    def set_kg(self, mentions: Iterator[Entity]):
         """
         Set entities that mention extractor can use
-        :param entities: The list of entities
+        :param mentions: The list of entities
         """
-        self._entities = entities
+        self._mentions = mentions
 
     @property
-    def entities(self) -> List[Entity]:
-        return self._entities
+    def mentions(self) -> List[Entity]:
+        return self._mentions
 
     def load_models(self):
         """
@@ -45,17 +45,9 @@ class MentionsExtractor(ABC):
         """
         predictions_spans = self.predict(docs, batch_size)
         for doc, doc_preds in zip(docs, predictions_spans):
-            doc_pred_spans = [
-                doc.char_span(
-                    pred.start,
-                    pred.end,
-                    alignment_mode="expand"
-                )
-                for pred in doc_preds
-            ]
-            for span in doc_pred_spans:
+            for pred in doc_preds:
                 try:
-                    doc._.mentions += (span,)
+                    doc._.mentions += (pred,)
                 except TypeError or ValueError:
                     warnings.warn("Entity couldn't be added.")
 
