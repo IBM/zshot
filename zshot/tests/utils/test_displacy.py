@@ -20,8 +20,10 @@ def test_displacy_rel_style():
     spans = [Span(0, 43, "IBM", -0.007964816875755787), Span(45, 48, "IBM", -0.00017413603200111538),
              Span(56, 64, "American", -5.8533525466918945), Span(119, 125, "Armonk", -2.1522278785705566),
              Span(127, 135, "New York", -2.3538105487823486)]
-    Doc.set_extension("relations", default=[])
-    Doc.set_extension("spans", default=[])
+    if not Doc.has_extension("spans"):
+        Doc.set_extension("spans", default=[])
+    if not Doc.has_extension("relations"):
+        Doc.set_extension("relations", default=[])
     doc._.relations = relations
     doc._.spans = spans
     html = displacy.render(doc, style="rel")
