@@ -1,7 +1,7 @@
 import zlib
 
 
-def color_from_label(label: str):
+def light_color_from_label(label: str):
     channel_min = 100
     hash_s = zlib.crc32(label.encode())
     r = ((hash_s & 0xFF0000) >> 16) % (255 - channel_min) + channel_min

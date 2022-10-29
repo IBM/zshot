@@ -7,7 +7,7 @@ from spacy.displacy.templates import TPL_FIGURE, TPL_DEP_SVG
 from spacy.tokens import Doc
 from spacy.util import minify_html, escape_html
 from zshot.utils.alignment_utils import filter_overlapping_spans, spacy_token_offsets
-from zshot.utils.displacy.colors import color_from_label
+from zshot.utils.displacy.colors import light_color_from_label
 
 from zshot.utils.displacy.templates import TPL_REL_WORDS, TPL_SCRIPT, TPL_PAGE, TPL_REL_ARCS
 
@@ -34,7 +34,7 @@ def parse_rels(doc: Doc) -> Dict:
             'text': doc.text[start:end],
             'tag': span.label if span else "",
             'score': span.score if span else None,
-            'color': color_from_label(span.label) if span else None
+            'color': light_color_from_label(span.label) if span else None
         }, )
         if span:
             span_map[hash(span)] = idx

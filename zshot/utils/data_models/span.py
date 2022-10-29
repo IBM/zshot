@@ -1,3 +1,5 @@
+import zlib
+
 from spacy.tokens import Doc, Span
 
 
@@ -13,7 +15,7 @@ class Span:
         return f"{self.label}, {self.start}, {self.end}, {self.score}"
 
     def __hash__(self):
-        return hash(self.__repr__())
+        return zlib.crc32(self.__repr__().encode())
 
     def to_spacy_span(self, doc: Doc) -> Span:
         kwargs = {

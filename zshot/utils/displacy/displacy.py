@@ -6,7 +6,7 @@ from spacy.errors import Warnings
 from spacy.tokens import Doc
 from spacy.util import is_in_jupyter
 
-from zshot.utils.displacy.colors import color_from_label
+from zshot.utils.displacy.colors import light_color_from_label
 from zshot.utils.displacy.relations_render import RelationsRenderer, parse_rels
 
 
@@ -21,7 +21,7 @@ def ents_colors(docs: Union[Iterable[Union[Doc]], Doc]):
     if isinstance(docs, Doc):
         docs = [docs]
     labels = set([ent.label_ for doc in docs for ent in doc.ents])
-    colors = dict([(ent, color_from_label(ent)) for ent in labels])
+    colors = dict([(ent, light_color_from_label(ent)) for ent in labels])
     return colors
 
 
