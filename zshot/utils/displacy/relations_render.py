@@ -39,8 +39,17 @@ def parse_rels(doc: Doc) -> Dict:
         if span:
             span_map[hash(span)] = idx
 
-    arcs = [{'start': span_map[hash(r.start)], 'end': span_map[hash(r.end)],
-             'label': r.relation.name, 'dir': 'right', 'score': r.score} for r in doc._.relations]
+    arcs = []
+    for r in doc._.relations:
+        idx_start = span_map[hash(r.start)]
+        idx_end = span_map[hash(r.end)]
+        if idx_start <= idx_end:
+            arc = {'start': idx_start, 'end': idx_end,
+                 'label': r.relation.name, 'dir': 'right', 'score': r.score}
+        else:
+            arc = {'end': idx_start, 'start': idx_end,
+                 'label': r.relation.name, 'dir': 'left', 'score': r.score}
+        arcs.append(arc)
 
     return {'words': words,
             'arcs': arcs,
@@ -206,7 +215,8 @@ class RelationsRenderer:
             label_side=label_side,
             arc=arc,
             start=start,
-            end=end
+            end=end,
+            direction=direction
         )
 
     def get_arc(self, x_start: int, y: int, y_curve: int, x_end: int) -> str:

@@ -19,7 +19,7 @@ TPL_REL_WORDS = """
 """
 
 TPL_REL_ARCS = """
-<g class="displacy-arrow" start={start} end={end}>
+<g class="displacy-arrow" start={start} end={end} direction={direction}>
     <path class="displacy-arc" id="arrow-{id}-{i}" stroke-width="{stroke}px" d="{arc}" fill="none" stroke="currentColor"/>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
         <textPath xlink:href="#arrow-{id}-{i}" class="displacy-label" startOffset="50%" side="{label_side}" fill="currentColor" text-anchor="middle">{label}</textPath>
@@ -82,6 +82,7 @@ TPL_SCRIPT = """
         if (elem != undefined && elem.classList.contains('displacy-arrow')){
             startId = elem.getAttribute("start");
             endId = elem.getAttribute("end");
+            direction = elem.getAttribute("direction");
             var startSpan = document.getElementById(startId);
             var endSpan = document.getElementById(endId);
             var xStart = parseFloat(startSpan.firstElementChild.getAttribute("x"));
@@ -89,7 +90,7 @@ TPL_SCRIPT = """
             var arc = elem.firstElementChild.getAttribute("d");
             
             var map = {start:xStart, end:xEnd};
-            arc = arc.replace(/[M](\w+),/g,"M{start},").replace(/[C](\w+),/g,"C{start},").replace(/ (\d+\.\d+)/g," {end}");
+            arc = arc.replace(/[M](\w+),/g,"M{start},").replace(/[C](\w+),/g,"C{start},").replace(/ (\d+\.?\d+)/g," {end}");
             arc = arc.replace(/{(\w+)}/g, function(_,k){
               return map[k];
             });
@@ -98,9 +99,12 @@ TPL_SCRIPT = """
             // Move Head
             var headElem = elem.querySelectorAll(".displacy-arrowhead")[0];
             var head = headElem.getAttribute("d");
-            head = head.replace(/M(\d+\.\d+),/g,"M{p1},").replace(/[L](\d+\.\d+),/g,"L{p2},").replace(/ (\d+\.\d+)/g," {p3}");
+            head = head.replace(/M(\d+\.?\d+),/g,"M{p1},").replace(/[L](\d+\.?\d+),/g,"L{p2},").replace(/ (\d+\.?\d+)/g," {p3}");
             var arrow_width = parseFloat(headElem.getBBox().width);
             var map = {p1:xEnd, p2:(xEnd + arrow_width - 2), p3:(xEnd - arrow_width + 2)};
+            if (direction == "left"){
+                map = {p1:xStart, p2:(xStart + arrow_width - 2), p3:(xStart - arrow_width + 2)};
+            }
             head = head.replace(/{(\w+)}/g, function(_,k){
               return map[k];
             });
