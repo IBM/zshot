@@ -45,10 +45,10 @@ def parse_rels(doc: Doc) -> Dict:
         idx_end = span_map[hash(r.end)]
         if idx_start <= idx_end:
             arc = {'start': idx_start, 'end': idx_end,
-                 'label': r.relation.name, 'dir': 'right', 'score': r.score}
+                   'label': r.relation.name, 'dir': 'right', 'score': r.score}
         else:
             arc = {'end': idx_start, 'start': idx_end,
-                 'label': r.relation.name, 'dir': 'left', 'score': r.score}
+                   'label': r.relation.name, 'dir': 'left', 'score': r.score}
         arcs.append(arc)
 
     return {'words': words,
