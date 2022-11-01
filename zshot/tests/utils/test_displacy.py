@@ -8,6 +8,7 @@ from zshot.tests.linker.test_linker import DummyLinkerEnd2End
 from zshot.utils.data_models import Span, Relation
 from zshot.utils.data_models.relation_span import RelationSpan
 
+
 def test_displacy_render():
     nlp = spacy.blank("en")
     nlp.add_pipe("zshot", config=PipelineConfig(
