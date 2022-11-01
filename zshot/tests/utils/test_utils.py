@@ -4,9 +4,13 @@ from zshot import PipelineConfig, displacy
 from zshot.tests.config import EX_ENTITIES, EX_DOCS
 from zshot.tests.linker.test_linker import DummyLinkerEnd2End
 from zshot.tests.mentions_extractor.test_mention_extractor import DummyMentionsExtractor
+from zshot.utils import download_file
 from zshot.utils.data_models import Span
 from zshot.utils.alignment_utils import align_spans, AlignmentMode, filter_overlapping_spans
 
+def test_download():
+    path = download_file("https://raw.githubusercontent.com/IBM/zshot/main/README.md", output_dir=".")
+    assert path.is_file()
 
 def test_alignment_expand():
     tokens = ["I", "am", "going"]

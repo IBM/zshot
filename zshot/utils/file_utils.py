@@ -15,7 +15,7 @@ from spacy.util import filter_spans as spacy_filter_spans
 from zshot.utils.data_models import Span
 
 
-def download_file(url, output_dir="."):
+def download_file(url, output_dir=".") -> pathlib.Path:
     """
     Utility for downloading a file
     :param url: the file url
@@ -29,11 +29,12 @@ def download_file(url, output_dir="."):
         logging.info(f"Downloading {url}")
         total_length = int(urlopen(url=url).info().get('Content-Length', 0))
         if path.exists() and os.path.getsize(path) == total_length:
-            return
+            return path
         r.raw.read = functools.partial(r.raw.read, decode_content=True)
         with tqdm.wrapattr(r.raw, "read", total=total_length, desc=f"Downloading {filename}") as raw:
             with path.open("wb") as output:
                 shutil.copyfileobj(raw, output)
+    return path
 
 
 def filter_extended_spans(spans: List[Span], doc: Doc = None) -> List[Span]:
