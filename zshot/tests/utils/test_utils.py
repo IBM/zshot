@@ -8,9 +8,11 @@ from zshot.utils import download_file
 from zshot.utils.data_models import Span
 from zshot.utils.alignment_utils import align_spans, AlignmentMode, filter_overlapping_spans
 
+
 def test_download():
     path = download_file("https://raw.githubusercontent.com/IBM/zshot/main/README.md", output_dir=".")
     assert path.is_file()
+
 
 def test_alignment_expand():
     tokens = ["I", "am", "going"]
