@@ -167,8 +167,6 @@ class RelationsRenderer:
         """
         y = self.offset_y + self.word_spacing
         x = self.offset_x if i == 0 else self.word_spacing
-        if self.direction == "rtl":
-            x = self.width - x
         html_text = escape_html(text)
         return TPL_REL_WORDS.format(text=html_text,
                                     tag=tag + (" ({:.1f})".format(score) if score and self.score else ""), x=x, y=y,
@@ -191,13 +189,9 @@ class RelationsRenderer:
             raise ValueError(Errors.E157.format(**error_args))
         level = self.levels[(start, end, label)]
         x_start = self.offset_x + start * self.distance + self.arrow_spacing
-        if self.direction == "rtl":
-            x_start = self.width - x_start
         y = self.offset_y
         x_end = (self.offset_x + (end - start) * self.distance + start * self.
                  distance - self.arrow_spacing * (self.highest_level - level) / 4)
-        if self.direction == "rtl":
-            x_end = self.width - x_end
         y_curve = self.offset_y - level * self.distance / 2
         if self.compact:
             y_curve = self.offset_y - level * self.distance / 6
