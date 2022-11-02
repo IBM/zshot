@@ -3,8 +3,8 @@ from spacy.tokens import Doc
 
 from zshot import displacy, PipelineConfig
 from zshot.tests.config import EX_DOCS, EX_ENTITIES
-from zshot.tests.evaluation.test_evaluation import DummyMentionsExtractor
 from zshot.tests.linker.test_linker import DummyLinkerEnd2End
+from zshot.tests.mentions_extractor.test_mention_extractor import DummyMentionsExtractor
 from zshot.utils.data_models import Span, Relation
 from zshot.utils.data_models.relation_span import RelationSpan
 
