@@ -1,10 +1,25 @@
 import spacy
 from spacy.tokens import Doc
 
-from zshot import displacy
-from zshot.tests.config import EX_DOCS
+from zshot import displacy, PipelineConfig
+from zshot.tests.config import EX_DOCS, EX_ENTITIES
+from zshot.tests.linker.test_linker import DummyLinkerEnd2End
+from zshot.tests.mentions_extractor.test_mention_extractor import DummyMentionsExtractor
 from zshot.utils.data_models import Span, Relation
 from zshot.utils.data_models.relation_span import RelationSpan
+
+
+def test_displacy_render():
+    nlp = spacy.blank("en")
+    nlp.add_pipe("zshot", config=PipelineConfig(
+        mentions_extractor=DummyMentionsExtractor(),
+        linker=DummyLinkerEnd2End(),
+        entities=EX_ENTITIES), last=True)
+    doc = nlp(EX_DOCS[1])
+    assert len(doc.ents) > 0
+    assert len(doc._.spans) > 0
+    res = displacy.render(doc, style="ent", jupyter=False)
+    assert res is not None
 
 
 def test_displacy_rel_style():
@@ -57,7 +72,7 @@ def test_displacy_rel_compact_style():
         Doc.set_extension("relations", default=[])
     doc._.relations = relations
     doc._.spans = spans
-    html = displacy.render(doc, style="rel")
+    html = displacy.render(doc, style="rel", options={"compact": True})
     assert html is not None
     assert "IBM" in html
     assert "American" in html
