@@ -71,7 +71,7 @@ class ZSDataset(Dataset):
         # tokens = encodings['input_ids']
         sentence_tokens_positions = encodings["offset_mapping"]
 
-        relation_desc = self.rel_desc
+        relation_desc = self.rel_desc[idx]
         tokenized_relation_desc = self.tokenizer.tokenize(relation_desc)
         tokens_ids = self.tokenizer.convert_tokens_to_ids(
             ["[CLS]"] + tokenized_relation_desc + ["[SEP]"] + tokens + ["[SEP]"]

@@ -54,11 +54,12 @@ def get_few_rel_data(split_name="val_wiki", limit=-1):
     gt = [item[0] for item in relations_descriptions]
     # label_mapping = {l: idx for idx, l in enumerate(list(set(gt)))}
     # gt = [label_mapping.get(item) for item in gt]
-
+    heads = wiki_val["head"]
+    tails = wiki_val["tail"]
     entities_data = []
     for idx in tqdm(range(len(tokenized_sentences))):
-        e1 = wiki_val["head"][idx]
-        e2 = wiki_val["tail"][idx]
+        e1 = heads[idx]
+        e2 = tails[idx]
         entities_data.append(
             [
                 get_entity_data(e1, tokenized_sentences[idx]),
