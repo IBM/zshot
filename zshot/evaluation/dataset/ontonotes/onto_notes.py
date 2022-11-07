@@ -1,4 +1,6 @@
-from datasets import ClassLabel, load_dataset, DatasetDict
+from typing import Dict, Union
+
+from datasets import ClassLabel, load_dataset, DatasetDict, Split
 
 from zshot.evaluation.dataset.dataset import DatasetWithEntities
 from zshot.evaluation.dataset.ontonotes.entities import ONTONOTES_ENTITIES
@@ -52,7 +54,7 @@ def remove_out_of_split(sentence, split):
     return sentence
 
 
-def load_ontonotes() -> DatasetDict[DatasetWithEntities]:
+def load_ontonotes() -> Dict[Union[str, Split], DatasetWithEntities]:
     dataset_zs = load_dataset("conll2012_ontonotesv5", "english_v12")
     ontonotes_zs = DatasetDict()
 
