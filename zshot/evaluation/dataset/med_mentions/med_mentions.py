@@ -1,6 +1,7 @@
 import json
+from typing import Dict, Union
 
-from datasets import load_dataset, DatasetDict
+from datasets import load_dataset, Split
 from huggingface_hub import hf_hub_download
 
 from zshot.evaluation.dataset.dataset import DatasetWithEntities
@@ -10,7 +11,7 @@ REPO_ID = "ibm/medmentionsZS"
 ENTITIES_FN = "entities.json"
 
 
-def load_medmentions() -> DatasetDict[DatasetWithEntities]:
+def load_medmentions() -> Dict[Union[str, Split], DatasetWithEntities]:
     dataset = load_dataset(REPO_ID)
     entities_file = hf_hub_download(repo_id=REPO_ID, repo_type='dataset',
                                     filename=ENTITIES_FN)
