@@ -1,11 +1,29 @@
 import spacy
 
-from zshot import PipelineConfig, displacy
+from zshot import PipelineConfig
 from zshot.tests.config import EX_ENTITIES, EX_DOCS
 from zshot.tests.linker.test_linker import DummyLinkerEnd2End
 from zshot.tests.mentions_extractor.test_mention_extractor import DummyMentionsExtractor
-from zshot.utils.data_models import Span
+from zshot.utils import download_file
 from zshot.utils.alignment_utils import align_spans, AlignmentMode, filter_overlapping_spans
+from zshot.utils.data_models import Span
+from zshot.utils.displacy.displacy import ents_colors
+
+
+def test_download():
+    path = download_file("https://raw.githubusercontent.com/IBM/zshot/main/README.md", output_dir=".")
+    assert path.is_file()
+
+
+def test_colors():
+    nlp = spacy.blank("en")
+    nlp.add_pipe("zshot", config=PipelineConfig(
+        mentions_extractor=DummyMentionsExtractor(),
+        linker=DummyLinkerEnd2End(),
+        entities=EX_ENTITIES), last=True)
+    doc = nlp(EX_DOCS[1])
+    colors = ents_colors(doc)
+    assert len(colors) == len(set([s.label for s in doc._.spans]))
 
 
 def test_alignment_expand():
@@ -170,17 +188,3 @@ def test_alignment_expand_overlaps_no_score():
     assert filtered_spans[0].label == "A"
     assert filtered_spans[1].start == 3 and filtered_spans[1].end == 8
     assert filtered_spans[1].label == "C"
-
-
-def test_displacy_render():
-    nlp = spacy.blank("en")
-
-    nlp.add_pipe("zshot", config=PipelineConfig(
-        mentions_extractor=DummyMentionsExtractor(),
-        linker=DummyLinkerEnd2End(),
-        entities=EX_ENTITIES), last=True)
-    doc = nlp(EX_DOCS[1])
-    assert len(doc.ents) > 0
-    assert len(doc._.spans) > 0
-    res = displacy.render(doc, style="ent", jupyter=False)
-    assert res is not None

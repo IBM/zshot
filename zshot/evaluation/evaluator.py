@@ -1,9 +1,9 @@
 from typing import Dict, List, Union
 
 from datasets import Dataset
-from evaluate import TokenClassificationEvaluator
+from evaluate import (Evaluator, TokenClassificationEvaluator)
 
-from zshot.utils.alignment_utils import filter_overlapping_spans, AlignmentMode
+from zshot.utils.alignment_utils import AlignmentMode, filter_overlapping_spans
 from zshot.utils.data_models import Span
 
 
@@ -56,3 +56,21 @@ class MentionsExtractorEvaluator(ZeroShotTokenClassificationEvaluator):
                                        for sent in metric_inputs['references']]
 
         return metric_inputs, pipeline_inputs
+
+
+class RelationExtractorEvaluator(Evaluator):
+    def __init__(self, task="relation-extraction", default_metric_name=None):
+        super().__init__(task, default_metric_name)
+
+    def predictions_processor(self, predictions: List[List[Dict]], sentences: List[List[str]]):
+        return {"predictions": predictions}
+
+    def prepare_pipeline(
+            self,
+            model_or_pipeline,  # noqa: F821
+            tokenizer=None,  # noqa: F821
+            feature_extractor=None,  # noqa: F821
+            device: int = None,
+    ):
+        pipe = super().prepare_pipeline(model_or_pipeline)
+        return pipe

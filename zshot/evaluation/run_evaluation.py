@@ -3,6 +3,7 @@ import argparse
 import spacy
 
 from zshot import PipelineConfig
+from zshot.evaluation import load_medmentions, load_ontonotes
 from zshot.evaluation.metrics.seqeval.seqeval import Seqeval
 from zshot.evaluation.zshot_evaluate import evaluate
 from zshot.linker import LinkerTARS, LinkerSMXM
@@ -78,4 +79,9 @@ if __name__ == "__main__":
         nlp = spacy.blank("en") if "spacy" not in key else spacy.load("en_core_web_sm")
         nlp.add_pipe("zshot", config=config, last=True)
 
-        print(evaluate(nlp, args.dataset, splits=args.splits, metric=Seqeval()))
+        if args.dataset.lower() == "medmentions":
+            dataset = load_medmentions()
+        else:
+            dataset = load_ontonotes()
+
+        print(evaluate(nlp, dataset, splits=args.splits, metric=Seqeval()))
