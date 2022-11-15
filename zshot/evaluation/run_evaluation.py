@@ -1,9 +1,7 @@
 import argparse
 
 import spacy
-
 from zshot import PipelineConfig
-from zshot.evaluation import load_medmentions, load_ontonotes
 from zshot.evaluation.metrics.seqeval.seqeval import Seqeval
 from zshot.evaluation.zshot_evaluate import evaluate
 from zshot.linker import LinkerTARS, LinkerSMXM, LinkerRegen
@@ -26,7 +24,8 @@ END2END = ['tars', 'smxm']
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", default="ontonotes", type=str, help="Name or path to the validation data. Comma separated")
+    parser.add_argument("--dataset", default="ontonotes", type=str,
+                        help="Name or path to the validation data. Comma separated")
     parser.add_argument("--splits", required=False, default="train, test, validation", type=str,
                         help="Splits to evaluate. Comma separated")
     parser.add_argument("--mode", required=False, default="full", type=str,
@@ -62,8 +61,6 @@ if __name__ == "__main__":
                         )
                 else:
                     configs[linker] = PipelineConfig(linker=LINKERS[linker]())
-        for mentions_extractor in mentions_extractors:
-            configs[mentions_extractor] = PipelineConfig(mentions_extractor=MENTION_EXTRACTORS[mentions_extractor]())
     elif args.mode == "mentions_extractor":
         for mentions_extractor in mentions_extractors:
             configs[mentions_extractor] = PipelineConfig(mentions_extractor=MENTION_EXTRACTORS[mentions_extractor]())
@@ -81,9 +78,4 @@ if __name__ == "__main__":
         nlp = spacy.blank("en") if "spacy" not in key else spacy.load("en_core_web_sm")
         nlp.add_pipe("zshot", config=config, last=True)
 
-        if args.dataset.lower() == "medmentions":
-            dataset = load_medmentions()
-        else:
-            dataset = load_ontonotes()
-
-        print(evaluate(nlp, dataset, splits=args.splits, metric=Seqeval()))
+        print(evaluate(nlp, args.dataset, splits=args.splits, metric=Seqeval()))
