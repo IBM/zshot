@@ -3,7 +3,6 @@ from typing import Optional, List, Union
 import spacy
 from evaluate import EvaluationModule
 from prettytable import PrettyTable
-
 from zshot.evaluation import load_medmentions, load_ontonotes
 from zshot.evaluation.evaluator import ZeroShotTokenClassificationEvaluator, MentionsExtractorEvaluator
 from zshot.evaluation.pipeline import LinkerPipeline, MentionsExtractorPipeline
@@ -49,8 +48,8 @@ def evaluate(nlp: spacy.language.Language,
             if nlp.get_pipe("zshot").linker:
                 pipe = LinkerPipeline(nlp, batch_size)
                 res_tmp = {
-                            'linker': linker_evaluator.compute(pipe, dataset[split], metric=metric)
-                        }
+                    'linker': linker_evaluator.compute(pipe, dataset[split], metric=metric)
+                }
                 if field_name not in result:
                     result.update(
                         {

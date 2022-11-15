@@ -1,9 +1,7 @@
 import argparse
 
 import spacy
-
 from zshot import PipelineConfig
-from zshot.evaluation import load_medmentions, load_ontonotes
 from zshot.evaluation.metrics.seqeval.seqeval import Seqeval
 from zshot.evaluation.zshot_evaluate import evaluate
 from zshot.linker import LinkerTARS, LinkerSMXM, LinkerRegen
@@ -26,7 +24,8 @@ END2END = ['tars', 'smxm']
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", default="ontonotes", type=str, help="Name or path to the validation data. Comma separated")
+    parser.add_argument("--dataset", default="ontonotes", type=str,
+                        help="Name or path to the validation data. Comma separated")
     parser.add_argument("--splits", required=False, default="train, test, validation", type=str,
                         help="Splits to evaluate. Comma separated")
     parser.add_argument("--mode", required=False, default="full", type=str,
