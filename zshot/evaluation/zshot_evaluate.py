@@ -44,6 +44,7 @@ def evaluate(
         for split in splits:
             field_name = f"{dataset.description} {split}"
             field_names.append(field_name)
+            nlp.get_pipe("zshot").mentions = dataset[split].entities
             nlp.get_pipe("zshot").entities = dataset[split].entities
             if nlp.get_pipe("zshot").linker:
                 pipe = LinkerPipeline(nlp, batch_size)
