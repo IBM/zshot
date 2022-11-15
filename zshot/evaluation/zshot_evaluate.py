@@ -44,6 +44,7 @@ def evaluate(nlp: spacy.language.Language,
         for split in splits:
             field_name = f"{dataset_name} {split}"
             field_names.append(field_name)
+            nlp.get_pipe("zshot").mentions = dataset[split].entities
             nlp.get_pipe("zshot").entities = dataset[split].entities
             if nlp.get_pipe("zshot").linker:
                 pipe = LinkerPipeline(nlp, batch_size)
@@ -54,7 +55,6 @@ def evaluate(nlp: spacy.language.Language,
                         }
                     }
                 )
-            # TODO: Add support for mentions_extractor pipelines and evaluation
             if nlp.get_pipe("zshot").mentions_extractor:
                 pipe = MentionsExtractorPipeline(nlp, batch_size)
                 result.update(

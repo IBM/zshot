@@ -5,8 +5,8 @@ import spacy
 from zshot import PipelineConfig
 from zshot.evaluation.metrics.seqeval.seqeval import Seqeval
 from zshot.evaluation.zshot_evaluate import evaluate
-from zshot.linker import LinkerTARS, LinkerSMXM
-from zshot.mentions_extractor import MentionsExtractorSpacy, MentionsExtractorFlair
+from zshot.linker import LinkerTARS, LinkerSMXM, LinkerRegen
+from zshot.mentions_extractor import MentionsExtractorSpacy, MentionsExtractorFlair, MentionsExtractorSMXM
 from zshot.mentions_extractor.utils import ExtractorType
 
 MENTION_EXTRACTORS = {
@@ -14,8 +14,10 @@ MENTION_EXTRACTORS = {
     "spacy_ner": lambda: MentionsExtractorSpacy(ExtractorType.NER),
     "flair_pos": lambda: MentionsExtractorFlair(ExtractorType.POS),
     "flair_ner": lambda: MentionsExtractorFlair(ExtractorType.NER),
+    "smxm": lambda: MentionsExtractorSMXM
 }
 LINKERS = {
+    "regen": LinkerRegen,
     "tars": LinkerTARS,
     "smxm": LinkerSMXM
 }
