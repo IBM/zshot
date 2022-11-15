@@ -62,8 +62,6 @@ if __name__ == "__main__":
                         )
                 else:
                     configs[linker] = PipelineConfig(linker=LINKERS[linker]())
-        for mentions_extractor in mentions_extractors:
-            configs[mentions_extractor] = PipelineConfig(mentions_extractor=MENTION_EXTRACTORS[mentions_extractor]())
     elif args.mode == "mentions_extractor":
         for mentions_extractor in mentions_extractors:
             configs[mentions_extractor] = PipelineConfig(mentions_extractor=MENTION_EXTRACTORS[mentions_extractor]())
