@@ -81,9 +81,4 @@ if __name__ == "__main__":
         nlp = spacy.blank("en") if "spacy" not in key else spacy.load("en_core_web_sm")
         nlp.add_pipe("zshot", config=config, last=True)
 
-        if args.dataset.lower() == "medmentions":
-            dataset = load_medmentions()
-        else:
-            dataset = load_ontonotes()
-
-        print(evaluate(nlp, dataset, splits=args.splits, metric=Seqeval()))
+        print(evaluate(nlp, args.dataset, splits=args.splits, metric=Seqeval()))
