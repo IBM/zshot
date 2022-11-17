@@ -1,4 +1,4 @@
-from typing import Optional, Union, Dict, List
+from typing import Optional, Union, Dict
 
 import spacy
 from datasets import Dataset
