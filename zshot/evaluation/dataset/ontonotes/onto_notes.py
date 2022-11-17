@@ -1,6 +1,7 @@
-from typing import Dict, Union
+import re
+from typing import Dict, Union, Optional
 
-from datasets import ClassLabel, load_dataset, DatasetDict, Split
+from datasets import ClassLabel, load_dataset, DatasetDict, Split, Dataset
 
 from zshot.evaluation.dataset.dataset import DatasetWithEntities
 from zshot.evaluation.dataset.ontonotes.entities import ONTONOTES_ENTITIES
@@ -54,30 +55,43 @@ def remove_out_of_split(sentence, split):
     return sentence
 
 
-def load_ontonotes() -> Dict[Union[str, Split], DatasetWithEntities]:
-    dataset_zs = load_dataset("conll2012_ontonotesv5", "english_v12")
+def load_ontonotes(split: Optional[Union[str, Split]] = None, **kwargs) -> Dict[Union[str, Split],
+                                                                                Union[Dataset, DatasetWithEntities]]:
+    dataset_zs = load_dataset("conll2012_ontonotesv5", "english_v12", split=split, **kwargs)
     ontonotes_zs = DatasetDict()
-
-    for split in dataset_zs:
-        dataset_zs[split] = dataset_zs[split].map(lambda example, idx: {
-            "sentences": [remove_out_of_split(s, split) for s in example['sentences']]
-        }, with_indices=True)
-        dataset_zs[split] = dataset_zs[split].map(lambda example, idx: {
-            "sentences": list(filter(is_not_empty, example['sentences']))
-        }, with_indices=True)
-
-        tokens = []
-        ner_tags = []
-        for example in dataset_zs[split]:
-            tokens += [s['words'] for s in example['sentences']]
-            ner_tags += [[labels.int2str(ent) for ent in s['named_entities']] for s in example['sentences']]
-
-        split_entities = [ent for ent in ONTONOTES_ENTITIES
-                          if ent.name in ['NEG'] + CLASSES_PER_SPLIT[split] and ent.name not in TRIVIAL_CLASSES]
-
-        ontonotes_zs[split] = DatasetWithEntities.from_dict({
-            'tokens': tokens,
-            'ner_tags': ner_tags
-        }, split=split, entities=split_entities)
-
+    if split:
+        ontonotes_zs = process_dataset(dataset_zs[get_simple_split(split)], get_simple_split(split))
+    else:
+        for split in dataset_zs:
+            ontonotes_zs[split] = process_dataset(dataset_zs[split], split)
     return ontonotes_zs
+
+
+def process_dataset(dataset: Dataset, split: Union[str, Split]) -> Dataset:
+    dataset.map(lambda ex, idx: {
+        "sentences": [remove_out_of_split(s, split) for s in ex['sentences']]
+    }, with_indices=True)
+    dataset = dataset.map(lambda ex, idx: {
+        "sentences": list(filter(is_not_empty, example['sentences']))
+    }, with_indices=True)
+
+    tokens = []
+    ner_tags = []
+    for example in dataset:
+        tokens += [s['words'] for s in example['sentences']]
+        ner_tags += [[labels.int2str(ent) for ent in s['named_entities']] for s in example['sentences']]
+
+    split_entities = [ent for ent in ONTONOTES_ENTITIES
+                      if ent.name in ['NEG'] + CLASSES_PER_SPLIT[split] and ent.name not in TRIVIAL_CLASSES]
+
+    ontonotes_zs = DatasetWithEntities.from_dict({
+        'tokens': tokens,
+        'ner_tags': ner_tags
+    }, split=split, entities=split_entities)
+    return ontonotes_zs
+
+
+def get_simple_split(split: str) -> str:
+    first_not_alph = re.search(r'\W+', split)
+    first_not_alph_chr = first_not_alph.start() if first_not_alph else len(split)
+    return split[: first_not_alph_chr]

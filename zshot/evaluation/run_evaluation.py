@@ -2,8 +2,9 @@ import argparse
 
 import spacy
 from zshot import PipelineConfig
+from zshot.evaluation import load_medmentions, load_ontonotes
 from zshot.evaluation.metrics.seqeval.seqeval import Seqeval
-from zshot.evaluation.zshot_evaluate import evaluate
+from zshot.evaluation.zshot_evaluate import evaluate, prettify_evaluate_report
 from zshot.linker import LinkerTARS, LinkerSMXM, LinkerRegen
 from zshot.mentions_extractor import MentionsExtractorSpacy, MentionsExtractorFlair, MentionsExtractorSMXM
 from zshot.mentions_extractor.utils import ExtractorType
@@ -26,7 +27,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", default="ontonotes", type=str,
                         help="Name or path to the validation data. Comma separated")
-    parser.add_argument("--splits", required=False, default="train, test, validation", type=str,
+    parser.add_argument("--splits", required=False, default="test", type=str,
                         help="Splits to evaluate. Comma separated")
     parser.add_argument("--mode", required=False, default="full", type=str,
                         help="Evaluation mode. One of: full; mentions_extractor; linker")
@@ -36,8 +37,8 @@ if __name__ == "__main__":
                         help="Linker to evaluate. One of: all; tars")
     args = parser.parse_args()
 
-    args.splits = args.splits.split(",")
-    args.dataset = args.dataset.split(",")
+    splits = args.splits.split(",")
+    datasets = args.dataset.split(",")
 
     configs = {}
     if args.mentions_extractor == "all":
@@ -78,4 +79,19 @@ if __name__ == "__main__":
         nlp = spacy.blank("en") if "spacy" not in key else spacy.load("en_core_web_sm")
         nlp.add_pipe("zshot", config=config, last=True)
 
-        print(evaluate(nlp, args.dataset, splits=args.splits, metric=Seqeval()))
+        for dataset_name in datasets:
+            for split in splits:
+                if dataset_name.lower() == "medmentions":
+                    dataset = load_medmentions(split)
+                elif dataset_name.lower() == "ontonotes":
+                    dataset = load_ontonotes(split)
+                else:
+                    raise ValueError(f"{dataset_name} not supported")
+                nlp.get_pipe("zshot").mentions = dataset.entities
+                nlp.get_pipe("zshot").entities = dataset.entities
+                field_names = ["Metric"]
+                field_name = f"{dataset_name} {split}"
+                field_names.append(field_name)
+
+                evaluation = evaluate(nlp, dataset, metric=Seqeval())
+                print(prettify_evaluate_report(evaluation, name=f"{dataset_name}-{split}"))
