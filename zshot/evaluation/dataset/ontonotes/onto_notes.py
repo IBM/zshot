@@ -55,40 +55,36 @@ def remove_out_of_split(sentence, split):
     return sentence
 
 
-def load_ontonotes(split: Optional[Union[str, Split]] = None, **kwargs) -> Dict[Union[str, Split],
-                                                                                Union[Dataset, DatasetWithEntities]]:
+def load_ontonotes_zs(split: Optional[Union[str, Split]] = None, **kwargs) -> Union[Dict[DatasetWithEntities,
+                                                                                         Dataset], Dataset]:
     dataset_zs = load_dataset("conll2012_ontonotesv5", "english_v12", split=split, **kwargs)
-    ontonotes_zs = DatasetDict()
     if split:
-        ontonotes_zs = process_dataset(dataset_zs[get_simple_split(split)], get_simple_split(split))
+        ontonotes_zs = preprocess_spit(dataset_zs, get_simple_split(split))
     else:
+        ontonotes_zs = DatasetDict()
         for split in dataset_zs:
-            ontonotes_zs[split] = process_dataset(dataset_zs[split], split)
+            ontonotes_zs[split] = preprocess_spit(dataset_zs[split], split)
     return ontonotes_zs
 
 
-def process_dataset(dataset: Dataset, split: Union[str, Split]) -> Dataset:
-    dataset.map(lambda ex, idx: {
-        "sentences": [remove_out_of_split(s, split) for s in ex['sentences']]
+def preprocess_spit(dataset, split):
+    dataset = dataset.map(lambda example, idx: {
+        "sentences": [remove_out_of_split(s, split) for s in example['sentences']]
     }, with_indices=True)
-    dataset = dataset.map(lambda ex, idx: {
+    dataset = dataset.map(lambda example, idx: {
         "sentences": list(filter(is_not_empty, example['sentences']))
     }, with_indices=True)
-
     tokens = []
     ner_tags = []
     for example in dataset:
         tokens += [s['words'] for s in example['sentences']]
         ner_tags += [[labels.int2str(ent) for ent in s['named_entities']] for s in example['sentences']]
-
     split_entities = [ent for ent in ONTONOTES_ENTITIES
                       if ent.name in ['NEG'] + CLASSES_PER_SPLIT[split] and ent.name not in TRIVIAL_CLASSES]
-
-    ontonotes_zs = DatasetWithEntities.from_dict({
+    return DatasetWithEntities.from_dict({
         'tokens': tokens,
         'ner_tags': ner_tags
     }, split=split, entities=split_entities)
-    return ontonotes_zs
 
 
 def get_simple_split(split: str) -> str:

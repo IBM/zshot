@@ -2,7 +2,7 @@ import argparse
 
 import spacy
 from zshot import PipelineConfig
-from zshot.evaluation import load_medmentions, load_ontonotes
+from zshot.evaluation import load_medmentions_zs, load_ontonotes_zs
 from zshot.evaluation.metrics.seqeval.seqeval import Seqeval
 from zshot.evaluation.zshot_evaluate import evaluate, prettify_evaluate_report
 from zshot.linker import LinkerTARS, LinkerSMXM, LinkerRegen
@@ -82,9 +82,9 @@ if __name__ == "__main__":
         for dataset_name in datasets:
             for split in splits:
                 if dataset_name.lower() == "medmentions":
-                    dataset = load_medmentions(split)
+                    dataset = load_medmentions_zs(split)
                 elif dataset_name.lower() == "ontonotes":
-                    dataset = load_ontonotes(split)
+                    dataset = load_ontonotes_zs(split)
                 else:
                     raise ValueError(f"{dataset_name} not supported")
                 nlp.get_pipe("zshot").mentions = dataset.entities

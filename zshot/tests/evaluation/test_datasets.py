@@ -1,7 +1,7 @@
 import shutil
 from pathlib import Path
 import pytest
-from zshot.evaluation import load_ontonotes, load_medmentions
+from zshot.evaluation import load_ontonotes_zs, load_medmentions_zs
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -12,7 +12,7 @@ def teardown():
 
 
 def test_ontonotes():
-    dataset = load_ontonotes()
+    dataset = load_ontonotes_zs()
     assert 'train' in dataset
     assert 'test' in dataset
     assert 'validation' in dataset
@@ -22,7 +22,7 @@ def test_ontonotes():
 
 
 def test_medmentions():
-    dataset = load_medmentions()
+    dataset = load_medmentions_zs()
     assert 'train' in dataset
     assert 'test' in dataset
     assert 'validation' in dataset
