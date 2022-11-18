@@ -14,6 +14,7 @@ from zshot.utils.data_models import Span
 
 ONTONOTES_MODEL_NAME = "ibm/smxm"
 
+
 class LinkerSMXM(Linker):
     """ SMXM linker """
 
