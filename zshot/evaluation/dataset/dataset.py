@@ -1,16 +1,20 @@
 from typing import List, Optional, Dict
 
 import datasets
+from datasets import Split, Dataset
+from datasets.table import Table
+
+from zshot.utils.data_models import Entity
 
 
 class DatasetWithEntities(datasets.Dataset):
-    # TODO: Implement save and load methods
-    def __init__(self, arrow_table: datasets.table.Table,
+
+    def __init__(self, arrow_table: Table,
                  info: Optional[datasets.info.DatasetInfo] = None,
                  split: Optional[datasets.splits.NamedSplit] = None,
-                 indices_table: Optional[datasets.table.Table] = None,
+                 indices_table: Optional[Table] = None,
                  fingerprint: Optional[str] = None,
-                 entities: List[Dict[str, str]] = None):
+                 entities: List[Entity] = None):
         super().__init__(arrow_table=arrow_table, info=info, split=split,
                          indices_table=indices_table, fingerprint=fingerprint)
         self.entities = entities
@@ -21,9 +25,9 @@ class DatasetWithEntities(datasets.Dataset):
             mapping: dict,
             features: Optional[datasets.features.Features] = None,
             info: Optional[datasets.info.DatasetInfo] = None,
-            split: Optional[datasets.splits.NamedSplit] = None,
+            split: Optional[Split] = None,
             entities: List[Dict[str, str]] = None
-    ) -> "DatasetWithEntities":
+    ) -> Dataset:
         dataset = super().from_dict(mapping=mapping, features=features, info=info, split=split)
         dataset.entities = entities
         return dataset

@@ -1,5 +1,5 @@
 import warnings
-from typing import Dict, Union, Iterable, Any
+from typing import Dict, Union, Iterable, Any, Optional
 
 from spacy import displacy as s_displacy
 from spacy.errors import Warnings
@@ -38,6 +38,7 @@ class displacy:
     @staticmethod
     def _call_displacy(docs: Union[Iterable[Union[Doc]], Doc], style: str, method: str, options: Dict[str, Any] = {},
                        port: int = 5000, host: str = "0.0.0.0", page: bool = True, minify: bool = False,
+                       jupyter: Optional[bool] = None,
                        **kwargs) -> str:
         if isinstance(docs, Doc):
             docs = [docs]
@@ -63,7 +64,13 @@ class displacy:
                     print(f"Shutting down server on port {port}.")
                 finally:
                     httpd.server_close()
+            else:
+                if jupyter or (jupyter is None and is_in_jupyter()):
+                    # return HTML rendered by IPython display()
+                    # See #4840 for details on span wrapper to disable mathjax
+                    from IPython.core.display import display, HTML
+                    return display(HTML('<span class="tex2jax_ignore">{}</span>'.format(html)))
             return html
 
         disp = getattr(s_displacy, method)
-        return disp(docs, style=style, options=options, **kwargs)
+        return disp(docs, style=style, options=options, jupyter=jupyter, **kwargs)
