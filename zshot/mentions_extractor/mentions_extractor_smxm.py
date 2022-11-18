@@ -13,7 +13,6 @@ from zshot.utils.models.smxm.utils import (
 from zshot.utils.data_models import Span
 
 ONTONOTES_MODEL_NAME = "ibm/smxm"
-MEDMENTIONS_MODEL_NAME = "ibm/smxm-medmentions"
 
 
 class MentionsExtractorSMXM(MentionsExtractor):

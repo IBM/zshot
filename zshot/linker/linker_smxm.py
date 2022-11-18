@@ -22,7 +22,7 @@ class LinkerSMXM(Linker):
         super().__init__()
 
         self.tokenizer = BertTokenizerFast.from_pretrained(
-            "bert-large-cased" if model_name == ONTONOTES_MODEL_NAME else model_name, truncation_side="left"
+            "bert-large-cased", truncation_side="left"
         )
 
         self.model_name = model_name
