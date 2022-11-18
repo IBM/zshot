@@ -22,6 +22,19 @@ def test_displacy_render():
     assert res is not None
 
 
+def test_displacy_render_notebook():
+    nlp = spacy.blank("en")
+    nlp.add_pipe("zshot", config=PipelineConfig(
+        mentions_extractor=DummyMentionsExtractor(),
+        linker=DummyLinkerEnd2End(),
+        entities=EX_ENTITIES), last=True)
+    doc = nlp(EX_DOCS[1])
+    assert len(doc.ents) > 0
+    assert len(doc._.spans) > 0
+    res = displacy.render(doc, style="ent", jupyter=True)
+    assert res is None
+
+
 def test_displacy_rel_style():
     nlp = spacy.load("en_core_web_sm")
     doc = nlp(EX_DOCS[1])

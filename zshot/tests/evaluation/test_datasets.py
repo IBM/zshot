@@ -21,6 +21,11 @@ def test_ontonotes():
     assert dataset['validation'].num_rows == 1358
 
 
+def test_ontonotes_split():
+    dataset = load_ontonotes_zs(split='test')
+    assert dataset.num_rows == 426
+
+
 def test_medmentions():
     dataset = load_medmentions_zs()
     assert 'train' in dataset
@@ -29,3 +34,8 @@ def test_medmentions():
     assert dataset['train'].num_rows == 30923
     assert dataset['test'].num_rows == 10304
     assert dataset['validation'].num_rows == 10171
+
+
+def test_medmentions_split():
+    dataset = load_medmentions_zs(split='test')
+    assert dataset.num_rows == 10304
