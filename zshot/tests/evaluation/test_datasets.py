@@ -11,7 +11,7 @@ def teardown():
     shutil.rmtree(f"{Path.home()}/.cache/zshot", ignore_errors=True)
 
 
-def test_ontonotes():
+def test_ontonotes_zs():
     dataset = load_ontonotes_zs()
     assert 'train' in dataset
     assert 'test' in dataset
@@ -21,12 +21,12 @@ def test_ontonotes():
     assert dataset['validation'].num_rows == 1358
 
 
-def test_ontonotes_split():
+def test_ontonotes_zs_split():
     dataset = load_ontonotes_zs(split='test')
     assert dataset.num_rows == 426
 
 
-def test_medmentions():
+def test_medmentions_zs():
     dataset = load_medmentions_zs()
     assert 'train' in dataset
     assert 'test' in dataset
@@ -36,6 +36,6 @@ def test_medmentions():
     assert dataset['validation'].num_rows == 10171
 
 
-def test_medmentions_split():
+def test_medmentions_zs_split():
     dataset = load_medmentions_zs(split='test')
     assert dataset.num_rows == 10304
