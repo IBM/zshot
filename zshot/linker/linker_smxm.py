@@ -12,19 +12,20 @@ from zshot.utils.models.smxm.utils import (
 )
 from zshot.utils.data_models import Span
 
-MODEL_NAME = "ibm/smxm"
+ONTONOTES_MODEL_NAME = "ibm/smxm"
 
 
 class LinkerSMXM(Linker):
     """ SMXM linker """
 
-    def __init__(self):
+    def __init__(self, model_name=ONTONOTES_MODEL_NAME):
         super().__init__()
 
         self.tokenizer = BertTokenizerFast.from_pretrained(
             "bert-large-cased", truncation_side="left"
         )
 
+        self.model_name = model_name
         self.model = None
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -37,7 +38,7 @@ class LinkerSMXM(Linker):
         """ Load SMXM model """
         if self.model is None:
             self.model = BertTaggerMultiClass.from_pretrained(
-                MODEL_NAME, output_hidden_states=True
+                self.model_name, output_hidden_states=True
             ).to(device)
 
     def predict(self, docs: Iterator[Doc], batch_size: Optional[Union[int, None]] = None) -> List[List[Span]]:
