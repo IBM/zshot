@@ -31,11 +31,12 @@ def test_medmentions_zs():
     assert 'train' in dataset
     assert 'test' in dataset
     assert 'validation' in dataset
-    assert dataset['train'].num_rows == 30923
-    assert dataset['test'].num_rows == 10304
-    assert dataset['validation'].num_rows == 10171
+
+    assert dataset['train'].num_rows == 26770
+    assert dataset['test'].num_rows == 1048
+    assert dataset['validation'].num_rows == 1289
 
 
 def test_medmentions_zs_split():
     dataset = load_medmentions_zs(split='test')
-    assert dataset.num_rows == 10304
+    assert dataset.num_rows == 1048
