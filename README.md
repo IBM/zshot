@@ -31,7 +31,8 @@ Can be used to perform:
 - **Mentions extraction**: Identify globally relevant mentions or mentions relevant for a given domain 
 - **Wikification**: The task of linking textual mentions to entities in Wikipedia
 - **Zero and Few Shot named entity recognition**: using language description perform NER to generalize to unseen domains
-- **Zero and Few Shot named relationship recognition** (work in progress)
+- **Zero and Few Shot named relationship recognition**
+- **Visualization: Zero-shot NER and RE extraction**
 
 ## Requirements
 
