@@ -26,6 +26,6 @@ def test_medmentions():
     assert 'train' in dataset
     assert 'test' in dataset
     assert 'validation' in dataset
-    assert dataset['train'].num_rows == 30923
-    assert dataset['test'].num_rows == 10304
-    assert dataset['validation'].num_rows == 10171
+    assert dataset['train'].num_rows == 26770
+    assert dataset['test'].num_rows == 1048
+    assert dataset['validation'].num_rows == 1289
