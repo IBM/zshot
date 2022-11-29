@@ -39,4 +39,4 @@ def test_medmentions_zs():
 
 def test_medmentions_zs_split():
     dataset = load_medmentions_zs(split='test')
-    assert dataset.num_rows == 10304
+    assert dataset.num_rows == 1048
