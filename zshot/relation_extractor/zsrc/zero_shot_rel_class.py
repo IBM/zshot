@@ -94,7 +94,8 @@ def predict(model, items_to_process, relation_description, batch_size=4):
 
 
 def softmax(x):
-    return np.exp(x) / sum(np.exp(x))
+    normalized = np.exp(x) / sum(np.exp(x))
+    return [1.0 if np.isnan(item) else item for item in normalized]
 
 
 # def download_file_to_path(source_url, dest_path):
