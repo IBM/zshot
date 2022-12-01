@@ -1,4 +1,3 @@
-# import pdb
 from typing import Iterator, List, Tuple
 
 import spacy
@@ -323,7 +322,6 @@ class TestZeroShotTextClassificationEvaluation:
             "labels": gt,
         }
         dataset = Dataset.from_dict(data_dict)
-        # dataset.entities = ENTITIES
         return dataset
 
     def test_relation_classification_prediction(self):
@@ -332,11 +330,9 @@ class TestZeroShotTextClassificationEvaluation:
             sentences,
             relations_descriptions,
             gt,
-        ) = get_few_rel_data(split_name="val_wiki", limit=5)
+        ) = get_few_rel_data(split_name="val_wiki[0:5]")
 
-        # pdb.set_trace()
         custom_evaluator = RelationExtractorEvaluator()
-        # pdb.set_trace()
         pipe = get_relation_extraction_pipeline(
             entities_data,
             [
@@ -344,14 +340,12 @@ class TestZeroShotTextClassificationEvaluation:
                 for name, desc in set([(i, j) for i, j in relations_descriptions])
             ],
         )
-        # pdb.set_trace()
-        custom_evaluator.compute(
+        results = custom_evaluator.compute(
             pipe,
             self.get_dataset(gt, sentences),
             input_column="sentences",
             label_column="labels",
             metric=RelEval(),
         )
-        # print("metrics: {}".format(metrics))
-        # pdb.set_trace()
-        assert True
+        assert len(sentences) == 5
+        assert results is not None
