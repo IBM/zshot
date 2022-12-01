@@ -335,7 +335,7 @@ class TestZeroShotTextClassificationEvaluation:
         ) = get_few_rel_data(split_name="val_wiki", limit=5)
 
         # pdb.set_trace()
-        custom_evaluator = RelationExtractorEvaluator(task="text-classification")
+        custom_evaluator = RelationExtractorEvaluator()
         # pdb.set_trace()
         pipe = get_relation_extraction_pipeline(
             entities_data,
