@@ -5,6 +5,7 @@ from datasets import Dataset
 from spacy.tokens import Doc
 
 from zshot import Linker, MentionsExtractor, PipelineConfig
+from zshot.evaluation.dataset.dataset import DatasetWithRelations
 from zshot.evaluation.dataset.fewrel.fewrel import get_few_rel_data
 from zshot.evaluation.evaluator import (
     MentionsExtractorEvaluator,
@@ -64,7 +65,6 @@ class DummyLinkerEnd2EndForEval(Linker):
     def predict(self, docs, batch_size=100):
         rval = []
         for data in self.predictions:
-            # pdb.set_trace()
             rval.append(
                 [Span(item["start"], item["end"], item["label"]) for item in data]
             )
@@ -115,13 +115,14 @@ def get_mentions_extractor_pipe(predictions: List[Tuple[str, str, float]]):
     return MentionsExtractorPipeline(nlp)
 
 
-def get_relation_extraction_pipeline(predictions, relations):
+def get_relation_extraction_pipeline(dataset: DatasetWithRelations):
+
     nlp = spacy.blank("en")
     nlp_config = PipelineConfig(
         relations_extractor=RelationsExtractorZSRC(thr=0.0),
-        linker=DummyLinkerEnd2EndForEval(predictions),
-        relations=relations,
-    )  # [Relation(name="part_of", description="is an instance of something or part of it"), Relation(name="is_in", description="located in, based in"),],)
+        linker=DummyLinkerEnd2EndForEval(dataset["sentence_entities"]),
+        relations=dataset.relations,
+    )
     nlp.add_pipe("zshot", config=nlp_config, last=True)
     return RelationExtractorPipeline(nlp)
 
@@ -316,36 +317,18 @@ class TestMentionsExtractorEvaluator:
 
 
 class TestZeroShotTextClassificationEvaluation:
-    def get_dataset(self, gt: List[str], sentence: List[str]):
-        data_dict = {
-            "sentences": sentence,
-            "labels": gt,
-        }
-        dataset = Dataset.from_dict(data_dict)
-        return dataset
 
     def test_relation_classification_prediction(self):
-        (
-            entities_data,
-            sentences,
-            relations_descriptions,
-            gt,
-        ) = get_few_rel_data(split_name="val_wiki[0:5]")
+        dataset = get_few_rel_data(split_name="val_wiki[0:5]")
 
         custom_evaluator = RelationExtractorEvaluator()
-        pipe = get_relation_extraction_pipeline(
-            entities_data,
-            [
-                Relation(name=name, description=desc)
-                for name, desc in set([(i, j) for i, j in relations_descriptions])
-            ],
-        )
+        pipe = get_relation_extraction_pipeline(dataset)
         results = custom_evaluator.compute(
             pipe,
-            self.get_dataset(gt, sentences),
+            dataset,
             input_column="sentences",
             label_column="labels",
             metric=RelEval(),
         )
-        assert len(sentences) == 5
+        assert len(dataset) == 5
         assert results is not None

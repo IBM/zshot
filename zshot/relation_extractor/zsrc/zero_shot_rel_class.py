@@ -22,7 +22,6 @@ def get_device():
 
 
 device = get_device()
-# torch.use_deterministic_algorithms(True)
 random.seed(0)
 np.random.seed(0)
 torch.manual_seed(0)
@@ -91,18 +90,6 @@ def predict(model, items_to_process, relation_description, batch_size=4):
             all_preds.extend([False] * tokens_tensors.shape[0])
 
     return all_preds, all_probs
-
-
-def softmax(x):
-    normalized = np.exp(x) / sum(np.exp(x))
-    return [1.0 if np.isnan(item) else item for item in normalized]
-
-
-# def download_file_to_path(source_url, dest_path):
-#     dest_dir = os.path.dirname(dest_path)
-#     if not os.path.exists(dest_dir):
-#         os.makedirs(dest_dir)
-#     urllib.request.urlretrieve(source_url, dest_path)
 
 
 def load_model():
@@ -186,11 +173,3 @@ class ZSBert(BertPreTrainedModel):
             outputs = (loss,) + outputs
 
         return outputs
-
-
-random.seed(seed)
-device = get_device()
-
-
-if __name__ == '__main__':
-    load_model()
