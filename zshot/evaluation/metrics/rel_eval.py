@@ -49,4 +49,11 @@ class RelEval(evaluate.Metric):
         acc = accuracy_score(references, predictions, normalize=False)
         scores["overall_accuracy"] = acc
 
+        lab = sorted(list(set(references)))
+        p, r, f1, _ = precision_recall_fscore_support(
+            references, predictions, average=None, labels=lab
+        )
+        scores['prec_by_class'] = dict(zip(lab, p))
+        scores['recall_by_class'] = dict(zip(lab, p))
+        scores['f1_score_by_class'] = dict(zip(lab, f1))
         return scores
