@@ -29,7 +29,8 @@ class RelationsExtractorZSRC(RelationsExtractor):
             for i, e1 in enumerate(doc._.spans):
                 for j, e2 in enumerate(doc._.spans):
                     if (
-                        i == j or (e1, e2) in items_to_process or (e2, e1) in items_to_process
+                        i == j or (e1, e2) in items_to_process or (
+                            e2, e1) in items_to_process
                     ):
                         continue
                     else:
@@ -49,7 +50,8 @@ class RelationsExtractorZSRC(RelationsExtractor):
                         p = relations_probs[pred_class_idx]
                         if p >= self.thr:
                             relations_doc.append(
-                                RelationSpan(start=e1, end=e2, score=p, relation=self.relations[pred_class_idx])
+                                RelationSpan(
+                                    start=e1, end=e2, score=p, relation=self.relations[pred_class_idx])
                             )
             relations_pred.append(relations_doc)
         return relations_pred
