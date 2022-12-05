@@ -58,15 +58,18 @@ class DummyLinkerEnd2EndForEval(Linker):
         return True
 
     def __init__(self, predictions):
+        # this dummy linker works correctly ONLY if no shuffling is done by spacy when batching documents
         super().__init__()
         self.predictions = predictions
-
+        self.curr_idx = 0 
+        
     def predict(self, docs, batch_size=100):
         rval = []
-        for data in self.predictions:
+        for _ in docs:
             rval.append(
-                [Span(item["start"], item["end"], item["label"]) for item in data]
+                [Span(item["start"], item["end"], item["label"]) for item in self.predictions[self.curr_idx]]
             )
+            self.curr_idx += 1    
         return rval
 
 
