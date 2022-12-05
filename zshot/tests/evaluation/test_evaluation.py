@@ -12,6 +12,7 @@ from zshot.evaluation.evaluator import (
     RelationExtractorEvaluator,
     ZeroShotTokenClassificationEvaluator,
 )
+from zshot.evaluation.metrics.rel_eval import RelEval
 from zshot.evaluation.pipeline import (
     LinkerPipeline,
     MentionsExtractorPipeline,
@@ -20,8 +21,6 @@ from zshot.evaluation.pipeline import (
 from zshot.relation_extractor.relation_extractor_zsrc import RelationsExtractorZSRC
 from zshot.utils.alignment_utils import AlignmentMode
 from zshot.utils.data_models import Entity, Span
-from zshot.utils.data_models.relation import Relation
-from zshot.evaluation.metrics.rel_eval import RelEval
 
 ENTITIES = [
     Entity(name="FAC", description="A facility"),
