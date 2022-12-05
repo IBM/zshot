@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 from datasets import Dataset
 
 from zshot.utils.data_models import Entity, Relation
@@ -34,7 +34,7 @@ class DatasetWithEntities(Dataset):
     @classmethod
     def from_dict(
             cls,
-            entities: List[Entity] = None,
+            entities: List[Dict[str, str]] = None,
             **kwargs,
     ) -> Dataset:
         dataset = super().from_dict(**kwargs)
