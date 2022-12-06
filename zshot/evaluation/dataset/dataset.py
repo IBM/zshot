@@ -1,14 +1,15 @@
 from typing import List
 
 from datasets import Dataset
+from datasets.table import Table
 
 from zshot.utils.data_models import Entity, Relation
 
 
 class DatasetWithRelations(Dataset):
 
-    def __init__(self, relations: List[Relation] = None, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, arrow_table: Table, relations: List[Relation] = None, **kwargs):
+        super().__init__(arrow_table=arrow_table, **kwargs)
         self.relations = relations
 
     def __repr__(self):
@@ -18,8 +19,8 @@ class DatasetWithRelations(Dataset):
 
 class DatasetWithEntities(Dataset):
 
-    def __init__(self, entities: List[Entity] = None, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, arrow_table: Table, entities: List[Entity] = None, **kwargs):
+        super().__init__(arrow_table=arrow_table, **kwargs)
         self.entities = entities
 
     def __repr__(self):
