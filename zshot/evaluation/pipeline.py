@@ -52,7 +52,7 @@ class MentionsExtractorPipeline:
 class RelationExtractorPipeline:
     def __init__(self, nlp, batch_size=100):
         self.nlp = nlp
-        self.task = "text-classification"
+        self.task = "relation-extraction"
         self.batch_size = batch_size
 
     def __call__(self, *args, **kwargs):

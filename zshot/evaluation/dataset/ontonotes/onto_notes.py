@@ -57,7 +57,7 @@ def remove_out_of_split(sentence, split):
 
 def load_ontonotes_zs(split: Optional[Union[str, Split]] = None, **kwargs) -> Union[Dict[DatasetWithEntities,
                                                                                          Dataset], Dataset]:
-    dataset_zs = load_dataset("conll2012_ontonotesv5", "english_v12", split=split, **kwargs)
+    dataset_zs = load_dataset("conll2012_ontonotesv5", "english_v12", split=split, ignore_verifications=True, **kwargs)
     if split:
         ontonotes_zs = preprocess_spit(dataset_zs, get_simple_split(split))
     else:
@@ -67,7 +67,7 @@ def load_ontonotes_zs(split: Optional[Union[str, Split]] = None, **kwargs) -> Un
     return ontonotes_zs
 
 
-def preprocess_spit(dataset, split):
+def preprocess_spit(dataset, split) -> DatasetWithEntities:
     dataset = dataset.map(lambda example, idx: {
         "sentences": [remove_out_of_split(s, split) for s in example['sentences']]
     }, with_indices=True)
@@ -81,10 +81,12 @@ def preprocess_spit(dataset, split):
         ner_tags += [[labels.int2str(ent) for ent in s['named_entities']] for s in example['sentences']]
     split_entities = [ent for ent in ONTONOTES_ENTITIES
                       if ent.name in ['NEG'] + CLASSES_PER_SPLIT[split] and ent.name not in TRIVIAL_CLASSES]
-    return DatasetWithEntities.from_dict({
+    dataset = Dataset.from_dict({
         'tokens': tokens,
         'ner_tags': ner_tags
-    }, split=split, entities=split_entities)
+    }, split=split)
+    dataset.entities = split_entities
+    return dataset
 
 
 def get_simple_split(split: str) -> str:

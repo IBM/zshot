@@ -1,4 +1,3 @@
-# import pdb
 from typing import Iterator, List, Tuple
 
 import spacy
@@ -6,12 +5,14 @@ from datasets import Dataset
 from spacy.tokens import Doc
 
 from zshot import Linker, MentionsExtractor, PipelineConfig
+from zshot.evaluation.dataset.dataset import DatasetWithRelations
 from zshot.evaluation.dataset.fewrel.fewrel import get_few_rel_data
 from zshot.evaluation.evaluator import (
     MentionsExtractorEvaluator,
     RelationExtractorEvaluator,
     ZeroShotTokenClassificationEvaluator,
 )
+from zshot.evaluation.metrics.rel_eval import RelEval
 from zshot.evaluation.pipeline import (
     LinkerPipeline,
     MentionsExtractorPipeline,
@@ -20,8 +21,6 @@ from zshot.evaluation.pipeline import (
 from zshot.relation_extractor.relation_extractor_zsrc import RelationsExtractorZSRC
 from zshot.utils.alignment_utils import AlignmentMode
 from zshot.utils.data_models import Entity, Span
-from zshot.utils.data_models.relation import Relation
-from zshot.evaluation.metrics.rel_eval import RelEval
 
 ENTITIES = [
     Entity(name="FAC", description="A facility"),
@@ -59,16 +58,18 @@ class DummyLinkerEnd2EndForEval(Linker):
         return True
 
     def __init__(self, predictions):
+        # this dummy linker works correctly ONLY if no shuffling is done by spacy when batching documents
         super().__init__()
         self.predictions = predictions
+        self.curr_idx = 0
 
     def predict(self, docs, batch_size=100):
         rval = []
-        for data in self.predictions:
-            # pdb.set_trace()
+        for _ in docs:
             rval.append(
-                [Span(item["start"], item["end"], item["label"]) for item in data]
+                [Span(item["start"], item["end"], item["label"]) for item in self.predictions[self.curr_idx]]
             )
+            self.curr_idx += 1
         return rval
 
 
@@ -116,13 +117,14 @@ def get_mentions_extractor_pipe(predictions: List[Tuple[str, str, float]]):
     return MentionsExtractorPipeline(nlp)
 
 
-def get_relation_extraction_pipeline(predictions, relations):
+def get_relation_extraction_pipeline(dataset: DatasetWithRelations):
+
     nlp = spacy.blank("en")
     nlp_config = PipelineConfig(
         relations_extractor=RelationsExtractorZSRC(thr=0.0),
-        linker=DummyLinkerEnd2EndForEval(predictions),
-        relations=relations,
-    )  # [Relation(name="part_of", description="is an instance of something or part of it"), Relation(name="is_in", description="located in, based in"),],)
+        linker=DummyLinkerEnd2EndForEval(dataset["sentence_entities"]),
+        relations=dataset.relations,
+    )
     nlp.add_pipe("zshot", config=nlp_config, last=True)
     return RelationExtractorPipeline(nlp)
 
@@ -317,41 +319,18 @@ class TestMentionsExtractorEvaluator:
 
 
 class TestZeroShotTextClassificationEvaluation:
-    def get_dataset(self, gt: List[str], sentence: List[str]):
-        data_dict = {
-            "sentences": sentence,
-            "labels": gt,
-        }
-        dataset = Dataset.from_dict(data_dict)
-        # dataset.entities = ENTITIES
-        return dataset
 
     def test_relation_classification_prediction(self):
-        (
-            entities_data,
-            sentences,
-            relations_descriptions,
-            gt,
-        ) = get_few_rel_data(split_name="val_wiki", limit=5)
+        dataset = get_few_rel_data(split_name="val_wiki[0:5]")
 
-        # pdb.set_trace()
-        custom_evaluator = RelationExtractorEvaluator(task="text-classification")
-        # pdb.set_trace()
-        pipe = get_relation_extraction_pipeline(
-            entities_data,
-            [
-                Relation(name=name, description=desc)
-                for name, desc in set([(i, j) for i, j in relations_descriptions])
-            ],
-        )
-        # pdb.set_trace()
-        custom_evaluator.compute(
+        custom_evaluator = RelationExtractorEvaluator()
+        pipe = get_relation_extraction_pipeline(dataset)
+        results = custom_evaluator.compute(
             pipe,
-            self.get_dataset(gt, sentences),
+            dataset,
             input_column="sentences",
             label_column="labels",
             metric=RelEval(),
         )
-        # print("metrics: {}".format(metrics))
-        # pdb.set_trace()
-        assert True
+        assert len(dataset) == 5
+        assert results is not None

@@ -26,6 +26,11 @@ def test_ontonotes_zs_split():
     assert dataset.num_rows == 426
 
 
+def test_ontonotes_zs_sub_split():
+    dataset = load_ontonotes_zs(split='test[0:10]')
+    assert dataset.num_rows > 0
+
+
 def test_medmentions_zs():
     dataset = load_medmentions_zs()
     assert 'train' in dataset
