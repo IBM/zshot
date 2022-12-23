@@ -1,3 +1,4 @@
+from functools import partial
 from typing import List, Tuple
 
 import torch
@@ -5,7 +6,6 @@ from torch.utils.data import DataLoader
 from transformers import BertTokenizerFast
 
 from zshot.utils.models.smxm.data import encode_data, ByDescriptionTaggerDataset, tagger_multiclass_collator
-from zshot.utils.models.smxm.model import device
 from zshot.utils.data_models import Entity
 from zshot.utils.data_models import Span
 
@@ -19,6 +19,7 @@ class SmxmInput(dict):
             sep_index: torch.Tensor,
             seq_mask: torch.Tensor,
             split: torch.Tensor,
+            device: torch.device,
     ):
         config = {
             "input_ids": input_ids.to(device),
@@ -126,14 +127,14 @@ def smxm_predict(model, tokenizer, sentences, entity_labels, entity_descriptions
     )
     dataset = ByDescriptionTaggerDataset(encoded_data)
     dataloader = DataLoader(
-        dataset, batch_size=batch_size, collate_fn=tagger_multiclass_collator
+        dataset, batch_size=batch_size, collate_fn=partial(tagger_multiclass_collator, device=model.device)
     )
 
     preds = []
     probabilities = []
     for batch in dataloader:
         with torch.no_grad():
-            inputs = SmxmInput(*batch)
+            inputs = SmxmInput(*batch, device=model.device)
             outputs = model(**inputs)
             probability = (
                 torch.nn.Softmax(dim=-1)(outputs).cpu().numpy().tolist()

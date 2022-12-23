@@ -1,111 +1,32 @@
 import os
-import random
+from typing import Optional, Union
 
-import numpy as np
 import torch
 import torch.nn as nn
-from torch.utils.data import DataLoader
 from transformers import BertConfig, BertModel, BertPreTrainedModel
 
 from zshot.config import MODELS_CACHE_PATH
-from zshot.relation_extractor.zsrc import data_helper
 from zshot.utils.file_utils import download_file
 
-SEED = 42
 MODEL_REMOTE_URL = 'https://huggingface.co/albep/zsrc/resolve/main/zsrc'
-
 MODEL_PATH = os.path.join(MODELS_CACHE_PATH, 'zsrc')
 
 
-def get_device():
-    return 'cpu'
-
-
-device = get_device()
-random.seed(0)
-np.random.seed(0)
-torch.manual_seed(0)
-
-seed = 300
-
-
-def get_preds(model, testloader):
-    model.eval()
-    preds = []
-    true_labels = []
-    device = get_device()
-    for data in testloader:
-        tokens_tensors, segments_tensors, marked_e1, marked_e2, \
-            masks_tensors, label_tensor = [
-                t.to(device) for t in data if t is not None]
-        true_labels.extend(label_tensor.cpu().numpy())
-        with torch.no_grad():
-            outputs = model(input_ids=tokens_tensors,
-                            token_type_ids=segments_tensors,
-                            e1_mask=marked_e1,
-                            e2_mask=marked_e2,
-                            attention_mask=masks_tensors)
-            logits = outputs[0].detach().cpu()
-            preds.extend([torch.argmax(item, dim=-1) for item in logits])
-    return preds, true_labels
-
-
-def test(model, best_model_path, testloader):
-    if model is None and best_model_path is not None:
-        model = torch.load(
-            best_model_path, map_location=torch.device(get_device()))
-    preds, labels = get_preds(model, testloader)
-    preds = [int(item.detach().cpu().numpy()) for item in preds]
-    accuracy = np.mean([1 if bool(preds[i]) == bool(
-        labels[i]) else 0 for i in range(len(preds))])
-    return accuracy
-
-
-def predict(model, items_to_process, relation_description, batch_size=4):
-    # pdb.set_trace()
-    trainset = data_helper.ZSDataset(
-        'test', items_to_process, relation_description)
-    trainloader = DataLoader(trainset, batch_size=batch_size,
-                             collate_fn=data_helper.create_mini_batch_fewrel_aio, shuffle=False)
-    all_preds = []
-    all_probs = []
-    for data in trainloader:
-        tokens_tensors, segments_tensors, marked_e1, marked_e2, \
-            masks_tensors, labels = [
-                t.to(device) for t in data]
-        if tokens_tensors.shape[1] <= 512:
-            with torch.no_grad():
-                outputs = model(input_ids=tokens_tensors,
-                                token_type_ids=segments_tensors,
-                                e1_mask=marked_e1,
-                                e2_mask=marked_e2,
-                                attention_mask=masks_tensors,
-                                labels=labels)
-                preds = outputs[1]
-                probs = preds.detach().cpu().numpy()[:, 1]
-                all_probs.extend(probs)
-                all_preds.extend([item >= 0.5 for item in probs])
-        else:
-            all_probs.extend([-1] * tokens_tensors.shape[0])
-            all_preds.extend([False] * tokens_tensors.shape[0])
-
-    return all_preds, all_probs
-
-
-def load_model():
-    model = ZSBert()
+def load_model(device: Optional[Union[str, torch.device]] = None):
+    model = ZSBert(device)
     if not os.path.isfile(MODEL_PATH):
         download_file(MODEL_REMOTE_URL, MODELS_CACHE_PATH)
 
     model.load_state_dict(torch.load(MODEL_PATH))
-    model.to(get_device())
+    model.to(device)
     model.eval()
     return model
 
 
 class ZSBert(BertPreTrainedModel):
-    def __init__(self):
-        bertconfig = BertConfig.from_pretrained('bert-large-cased', num_labels=2, finetuning_task='fewrel-zero-shot')
+    def __init__(self, device: Optional[Union[str, torch.device]] = 'cpu'):
+        bertconfig = BertConfig.from_pretrained('bert-large-cased', num_labels=2, finetuning_task='fewrel-zero-shot',
+                                                device=device)
         bertconfig.relation_emb_dim = 1024
         super().__init__(bertconfig)
         self.bert = BertModel(bertconfig)
@@ -117,6 +38,7 @@ class ZSBert(BertPreTrainedModel):
             self.relation_emb_dim, bertconfig.num_labels)
         self.batch_size = 4
         self.init_weights()
+        self.bert.to(device)
 
     def forward(
         self,
@@ -162,13 +84,13 @@ class ZSBert(BertPreTrainedModel):
         sent_embedding = self.dropout(sent_embedding)
 
         # [batch_size x hidden_size]
-        logits = self.classifier(sent_embedding).to(device)
+        logits = self.classifier(sent_embedding).to(self.bert.device)
         # add hidden states and attention if they are here
 
         outputs = (torch.softmax(logits, -1),) + outputs[2:]
         if labels is not None:
             ce_loss = nn.CrossEntropyLoss()
-            labels = labels.to(device)
+            labels = labels.to(self.bert.device)
             loss = (ce_loss(logits.view(-1, self.num_labels), labels.view(-1)))
             outputs = (loss,) + outputs
 

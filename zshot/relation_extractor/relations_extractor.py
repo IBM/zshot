@@ -4,6 +4,7 @@ import zlib
 from abc import ABC, abstractmethod
 from typing import List, Iterator, Optional, Union
 
+import torch
 from spacy.tokens import Doc
 from spacy.util import ensure_path
 
@@ -13,8 +14,17 @@ from zshot.utils.data_models.relation_span import RelationSpan
 
 class RelationsExtractor(ABC):
 
-    def __init__(self):
+    def __init__(self, device: Optional[Union[str, torch.device]] = None):
         self._relations = None
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu") if device is None else device
+
+    def set_device(self, device: Union[str, torch.device]):
+        """
+        Set the device to use
+        :param device:
+        :return:
+        """
+        self.device = device
 
     def set_relations(self, relations: Iterator[Relation]):
         """

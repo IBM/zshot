@@ -21,7 +21,8 @@ from zshot.utils.data_models import Entity, Relation
     "mentions_extractor": None,
     "linker": None,
     "relations_extractor": None,
-    "disable_default_ner": True
+    "disable_default_ner": True,
+    "device": None
 })
 def create_zshot_component(nlp: Language, name: str,
                            mentions: Optional[Union[List[Entity], str]],
@@ -30,8 +31,10 @@ def create_zshot_component(nlp: Language, name: str,
                            mentions_extractor: Optional[Union[MentionsExtractor, str]],
                            linker: Optional[Union[Linker, str]],
                            relations_extractor: Optional[Union[RelationsExtractor, str]],
-                           disable_default_ner: Optional[bool] = True):
-    return Zshot(nlp, mentions, entities, relations, mentions_extractor, linker, relations_extractor, disable_default_ner)
+                           disable_default_ner: Optional[bool] = True,
+                           device: Optional[str] = None):
+    return Zshot(nlp, mentions, entities, relations, mentions_extractor, linker, relations_extractor,
+                 disable_default_ner, device)
 
 
 class Zshot:
@@ -43,7 +46,8 @@ class Zshot:
                  mentions_extractor,
                  linker,
                  relations_extractor,
-                 disable_default_ner: Optional[bool] = True):
+                 disable_default_ner,
+                 device):
         self.nlp = nlp
         self.mentions = mentions
         self.entities = entities
@@ -52,6 +56,7 @@ class Zshot:
         self.linker = linker
         self.relations_extractor = relations_extractor
         self.disable_default_ner = disable_default_ner
+        self.device = device
         self.setup()
 
     def setup(self):
@@ -76,13 +81,16 @@ class Zshot:
         # Load Mention Extractor from registered function ID if provided
         if isinstance(self.mentions_extractor, str):
             self.mentions_extractor = spacy_registry.get(registry_name='misc', func_name=self.mentions_extractor)()
+            self.mentions_extractor.set_device(self.device)
 
         # Load Linker from registered function ID if provided
         if isinstance(self.linker, str):
             self.linker = spacy_registry.get(registry_name='misc', func_name=self.linker)()
+            self.linker.set_device(self.device)
 
         if isinstance(self.relations_extractor, str):
             self.relations_extractor = spacy_registry.get(registry_name='misc', func_name=self.relations_extractor)()
+            self.relations_extractor.set_device(device=self.device)
 
         if self.mentions_extractor and self.mentions_extractor.require_existing_ner \
                 and "ner" not in self.nlp.pipe_names:

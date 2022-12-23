@@ -5,8 +5,6 @@ from transformers import BertModel, BertPreTrainedModel, logging
 
 logging.set_verbosity_error()
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
 
 class BertTaggerMultiClass(BertPreTrainedModel):
     def __init__(self, config):

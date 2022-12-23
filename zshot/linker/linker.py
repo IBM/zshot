@@ -4,6 +4,7 @@ import zlib
 from abc import ABC, abstractmethod
 from typing import Iterator, List, Optional, Union
 
+import torch
 from spacy.tokens import Doc
 from spacy.util import ensure_path
 
@@ -17,9 +18,18 @@ class Linker(ABC):
     extracted mentions or perform end-2-end extraction
     """
 
-    def __init__(self):
+    def __init__(self, device: Optional[Union[str, torch.device]] = None):
         self._entities = None
         self._is_end2end = False
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu") if device is None else device
+
+    def set_device(self, device: Union[str, torch.device]):
+        """
+        Set the device to use
+        :param device:
+        :return:
+        """
+        self.device = device
 
     def set_kg(self, entities: Iterator[Entity]):
         """

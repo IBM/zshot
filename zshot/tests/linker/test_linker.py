@@ -63,6 +63,21 @@ def test_dummy_linker():
     del doc, nlp
 
 
+def test_dummy_linker_device():
+    nlp = spacy.blank("en")
+    config = PipelineConfig(
+        mentions_extractor=DummyMentionsExtractor(),
+        linker=DummyLinker(),
+        device="cpu")
+    nlp.add_pipe("zshot", config=config, last=True)
+    assert "zshot" in nlp.pipe_names
+    doc = nlp(EX_DOCS[1])
+    assert len(doc._.mentions) > 0
+    assert len(doc.ents) > 0
+    assert len(doc._.spans) > 0
+    del doc, nlp
+
+
 def test_dummy_linker_with_entities_config():
     nlp = spacy.blank("en")
 

@@ -4,8 +4,6 @@ import torch
 from torch.utils.data import Dataset
 from transformers import BertTokenizerFast
 
-from zshot.utils.models.smxm.model import device
-
 
 class ByDescriptionTaggerDataset(Dataset):
     def __init__(self, data: List[Dict[str, Any]]):
@@ -72,7 +70,8 @@ def encode_data(
 
 
 def tagger_multiclass_collator(
-    data: Union[List[Dict[str, Any]], Dict[str, Any]]
+    data: Union[List[Dict[str, Any]], Dict[str, Any]],
+    device: torch.device,
 ) -> Tuple[
     torch.Tensor,
     torch.Tensor,
