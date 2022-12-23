@@ -14,10 +14,10 @@ from zshot.utils.data_models.relation_span import RelationSpan
 
 class RelationsExtractorZSRC(RelationsExtractor):
     def __init__(self, thr=0.5):
+        super().__init__()
         self.model = None
         self.load_models()
         self.thr = thr
-        super(RelationsExtractor, self).__init__()
 
     def load_models(
             self,
