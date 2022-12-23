@@ -60,6 +60,7 @@ repo_url: https://github.com/IBM/zshot
 edit_uri: ''
 plugins:
 - search
+- include-markdown
 - mkdocstrings:
     handlers:
       python:

@@ -62,6 +62,13 @@ $ pip install zshot
 
 </div>
 
+## Examples
+
+|            Example             | Notebook                                                                                                                                                           |
+|:------------------------------:|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Installation and Visualization | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/IBM/zshot/blob/examples/Zshot_Example.ipynb) |
+
+
 ## Zshot Approach
 
 ZShot contains two different components, the **mentions extractor** and the **linker**.
