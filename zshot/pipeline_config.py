@@ -18,7 +18,8 @@ class PipelineConfig(dict):
                  mentions: Optional[Union[List[Entity], List[str], str]] = None,
                  entities: Optional[Union[List[Entity], List[str], str]] = None,
                  relations: Optional[Union[List[Relation], str]] = None,
-                 disable_default_ner: Optional[bool] = True) -> None:
+                 disable_default_ner: Optional[bool] = True,
+                 device: Optional[str] = None) -> None:
         config = {}
 
         if mentions_extractor:
@@ -47,6 +48,9 @@ class PipelineConfig(dict):
 
         if disable_default_ner:
             config.update({'disable_default_ner': disable_default_ner})
+
+        if device:
+            config.update({'device': device})
 
         super().__init__(**config)
 

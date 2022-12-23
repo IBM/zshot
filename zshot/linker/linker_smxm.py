@@ -1,16 +1,15 @@
 from typing import Iterator, List, Optional, Union
 
-import torch
 from spacy.tokens import Doc
 from transformers import BertTokenizerFast
 
 from zshot.linker.linker import Linker
-from zshot.utils.models.smxm.model import BertTaggerMultiClass, device
+from zshot.utils.data_models import Span
+from zshot.utils.models.smxm.model import BertTaggerMultiClass
 from zshot.utils.models.smxm.utils import (
     get_entities_names_descriptions,
     smxm_predict
 )
-from zshot.utils.data_models import Span
 
 ONTONOTES_MODEL_NAME = "ibm/smxm"
 
@@ -27,7 +26,6 @@ class LinkerSMXM(Linker):
 
         self.model_name = model_name
         self.model = None
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     @property
     def is_end2end(self) -> bool:
@@ -39,7 +37,7 @@ class LinkerSMXM(Linker):
         if self.model is None:
             self.model = BertTaggerMultiClass.from_pretrained(
                 self.model_name, output_hidden_states=True
-            ).to(device)
+            ).to(self.device)
 
     def predict(self, docs: Iterator[Doc], batch_size: Optional[Union[int, None]] = None) -> List[List[Span]]:
         """
