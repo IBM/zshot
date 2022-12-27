@@ -69,8 +69,8 @@ def test_regen_linker_pipeline():
 def test_regen_linker_wikification():
     nlp = spacy.blank("en")
     trie = Trie()
-    trie.add([0, 1, 2, 3])
-    trie.add([0, 2, 2, 3])
+    trie.add([794, 536, 1])
+    trie.add([794, 357, 1])
     config = PipelineConfig(
         mentions_extractor=DummyMentionsExtractor(),
         linker=LinkerRegen(trie=trie),
