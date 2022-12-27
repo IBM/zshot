@@ -11,6 +11,7 @@ from zshot.linker.linker_regen.linker_regen import LinkerRegen
 from zshot.linker.linker_regen.utils import load_wikipedia_trie, spans_to_wikipedia
 from zshot.mentions_extractor import MentionsExtractorSpacy
 from zshot.tests.config import EX_DOCS, EX_ENTITIES
+from zshot.tests.mentions_extractor.test_mention_extractor import DummyMentionsExtractor
 from zshot.utils.data_models import Span
 
 logger = logging.getLogger(__name__)
@@ -27,9 +28,9 @@ def teardown():
 
 
 def test_regen_linker():
-    nlp = spacy.load("en_core_web_sm")
+    nlp = spacy.blank("en")
     config = PipelineConfig(
-        mentions_extractor=MentionsExtractorSpacy(),
+        mentions_extractor=DummyMentionsExtractor(),
         linker=LinkerRegen(),
         entities=EX_ENTITIES
     )
@@ -46,10 +47,10 @@ def test_regen_linker():
 
 
 def test_regen_linker_wikification():
-    nlp = spacy.load("en_core_web_sm")
+    nlp = spacy.blank("en")
     trie = load_wikipedia_trie()
     config = PipelineConfig(
-        mentions_extractor=MentionsExtractorSpacy(),
+        mentions_extractor=DummyMentionsExtractor(),
         linker=LinkerRegen(trie=trie),
     )
     nlp.add_pipe("zshot", config=config, last=True)
@@ -65,10 +66,10 @@ def test_regen_linker_wikification():
 
 
 def test_regen_linker_wikification_with_links():
-    nlp = spacy.load("en_core_web_sm")
+    nlp = spacy.blank("en")
     trie = load_wikipedia_trie()
     config = PipelineConfig(
-        mentions_extractor=MentionsExtractorSpacy(),
+        mentions_extractor=DummyMentionsExtractor(),
         linker=LinkerRegen(trie=trie),
     )
     nlp.add_pipe("zshot", config=config, last=True)
