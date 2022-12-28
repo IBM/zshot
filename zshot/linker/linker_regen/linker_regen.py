@@ -16,19 +16,22 @@ END_ENT_TOKEN = "[END_ENT]"
 
 class LinkerRegen(Linker):
     """ REGEN linker """
-    def __init__(self, max_input_len=384, max_output_len=15, num_beams=10):
+    def __init__(self, max_input_len=384, max_output_len=15, num_beams=10, trie=None):
         """
         :param max_input_len: Max length of input
         :param max_output_len: Max length of output
         :param num_beams: Number of beans to use
+        :param trie: If the trie is given the linker will use it to restrict the search space.
+        Custom entities won't be used if the trie is given.
         """
         super().__init__()
         self.model = None
         self.tokenizer = None
-        self.trie = None
         self.max_input_len = max_input_len
         self.max_output_len = max_output_len
         self.num_beams = num_beams
+        self.skip_set_kg = False if trie is None else True
+        self.trie = trie
 
     def set_kg(self, entities: Iterator[Entity]):
         """ Set new entities
@@ -36,13 +39,14 @@ class LinkerRegen(Linker):
         :param entities: New entities to use
         """
         super().set_kg(entities)
-        self.load_tokenizer()
-        self.trie = Trie(
-            [
-                self.tokenizer(e.name, return_tensors="pt")['input_ids'][0].tolist()
-                for e in entities
-            ]
-        )
+        if not self.skip_set_kg:
+            self.load_tokenizer()
+            self.trie = Trie(
+                [
+                    self.tokenizer(e.name, return_tensors="pt")['input_ids'][0].tolist()
+                    for e in entities
+                ]
+            )
 
     def load_models(self):
         """ Load Model """
