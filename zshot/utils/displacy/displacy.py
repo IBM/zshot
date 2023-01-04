@@ -72,5 +72,8 @@ class displacy:
                     return display(HTML('<span class="tex2jax_ignore">{}</span>'.format(html)))
             return html
 
+        if method == "render":
+            kwargs.update({"jupyter": jupyter})
+
         disp = getattr(s_displacy, method)
-        return disp(docs, style=style, options=options, jupyter=jupyter, **kwargs)
+        return disp(docs, style=style, options=options, **kwargs)
