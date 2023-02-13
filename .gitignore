@@ -130,4 +130,3 @@ dmypy.json
 .idea/
 .DS_Store
 codecov
-ensemble_examples.ipynb
