@@ -2,7 +2,6 @@ import spacy
 
 from zshot import PipelineConfig
 from zshot.linker import LinkerSMXM, LinkerTARS
-from zshot.tests.config import EX_DOCS, EX_ENTITIES
 from zshot.linker.linker_ensemble import LinkerEnsemble
 from zshot.utils.data_models import Entity
 
