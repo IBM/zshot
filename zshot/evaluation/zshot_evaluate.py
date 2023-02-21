@@ -1,4 +1,4 @@
-from typing import Optional, Union, Dict
+from typing import Optional, Union, Dict, List
 
 import spacy
 from datasets import Dataset
@@ -34,7 +34,7 @@ def evaluate(nlp: spacy.language.Language,
     return results
 
 
-def prettify_evaluate_report(evaluation: Dict, name: str = "", decimals: int = 4) -> list[PrettyTable]:
+def prettify_evaluate_report(evaluation: Dict, name: str = "", decimals: int = 4) -> List[PrettyTable]:
     """
     Convert an evaluation report Dict to a formatted string
     :param evaluation: The evaluation report dict
