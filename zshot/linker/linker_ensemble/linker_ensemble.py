@@ -1,4 +1,4 @@
-from typing import Iterator
+from typing import Iterator, Optional, List
 
 from spacy.tokens import Doc
 
@@ -10,7 +10,20 @@ from zshot.linker.linker_ensemble.utils import sub_span_scoring_per_description
 
 
 class LinkerEnsemble(Linker):
-    def __init__(self, linkers=None, enhance_entities=None, strategy='max', threshold=0.5):
+    def __init__(self, enhance_entities: List[List[Entity]],
+                 linkers: Optional[List[Linker]] = None,
+                 strategy: Optional[str] = 'max',
+                 threshold: Optional[float] = 0.5):
+        """ Ensemble of linkers and entities to improve performance.
+            Each combination of linker with entity will be a voter.
+
+        :param linkers: Linkers to use in the ensemble
+        :param enhance_entities: Entities to use in the ensemble
+        :param strategy: Strategy to use. Options: max; count.
+            When `max` choose the label with max total vote score.
+            When `count` choose the label with max total vote count.
+        :param threshold: Threshold to use. Proportion of voters voting the entity.
+        """
         super(LinkerEnsemble, self).__init__()
         if linkers is not None:
             self.linkers = linkers
@@ -39,7 +52,12 @@ class LinkerEnsemble(Linker):
             linker.set_kg(entities)
 
     def predict(self, docs: Iterator[Doc], batch_size=None):
-        # docs = docs[0:1]
+        """
+        Perform the entity prediction
+        :param docs: A list of spacy Document
+        :param batch_size: The batch size
+        :return: List Spans for each Document in docs
+        """
         spans = []
         if self.enhance_entities is not None:
             for entities in self.enhance_entities:
@@ -51,9 +69,9 @@ class LinkerEnsemble(Linker):
             for linker in self.linkers:
                 span_prediction = linker.predict(docs, batch_size)
                 spans.append(span_prediction)
-        return self.prediction_ensemble(spans, docs)
+        return self.prediction_ensemble(spans)
 
-    def prediction_ensemble(self, spans, docs):
+    def prediction_ensemble(self, spans):
         doc_ensemble_spans = []
         num_doc = len(spans[0])
         for doc_idx in range(num_doc):
