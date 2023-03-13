@@ -21,47 +21,28 @@ In ZShot the data is downloaded from the original repository and preprocessed to
 
 ### How to evaluate ZShot
 
-The package `evaluation` contains all the functionalities to evaluate the ZShot components. The main function is `zshot.evaluation.zshot_evaluate.evaluate`, that will take as input the SpaCy `nlp` model and the dataset(s) and split(s) to evaluate. It will return a `str` containing a table with the results of the evaluation. For instance the evaluation of the ZShot custom component implemented above would be:
+The package `evaluation` contains all the functionalities to evaluate the ZShot components. The main function is `zshot.evaluation.zshot_evaluate.evaluate`, that will take as input the SpaCy `nlp` model and the dataset to evaluate. It will return a `str` containing a table with the results of the evaluation. For instance the evaluation of the TARS linker in ZShot for the *Ontonotes validation* set would be:
 
 ```python
 import spacy
 
 from zshot import PipelineConfig
-from zshot.linker import LinkerRegen
-from zshot.mentions_extractor import MentionsExtractorSpacy
-from zshot.utils.data_models import Entity
-from zshot.evaluation.zshot_evaluate import evaluate
-from datasets import Split
+from zshot.linker import LinkerTARS
+from zshot.evaluation.dataset import load_ontonotes_zs
+from zshot.evaluation.zshot_evaluate import evaluate, prettify_evaluate_report
+from zshot.evaluation.metrics.seqeval.seqeval import Seqeval
 
-nlp = spacy.load("en_core_web_sm")
+ontonotes_zs = load_ontonotes_zs('validation')
+
+
+nlp = spacy.blank("en")
 nlp_config = PipelineConfig(
-    mentions_extractor=MentionsExtractorSpacy(),
-    linker=LinkerRegen(),
-    entities=[
-        Entity(name="Paris",
-               description="Paris is located in northern central France, in a north-bending arc of the river Seine"),
-        Entity(name="IBM",
-               description="International Business Machines Corporation (IBM) is an American multinational technology corporation headquartered in Armonk, New York"),
-        Entity(name="New York", description="New York is a city in U.S. state"),
-        Entity(name="Florida", description="southeasternmost U.S. state"),
-        Entity(name="American",
-               description="American, something of, from, or related to the United States of America, commonly known as the United States or America"),
-        Entity(name="Chemical formula",
-               description="In chemistry, a chemical formula is a way of presenting information about the chemical proportions of atoms that constitute a particular chemical compound or molecule"),
-        Entity(name="Acetamide",
-               description="Acetamide (systematic name: ethanamide) is an organic compound with the formula CH3CONH2. It is the simplest amide derived from acetic acid. It finds some use as a plasticizer and as an industrial solvent."),
-        Entity(name="Armonk",
-               description="Armonk is a hamlet and census-designated place (CDP) in the town of North Castle, located in Westchester County, New York, United States."),
-        Entity(name="Acetic Acid",
-               description="Acetic acid, systematically named ethanoic acid, is an acidic, colourless liquid and organic compound with the chemical formula CH3COOH"),
-        Entity(name="Industrial solvent",
-               description="Acetamide (systematic name: ethanamide) is an organic compound with the formula CH3CONH2. It is the simplest amide derived from acetic acid. It finds some use as a plasticizer and as an industrial solvent."),
-    ]
+    linker=LinkerTARS(),
+    entities=ontonotes_zs.entities
 )
+
 nlp.add_pipe("zshot", config=nlp_config, last=True)
 
-
-evaluation = evaluate(nlp, datasets="ontonotes", 
-                      splits=[Split.VALIDATION])
-print(evaluation)
+evaluation = evaluate(nlp, ontonotes_zs, metric=Seqeval())
+prettify_evaluate_report(evaluation)
 ```

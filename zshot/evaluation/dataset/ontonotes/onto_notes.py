@@ -57,7 +57,8 @@ def remove_out_of_split(sentence, split):
 
 def load_ontonotes_zs(split: Optional[Union[str, Split]] = None, **kwargs) -> Union[Dict[DatasetWithEntities,
                                                                                          Dataset], Dataset]:
-    dataset_zs = load_dataset("conll2012_ontonotesv5", "english_v12", split=split, ignore_verifications=True, **kwargs)
+    dataset_zs = load_dataset("conll2012_ontonotesv5", "english_v12",
+                              split=split, verification_mode='no_checks', **kwargs)
     if split:
         ontonotes_zs = preprocess_spit(dataset_zs, get_simple_split(split))
     else:
