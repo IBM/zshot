@@ -207,13 +207,28 @@ print(doc._.mentions)
 
 Evaluation is an important process to keep improving the performance of the models, that's why ZShot allows to evaluate the component with two predefined datasets: OntoNotes and MedMentions, in a Zero-Shot version in which the entities of the test and validation splits don't appear in the train set.  
 
-The package `evaluation` contains all the functionalities to evaluate the ZShot components. The main function is `zshot.evaluation.zshot_evaluate.evaluate`, that will take as input the SpaCy `nlp` model and the dataset(s) and split(s) to evaluate. It will return a `str` containing a table with the results of the evaluation. For instance the evaluation of the ZShot custom component implemented above would be:
+The package `evaluation` contains all the functionalities to evaluate the ZShot components. The main function is `zshot.evaluation.zshot_evaluate.evaluate`, that will take as input the SpaCy `nlp` model and the dataset to evaluate. It will return a `str` containing a table with the results of the evaluation. For instance the evaluation of the TARS linker in ZShot for the *Ontonotes validation* set would be:
 
 ```python
-from zshot.evaluation.zshot_evaluate import evaluate
-from datasets import Split
+import spacy
 
-evaluation = evaluate(new_nlp, datasets="ontonotes", 
-                      splits=[Split.VALIDATION])
-print(evaluation)
+from zshot import PipelineConfig
+from zshot.linker import LinkerTARS
+from zshot.evaluation.dataset import load_ontonotes_zs
+from zshot.evaluation.zshot_evaluate import evaluate, prettify_evaluate_report
+from zshot.evaluation.metrics.seqeval.seqeval import Seqeval
+
+ontonotes_zs = load_ontonotes_zs('validation')
+
+
+nlp = spacy.blank("en")
+nlp_config = PipelineConfig(
+    linker=LinkerTARS(),
+    entities=ontonotes_zs.entities
+)
+
+nlp.add_pipe("zshot", config=nlp_config, last=True)
+
+evaluation = evaluate(nlp, ontonotes_zs, metric=Seqeval())
+prettify_evaluate_report(evaluation)
 ```
