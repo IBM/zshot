@@ -49,7 +49,7 @@ if __name__ == "__main__":
     if args.linker == "all":
         linkers = list(LINKERS.keys())
     else:
-        linkers = [args.linker]
+        linkers = args.linker.split(',')
 
     if args.mode == "full":
         if linkers:
