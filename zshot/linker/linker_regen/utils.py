@@ -2,7 +2,6 @@ import json
 import pickle
 from typing import Dict, List
 
-import pytest
 from huggingface_hub import hf_hub_download
 
 from zshot.linker.linker_regen.trie import Trie
@@ -42,7 +41,6 @@ def load_wikipedia_trie() -> Trie:
     return wikipedia_trie
 
 
-@pytest.mark.skip(reason="Too expensive to run on every commit")
 def load_wikipedia_mapping() -> Dict[str, str]:
     """
     Load the wikipedia trie from the HB hub

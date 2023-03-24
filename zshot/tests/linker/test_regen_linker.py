@@ -87,11 +87,13 @@ def test_regen_linker_wikification():
     del doc, nlp, config
 
 
+@pytest.mark.skip(reason="Too expensive to run on every commit")
 def test_load_wikipedia_trie():
     trie = load_wikipedia_trie()
     assert len(list(trie.trie_dict.keys())) == 6952
 
 
+@pytest.mark.skip(reason="Too expensive to run on every commit")
 def test_span_to_wiki():
     s = Span(label="Surfing", start=0, end=10)
     wiki_links = spans_to_wikipedia([s])
