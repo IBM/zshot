@@ -38,7 +38,7 @@ jobs:
         pip install -r requirements/devel.txt
     - name: Lint with flake8
       run: |
-        flake8 --ignore E501 zshot/
+        flake8 --ignore E501,W503 zshot/
     - name: Install Spacy pipeline
       run: |
         python -m spacy download en_core_web_sm
