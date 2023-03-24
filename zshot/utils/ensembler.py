@@ -34,7 +34,6 @@ class Ensembler:
             all_union_spans = [self.ensemble_max(s) for k, s in spans.items()]
         else:
             all_union_spans = [self.ensemble_count(s) for k, s in spans.items()]
-
         all_union_spans = [s for s in all_union_spans if s.score > self.threshold]
         all_union_spans = self.inclusive(all_union_spans)
         return all_union_spans
@@ -94,14 +93,14 @@ class Ensembler:
     @staticmethod
     def inclusive(spans: List[Span]) -> List[Span]:
         n = len(spans)
-        non_redundant_spans = []
+        non_overlapping_spans = []
         for i in range(n):
-            is_redundant = False
+            is_overlapping = False
             for j in range(n):
                 if spans[i].start >= spans[j].start and spans[i].end <= spans[j].end:
                     if spans[i].start > spans[j].start or spans[i].end < spans[j].end:
-                        is_redundant = True
+                        is_overlapping = True
                         break
-            if not is_redundant:
-                non_redundant_spans.append(spans[i])
-        return non_redundant_spans
+            if not is_overlapping:
+                non_overlapping_spans.append(spans[i])
+        return non_overlapping_spans

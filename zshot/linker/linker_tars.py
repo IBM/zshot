@@ -35,23 +35,23 @@ class LinkerTARS(Linker):
 
         :param entities: New entities to use
         """
-        old_entities = self._entities
+        old_entities = self.entities
         super().set_kg(entities)
+        self.flat_entities()
         if old_entities != entities:
-            self.flat_entities()
-            self.task = f'zshot.ner.{hash(tuple(self._entities))}'
+            self.task = f'zshot.ner.{hash(tuple(self.entities))}'
             if not self.model:
                 self.load_models()
             self.model.add_and_switch_to_new_task(self.task,
-                                                  self._entities, label_type='ner')
+                                                  self.entities, label_type='ner')
 
     def flat_entities(self):
         """ As TARS use only the labels, take just the name of the entities and not the description """
-        if isinstance(self._entities, dict):
-            self._entities = list(self._entities.keys())
-        if isinstance(self._entities, list):
-            self._entities = [e.name if type(e) == Entity else e for e in self._entities]
-        if self._entities is None:
+        if isinstance(self.entities, dict):
+            self._entities = list(self.entities.keys())
+        if isinstance(self.entities, list):
+            self._entities = [e.name if type(e) == Entity else e for e in self.entities]
+        if self.entities is None:
             self._entities = []
 
     def load_models(self):
@@ -65,9 +65,9 @@ class LinkerTARS(Linker):
                 self.task = self.default_entities
             else:
                 self.flat_entities()
-                self.task = f'zshot.ner.{hash(tuple(self._entities))}'
+                self.task = f'zshot.ner.{hash(tuple(self.entities))}'
                 self.model.add_and_switch_to_new_task(self.task,
-                                                      self._entities, label_type='ner')
+                                                      self.entities, label_type='ner')
 
     def predict(self, docs: Iterator[Doc], batch_size: Optional[Union[int, None]] = None) -> List[List[Span]]:
         """

@@ -9,11 +9,11 @@ from zshot.utils.data_models import Entity
 def test_ensemble_linker_with_entities_config():
     nlp = spacy.blank("en")
     nlp.add_pipe("zshot", config=PipelineConfig(
+        entities=[
+            Entity(name="fruits", description="The sweet and fleshy product of a tree or other plant."),
+            Entity(name="fruits", description="Names of fruits such as banana, oranges")
+        ],
         linker=LinkerEnsemble(
-            enhance_entities=[
-                [Entity(name="fruits", description="The sweet and fleshy product of a tree or other plant.")],
-                [Entity(name="fruits", description="Names of fruits such as banana, oranges")]
-            ],
             linkers=[
                 LinkerSMXM(),
                 LinkerTARS(),

@@ -6,11 +6,11 @@ from zshot.linker import Linker
 from zshot.linker import LinkerSMXM
 from zshot.utils.ensembler import Ensembler
 from zshot.utils.data_models import Entity
-from zshot.linker.linker_ensemble.utils import sub_span_scoring_per_description
+from zshot.linker.linker_ensemble.utils import sub_span_scoring_per_description, get_enhance_entities
 
 
 class LinkerEnsemble(Linker):
-    def __init__(self, enhance_entities: List[List[Entity]],
+    def __init__(self,
                  linkers: Optional[List[Linker]] = None,
                  strategy: Optional[str] = 'max',
                  threshold: Optional[float] = 0.5):
@@ -18,11 +18,10 @@ class LinkerEnsemble(Linker):
             Each combination of linker with entity will be a voter.
 
         :param linkers: Linkers to use in the ensemble
-        :param enhance_entities: Entities to use in the ensemble
-        :param strategy: Strategy to use. Options: max; count.
-            When `max` choose the label with max total vote score.
-            When `count` choose the label with max total vote count.
-        :param threshold: Threshold to use. Proportion of voters voting the entity.
+        :param strategy: Strategy to use. Options: max; count
+            When `max` choose the label with max total vote score
+            When `count` choose the label with max total vote count
+        :param threshold: Threshold to use. Proportion of voters voting the entity
         """
         super(LinkerEnsemble, self).__init__()
         if linkers is not None:
@@ -32,11 +31,10 @@ class LinkerEnsemble(Linker):
             self.linkers = [
                 LinkerSMXM()
             ]
-        self.enhance_entities = enhance_entities
+        self.enhance_entities = []
         self.strategy = strategy
         self.threshold = threshold
-        self.ensembler = Ensembler(len(self.linkers),
-                                   len(enhance_entities) if enhance_entities is not None else -1)
+        self.ensembler = None
 
     def set_smxm_model(self, smxm_model):
         for linker in self.linkers:
@@ -48,6 +46,11 @@ class LinkerEnsemble(Linker):
         Set entities that linker can use
         :param entities: The list of entities
         """
+        super().set_kg(entities)
+        self.enhance_entities = get_enhance_entities(self.entities)
+        self.ensembler = Ensembler(len(self.linkers),
+                                   len(self.enhance_entities) if self.enhance_entities is not None else -1,
+                                   threshold=self.threshold)
         for linker in self.linkers:
             linker.set_kg(entities)
 

@@ -17,7 +17,7 @@ install:
 
 # command to run tests
 script:
-  - flake8 --ignore E501 zshot/
+  - flake8 --ignore E501,W503 zshot/
   - python -m pytest -v
 
 before_deploy:
