@@ -10,7 +10,6 @@ from zshot import PipelineConfig
 from zshot.linker.linker_regen.linker_regen import LinkerRegen
 from zshot.linker.linker_regen.trie import Trie
 from zshot.linker.linker_regen.utils import load_wikipedia_trie, spans_to_wikipedia, create_input
-from zshot.mentions_extractor import MentionsExtractorSpacy
 from zshot.tests.config import EX_DOCS, EX_ENTITIES
 from zshot.tests.mentions_extractor.test_mention_extractor import DummyMentionsExtractor
 from zshot.utils.data_models import Span
