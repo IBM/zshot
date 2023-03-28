@@ -40,6 +40,8 @@ def test_regen_linker():
 
     doc = nlp(EX_DOCS[1])
     assert len(doc.ents) > 0
+    doc = nlp("")
+    assert len(doc.ents) == 0
     docs = [doc for doc in nlp.pipe(EX_DOCS)]
     assert all(len(doc.ents) > 0 for doc in docs)
     del nlp.get_pipe('zshot').mentions_extractor, nlp.get_pipe('zshot').entities, nlp.get_pipe('zshot').nlp
