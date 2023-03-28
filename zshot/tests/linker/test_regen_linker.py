@@ -9,7 +9,7 @@ import spacy
 from zshot import PipelineConfig
 from zshot.linker.linker_regen.linker_regen import LinkerRegen
 from zshot.linker.linker_regen.trie import Trie
-from zshot.linker.linker_regen.utils import load_wikipedia_trie, spans_to_wikipedia
+from zshot.linker.linker_regen.utils import load_wikipedia_trie, spans_to_wikipedia, create_input
 from zshot.mentions_extractor import MentionsExtractorSpacy
 from zshot.tests.config import EX_DOCS, EX_ENTITIES
 from zshot.tests.mentions_extractor.test_mention_extractor import DummyMentionsExtractor
@@ -99,3 +99,18 @@ def test_span_to_wiki():
     wiki_links = spans_to_wikipedia([s])
     assert len(wiki_links) > 0
     assert wiki_links[0].startswith("https://en.wikipedia.org/wiki?curid=")
+
+
+def test_create_input():
+    start_delimiter = "[START]"
+    end_delimiter = "[END]"
+    max_length = 10
+
+    times_rep = 6
+    sentence = "[START]" + " test" * times_rep + " [END]"
+    input_sentence = create_input(sentence, max_length, start_delimiter, end_delimiter)
+    assert input_sentence == sentence
+    times_rep = 12
+    sentence = "[START]" + " test" * times_rep + " [END]"
+    input_sentence = create_input(sentence, max_length, start_delimiter, end_delimiter)
+    assert input_sentence == " ".join(["test" for i in range(9)])
