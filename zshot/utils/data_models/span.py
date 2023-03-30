@@ -1,10 +1,21 @@
+from typing import Any
+
 import zlib
 
-from spacy.tokens import Doc, Span
+import spacy
+from spacy.tokens import Doc
 
 
 class Span:
     def __init__(self, start: int, end: int, label: str = None, score: float = None, kb_id: str = None):
+        """  Class for handling Spans with scores
+
+        :param start: Start char idx of the span
+        :param end: End char idx of the span
+        :param label: Label of the span (category it belongs to, e.g.: PER)
+        :param score: Score of the prediction
+        :param kb_id: ID to Knowledge base (e.g.: wikipedia)
+        """
         self.start = start
         self.end = end
         self.label = label
@@ -17,7 +28,14 @@ class Span:
     def __hash__(self):
         return zlib.crc32(self.__repr__().encode())
 
-    def to_spacy_span(self, doc: Doc) -> Span:
+    def __eq__(self, other: Any):
+        return (type(other) == type(self)
+                and self.start == other.start
+                and self.end == other.end
+                and self.label == other.label
+                and self.score == other.score)
+
+    def to_spacy_span(self, doc: Doc) -> spacy.tokens.Span:
         kwargs = {
             'alignment_mode': 'expand'
         }
@@ -29,6 +47,6 @@ class Span:
         return doc.char_span(self.start, self.end, **kwargs)
 
     @staticmethod
-    def from_spacy_span(spacy_span: Span, score=None):
+    def from_spacy_span(spacy_span: spacy.tokens.Span, score=None) -> "Span":
         return Span(spacy_span.start_char, spacy_span.end_char, spacy_span.label_, score=score,
                     kb_id=str(spacy_span.kb_id))

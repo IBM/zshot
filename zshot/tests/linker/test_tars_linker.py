@@ -7,6 +7,7 @@ import spacy
 from zshot import PipelineConfig, Linker
 from zshot.linker import LinkerTARS
 from zshot.tests.config import EX_DOCS, EX_ENTITIES
+from zshot.utils.data_models import Entity
 
 OVERLAP_TEXT = "Senator McConnell in addition to this the New York Times editors wrote in reaction to the " \
                "Supreme Court 's decision striking down the military tribunal set up to private detainees " \
@@ -89,3 +90,34 @@ def test_tars_end2end_incomplete_spans():
     del nlp.get_pipe('zshot').linker.model, nlp.get_pipe('zshot').linker
     nlp.remove_pipe('zshot')
     del nlp, config_zshot
+
+
+def test_flat_entities():
+    linker_tars = LinkerTARS()
+
+    # Dict
+    entities = {
+        "company": "Company entity description",
+        "location": "Location entity description",
+        "organic compound": "Organic compound entity description"
+    }
+    linker_tars.set_kg(entities)
+    assert linker_tars.entities == ["company", "location", "organic compound"]
+
+    # List of strings
+    entities = ["company", "location", "organic compound"]
+    linker_tars.set_kg(entities)
+    assert linker_tars.entities == ["company", "location", "organic compound"]
+
+    # List of entities
+    entities = [
+        Entity(name="company", description="Company entity description"),
+        Entity(name="location", description="Location entity description"),
+        Entity(name="organic compound", description="Organic compound entity description")
+    ]
+    linker_tars.set_kg(entities)
+    assert linker_tars.entities == ["company", "location", "organic compound"]
+
+    # None
+    linker_tars.set_kg(None)
+    assert linker_tars.entities == []

@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 class Entity(BaseModel):
     name: str
-    description: str
+    description: Optional[str] = None
     vocabulary: Optional[List[str]] = None
 
     def __hash__(self):

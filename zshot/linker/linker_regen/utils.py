@@ -2,7 +2,6 @@ import json
 import pickle
 from typing import Dict, List
 
-import pytest
 from huggingface_hub import hf_hub_download
 
 from zshot.linker.linker_regen.trie import Trie
@@ -25,7 +24,6 @@ def create_input(sentence, max_length, start_delimiter, end_delimiter):
         right_index = min(len(sent_list), end_delimiter_index + half_context + (
             half_context - (start_delimiter_index - left_index)))
         left_index = left_index - max(0, (half_context - (right_index - end_delimiter_index)))
-        print(len(sent_list[left_index:right_index]))
         return " ".join(sent_list[left_index:right_index])
 
 
@@ -42,7 +40,6 @@ def load_wikipedia_trie() -> Trie:
     return wikipedia_trie
 
 
-@pytest.mark.skip(reason="Too expensive to run on every commit")
 def load_wikipedia_mapping() -> Dict[str, str]:
     """
     Load the wikipedia trie from the HB hub

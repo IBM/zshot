@@ -117,6 +117,7 @@ def get_entities_names_descriptions(
 
     entity_labels = [e.name for e in entities]
     entity_descriptions = [e.description for e in entities]
+    entities.pop(0)
 
     return entity_labels, entity_descriptions
 
