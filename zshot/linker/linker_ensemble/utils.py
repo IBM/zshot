@@ -3,15 +3,6 @@ import random
 from zshot.utils.data_models import Span
 
 
-def sub_span_scoring(spans):
-    for k in spans.keys():
-        for p in spans.keys():
-            if k[0] >= p[0] and k[1] <= p[1]:
-                if k[0] > p[0] or k[1] < p[1]:
-                    for s in spans[k]:
-                        spans[p].append(Span(label=s.label, score=s.score, start=p[0], end=p[1]))
-
-
 def sub_span_scoring_per_description(union_spans, spans):
     for k in union_spans.keys():
         for span in spans:

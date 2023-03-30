@@ -62,16 +62,12 @@ class LinkerEnsemble(Linker):
         :return: List Spans for each Document in docs
         """
         spans = []
-        if self.enhance_entities is not None:
-            for entities in self.enhance_entities:
-                self.set_kg(entities)
-                for linker in self.linkers:
-                    span_prediction = linker.predict(docs, batch_size)
-                    spans.append(span_prediction)
-        else:
+        for entities in self.enhance_entities:
+            self.set_kg(entities)
             for linker in self.linkers:
                 span_prediction = linker.predict(docs, batch_size)
                 spans.append(span_prediction)
+
         return self.prediction_ensemble(spans)
 
     def prediction_ensemble(self, spans):
