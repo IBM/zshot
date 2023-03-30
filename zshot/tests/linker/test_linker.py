@@ -27,7 +27,7 @@ class DummyLinkerEnd2End(Linker):
         return True
 
     def predict(self, docs: Iterator[Doc], batch_size=None):
-        return [[Span(0, len(doc.text) - 1, label='label')] for doc in docs]
+        return [[Span(0, len(doc.text) - 1, label='label', score=0.9)] for doc in docs]
 
 
 class DummyLinkerWithEntities(Linker):

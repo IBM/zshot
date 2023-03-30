@@ -1,22 +1,9 @@
-import gc
-import shutil
-from pathlib import Path
-
-import pytest
 import spacy
 
 from zshot import PipelineConfig
-from zshot.linker import LinkerSMXM, LinkerTARS
 from zshot.linker.linker_ensemble import LinkerEnsemble
+from zshot.tests.linker.test_linker import DummyLinkerEnd2End
 from zshot.utils.data_models import Entity
-
-
-@pytest.fixture(scope="module", autouse=True)
-def teardown():
-    yield True
-    shutil.rmtree(f"{Path.home()}/.cache/huggingface", ignore_errors=True)
-    shutil.rmtree(f"{Path.home()}/.cache/zshot", ignore_errors=True)
-    gc.collect()
 
 
 def test_ensemble_linker_max():
@@ -28,8 +15,8 @@ def test_ensemble_linker_max():
         ],
         linker=LinkerEnsemble(
             linkers=[
-                LinkerSMXM(),
-                LinkerTARS(),
+                DummyLinkerEnd2End(),
+                DummyLinkerEnd2End(),
             ]
         )
     ), last=True)
@@ -50,8 +37,8 @@ def test_ensemble_linker_count():
         ],
         linker=LinkerEnsemble(
             linkers=[
-                LinkerSMXM(),
-                LinkerTARS(),
+                DummyLinkerEnd2End(),
+                DummyLinkerEnd2End(),
             ],
             strategy='count'
         )
