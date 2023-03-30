@@ -9,7 +9,6 @@ import spacy
 from zshot import PipelineConfig, Linker
 from zshot.linker import LinkerSMXM, LinkerEnsemble
 from zshot.tests.config import EX_DOCS, EX_ENTITIES
-from zshot.tests.linker.test_linker import DummyLinkerEnd2End
 
 logger = logging.getLogger(__name__)
 
