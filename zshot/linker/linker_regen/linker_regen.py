@@ -1,8 +1,10 @@
 from typing import Iterator, Optional, Union, List
 
+import torch
 from spacy.tokens import Doc
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
+from zshot.config import MODELS_CACHE_PATH
 from zshot.linker.linker import Linker
 from zshot.linker.linker_regen.trie import Trie
 from zshot.linker.linker_regen.utils import create_input
@@ -51,13 +53,14 @@ class LinkerRegen(Linker):
     def load_models(self):
         """ Load Model """
         if self.model is None:
-            self.model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME)
+            self.model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME, cache_dir=MODELS_CACHE_PATH)
         self.load_tokenizer()
 
     def load_tokenizer(self):
         """ Load Tokenizer"""
         if self.tokenizer is None:
-            self.tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, model_max_length=1024)
+            self.tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, model_max_length=1024,
+                                                           cache_dir=MODELS_CACHE_PATH)
 
     def restrict_decode_vocab(self, _, prefix_beam):
         """ Restrict the posibilities of the Beam search to force the text generation """
@@ -94,34 +97,41 @@ class LinkerRegen(Linker):
         if not sentences:
             return []
 
-        input_args = {
-            k: v
-            for k, v in self.tokenizer.batch_encode_plus(
-                sentences, padding=True, return_tensors="pt"
-            ).items()
-        }
+        sequences = []
+        scores = []
+        for sent in sentences:
+            input_args = {
+                k: v
+                for k, v in self.tokenizer.batch_encode_plus(
+                    [sent], padding=True, return_tensors="pt"
+                ).items()
+            }
 
-        outputs = self.model.generate(
-            **input_args,
-            min_length=0,
-            max_length=self.max_output_len,
-            num_beams=self.num_beams,
-            num_return_sequences=1,
-            output_scores=True,
-            return_dict_in_generate=True,
-            prefix_allowed_tokens_fn=None
-            if self.trie is None
-            else self.restrict_decode_vocab,
-        )
+            outputs = self.model.generate(
+                **input_args,
+                min_length=0,
+                max_length=self.max_output_len,
+                num_beams=self.num_beams,
+                num_return_sequences=min(self.num_beams, len(self.entities)) if self.entities else self.num_beams,
+                output_scores=True,
+                return_dict_in_generate=True,
+                prefix_allowed_tokens_fn=None
+                if self.trie is None
+                else self.restrict_decode_vocab,
+            )
+
+            tmp_scores = torch.nn.Softmax()(outputs.sequences_scores)
+            sequences.append(outputs.sequences[torch.argmax(tmp_scores)])
+            scores.append(max(tmp_scores.cpu().numpy().tolist()))
 
         docs_pred = {}
-
-        for data, out, score in zip(data_to_link, outputs.sequences, outputs.sequences_scores):
+        for data, out, score in zip(data_to_link, sequences, scores):
             doc_id = data['id']
             mention = docs[doc_id]._.mentions[data['mention_id']]
             label = self.tokenizer.decode(out, skip_special_tokens=True)
             if doc_id not in docs_pred:
                 docs_pred[doc_id] = []
+
             docs_pred[doc_id].append(Span(mention.start, mention.end, label=label,
-                                          score=score.detach().numpy().tolist()))
+                                          score=score))
         return [val for key, val in sorted(docs_pred.items(), reverse=False)]
