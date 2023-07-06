@@ -66,7 +66,10 @@ $ pip install zshot
 
 |            Example             | Notebook                                                                                                                                                           |
 |:------------------------------:|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Installation and Visualization | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/IBM/zshot/blob/examples/Zshot_Example.ipynb) |
+| Installation and Visualization | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/IBM/zshot/blob/examples/Zshot%20Example.ipynb) |
+|          Wikification          | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/IBM/zshot/blob/examples/Zshot%20Example%20-%20Wikification.ipynb) |
+|       Custom Components        | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/IBM/zshot/blob/examples/Zshot%20Example%20-%20Custom%20Components.ipynb) |
+|           Evaluation           | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/IBM/zshot/blob/examples/Zshot%20Example%20-%20Evaluation.ipynb) |
 
 
 ## Zshot Approach
