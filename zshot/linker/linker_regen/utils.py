@@ -29,7 +29,7 @@ def create_input(sentence, max_length, start_delimiter, end_delimiter):
         return " ".join(sent_list[left_index:right_index])
 
 
-def load_wikipedia_trie() -> Trie:
+def load_wikipedia_trie() -> Trie:  # pragma: no cover
     """
     Load the wikipedia trie from the HB hub
     :return: The Wikipedia trie
@@ -42,7 +42,7 @@ def load_wikipedia_trie() -> Trie:
     return wikipedia_trie
 
 
-def load_wikipedia_mapping() -> Dict[str, str]:
+def load_wikipedia_mapping() -> Dict[str, str]:  # pragma: no cover
     """
     Load the wikipedia trie from the HB hub
     :return: The Wikipedia trie
@@ -55,7 +55,7 @@ def load_wikipedia_mapping() -> Dict[str, str]:
     return wikipedia_map
 
 
-def spans_to_wikipedia(spans: List[Span]) -> List[str]:
+def spans_to_wikipedia(spans: List[Span]) -> List[str]:  # pragma: no cover
     """
     Generate wikipedia link for spans
     :return: The list of generated links
@@ -70,7 +70,7 @@ def spans_to_wikipedia(spans: List[Span]) -> List[str]:
     return links
 
 
-def load_dbpedia_trie() -> Trie:
+def load_dbpedia_trie() -> Trie:  # pragma: no cover
     """
     Load the dbpedia trie from the HB hub
     :return: The DBpedia trie
@@ -83,7 +83,7 @@ def load_dbpedia_trie() -> Trie:
     return dbpedia_trie
 
 
-def load_dbpedia_mapping() -> Dict[str, str]:
+def load_dbpedia_mapping() -> Dict[str, str]:  # pragma: no cover
     """
     Load the dbpedia trie from the HB hub
     :return: The DBpedia trie
@@ -96,7 +96,7 @@ def load_dbpedia_mapping() -> Dict[str, str]:
     return dbpedia_map
 
 
-def spans_to_dbpedia(spans: List[Span]) -> List[str]:
+def spans_to_dbpedia(spans: List[Span]) -> List[str]:  # pragma: no cover
     """
     Generate dbpedia link for spans
     :return: The list of generated links
