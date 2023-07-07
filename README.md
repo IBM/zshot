@@ -79,7 +79,7 @@ ZShot contains two different components, the **mentions extractor** and the **li
 ## Mentions Extractor
 The **mentions extractor** will detect the possible entities (a.k.a. mentions), that will be then linked to a data source (e.g.: Wikidata) by the **linker**. 
 
-Currently, there are 4 different **mentions extractors** supported, 2 of them are based on *SpaCy*, and 2 of them are based on *Flair*. The two different versions for each library are similar, one is based on Named Entity Recognition and Classification (NERC) and the other one is based on the linguistics (i.e.: using Part Of the Speech tagging (PoS) and Dependency Parsing(DP)).
+Currently, there are 6 different **mentions extractors** supported, SMXM, TARS, 2 based on *SpaCy*, and 2 that are based on *Flair*. The two different versions for *SpaCy* and *Flair* are similar, one is based on Named Entity Recognition and Classification (NERC) and the other one is based on the linguistics (i.e.: using Part Of the Speech tagging (PoS) and Dependency Parsing(DP)).
 
 The NERC approach will use NERC models to detect all the entities that have to be linked. This approach depends on the model that is being used, and the entities the model has been trained on, so depending on the use case and the target entities it may be not the best approach, as the entities may be not recognized by the NERC model and thus won't be linked.
 
