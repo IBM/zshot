@@ -73,13 +73,13 @@ def test_regen_linker_wikification():
 
 
 @pytest.mark.skip(reason="Too expensive to run on every commit")
-def test_load_wikipedia_trie():
+def test_load_wikipedia_trie():  # pragma: no cover
     trie = load_wikipedia_trie()
     assert len(list(trie.trie_dict.keys())) == 6952
 
 
 @pytest.mark.skip(reason="Too expensive to run on every commit")
-def test_span_to_wiki():
+def test_span_to_wiki():  # pragma: no cover
     s = Span(label="Surfing", start=0, end=10)
     wiki_links = spans_to_wikipedia([s])
     assert len(wiki_links) > 0
@@ -87,13 +87,13 @@ def test_span_to_wiki():
 
 
 @pytest.mark.skip(reason="Too expensive to run on every commit")
-def test_load_dbpedia_trie():
+def test_load_dbpedia_trie():  # pragma: no cover
     trie = load_dbpedia_trie()
     assert len(list(trie.trie_dict.keys())) == 7156
 
 
 @pytest.mark.skip(reason="Too expensive to run on every commit")
-def test_span_to_dbpedia():
+def test_span_to_dbpedia():  # pragma: no cover
     s = Span(label="Surfing", start=0, end=10)
     db_links = spans_to_dbpedia([s])
     assert len(db_links) > 0
