@@ -23,6 +23,7 @@
 
 **Source Code**: <a href="https://github.com/IBM/zshot" target="_blank">https://github.com/IBM/zshot</a>
 
+**Paper**: <a href="https://aclanthology.org/2023.acl-demo.34/" target="_blank">https://aclanthology.org/2023.acl-demo.34/</a>
 
 Zshot is a highly customisable framework for performing Zero and Few shot named entity recognition.
 
