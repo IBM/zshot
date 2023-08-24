@@ -93,8 +93,8 @@ def test_call_pipe_with_registered_function_configuration():
     zshot_component: Zshot = [comp for name, comp in nlp.pipeline if name == 'zshot'][0]
     assert len(zshot_component.entities) == len(EX_ENTITIES)
     assert len(zshot_component.mentions) == len(EX_ENTITIES)
-    assert type(zshot_component.entities[0]) == Entity
-    assert type(zshot_component.mentions[0]) == Entity
+    assert type(zshot_component.entities[0]) is Entity
+    assert type(zshot_component.mentions[0]) is Entity
 
 
 def test_call_pipe_with_pipeline_configuration():
@@ -107,11 +107,11 @@ def test_call_pipe_with_pipeline_configuration():
     assert "zshot" in nlp.pipe_names
     zshot_component: Zshot = [comp for name, comp in nlp.pipeline if name == 'zshot'][0]
     assert len(zshot_component.entities) == len(EX_ENTITIES)
-    assert type(zshot_component.entities[0]) == Entity
+    assert type(zshot_component.entities[0]) is Entity
     assert len(zshot_component.mentions) == len(EX_ENTITIES)
-    assert type(zshot_component.mentions[0]) == Entity
+    assert type(zshot_component.mentions[0]) is Entity
     assert len(zshot_component.mentions) == len(EX_ENTITIES)
-    assert type(zshot_component.mentions[0]) == Entity
+    assert type(zshot_component.mentions[0]) is Entity
 
 
 def test_process_single_document():

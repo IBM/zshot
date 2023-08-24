@@ -50,7 +50,7 @@ class LinkerTARS(Linker):
         if isinstance(self.entities, dict):
             self._entities = list(self.entities.keys())
         if isinstance(self.entities, list):
-            self._entities = [e.name if type(e) == Entity else e for e in self.entities]
+            self._entities = [e.name if type(e) is Entity else e for e in self.entities]
         if self.entities is None:
             self._entities = []
 

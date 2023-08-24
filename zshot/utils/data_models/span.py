@@ -29,7 +29,7 @@ class Span:
         return zlib.crc32(self.__repr__().encode())
 
     def __eq__(self, other: Any):
-        return (type(other) == type(self)
+        return (type(other) is type(self)
                 and self.start == other.start
                 and self.end == other.end
                 and self.label == other.label
