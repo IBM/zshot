@@ -6,7 +6,8 @@ from zshot.evaluation import load_medmentions_zs, load_ontonotes_zs
 from zshot.evaluation.metrics.seqeval.seqeval import Seqeval
 from zshot.evaluation.zshot_evaluate import evaluate, prettify_evaluate_report
 from zshot.linker import LinkerTARS, LinkerSMXM, LinkerRegen
-from zshot.mentions_extractor import MentionsExtractorSpacy, MentionsExtractorFlair, MentionsExtractorSMXM
+from zshot.mentions_extractor import MentionsExtractorSpacy, MentionsExtractorFlair, \
+    MentionsExtractorSMXM, MentionsExtractorTARS
 from zshot.mentions_extractor.utils import ExtractorType
 
 MENTION_EXTRACTORS = {
@@ -14,7 +15,8 @@ MENTION_EXTRACTORS = {
     "spacy_ner": lambda: MentionsExtractorSpacy(ExtractorType.NER),
     "flair_pos": lambda: MentionsExtractorFlair(ExtractorType.POS),
     "flair_ner": lambda: MentionsExtractorFlair(ExtractorType.NER),
-    "smxm": lambda: MentionsExtractorSMXM
+    "smxm": lambda: MentionsExtractorSMXM,
+    "tars": lambda: MentionsExtractorTARS
 }
 LINKERS = {
     "regen": LinkerRegen,
@@ -32,9 +34,10 @@ if __name__ == "__main__":
     parser.add_argument("--mode", required=False, default="full", type=str,
                         help="Evaluation mode. One of: full; mentions_extractor; linker")
     parser.add_argument("--mentions_extractor", required=False, default="all", type=str,
-                        help="Mentions extractor to evaluate. One of: all; spacy_pos; spacy_ner; flair_pos; flair_ner")
+                        help="Mentions extractor to evaluate. "
+                             "One of: all; spacy_pos; spacy_ner; flair_pos; flair_ner; smxm; tars")
     parser.add_argument("--linker", required=False, default="all", type=str,
-                        help="Linker to evaluate. One of: all; tars")
+                        help="Linker to evaluate. One of: all; regen; smxm; tars")
     args = parser.parse_args()
 
     splits = args.splits.split(",")
@@ -89,9 +92,6 @@ if __name__ == "__main__":
                     raise ValueError(f"{dataset_name} not supported")
                 nlp.get_pipe("zshot").mentions = dataset.entities
                 nlp.get_pipe("zshot").entities = dataset.entities
-                field_names = ["Metric"]
-                field_name = f"{dataset_name} {split}"
-                field_names.append(field_name)
 
                 evaluation = evaluate(nlp, dataset, metric=Seqeval())
                 print(prettify_evaluate_report(evaluation, name=f"{dataset_name}-{split}"))

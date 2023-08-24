@@ -45,7 +45,8 @@ def prettify_evaluate_report(evaluation: Dict, name: str = "", decimals: int = 4
     tables = []
     for component in evaluation:
         table = PrettyTable()
-        table.field_names = ["Metric", name]
+        table.title = f"{component} - {name}"
+        table.field_names = ["Metric", ""]
         for metric in evaluation[component]:
             if isinstance(evaluation[component][metric], (float, int)):
                 table.add_row([metric, f'{evaluation[component][metric]:.{decimals}f}'])
