@@ -17,7 +17,7 @@ def load_model(device: Optional[Union[str, torch.device]] = None):
     if not os.path.isfile(MODEL_PATH):
         download_file(MODEL_REMOTE_URL, MODELS_CACHE_PATH)
 
-    model.load_state_dict(torch.load(MODEL_PATH))
+    model.load_state_dict(torch.load(MODEL_PATH), strict=False)
     model.to(device)
     model.eval()
     return model
