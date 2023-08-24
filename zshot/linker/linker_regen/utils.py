@@ -4,6 +4,7 @@ from typing import Dict, List
 
 from huggingface_hub import hf_hub_download
 
+from zshot.config import MODELS_CACHE_PATH
 from zshot.linker.linker_regen.trie import Trie
 from zshot.utils.data_models import Span
 
@@ -36,7 +37,8 @@ def load_wikipedia_trie() -> Trie:  # pragma: no cover
     """
     wikipedia_trie_file = hf_hub_download(repo_id=REPO_ID,
                                           repo_type='model',
-                                          filename=WIKIPEDIA_TRIE_FILE_NAME)
+                                          filename=WIKIPEDIA_TRIE_FILE_NAME,
+                                          cache_dir=MODELS_CACHE_PATH)
     with open(wikipedia_trie_file, "rb") as f:
         wikipedia_trie = pickle.load(f)
     return wikipedia_trie
@@ -49,7 +51,8 @@ def load_wikipedia_mapping() -> Dict[str, str]:  # pragma: no cover
     """
     wikipedia_map = hf_hub_download(repo_id=REPO_ID,
                                     repo_type='model',
-                                    filename=WIKIPEDIA_MAP)
+                                    filename=WIKIPEDIA_MAP,
+                                    cache_dir=MODELS_CACHE_PATH)
     with open(wikipedia_map, "r") as f:
         wikipedia_map = json.load(f)
     return wikipedia_map
@@ -77,7 +80,8 @@ def load_dbpedia_trie() -> Trie:  # pragma: no cover
     """
     dbpedia_trie_file = hf_hub_download(repo_id=REPO_ID,
                                         repo_type='model',
-                                        filename=DBPEDIA_TRIE_FILE_NAME)
+                                        filename=DBPEDIA_TRIE_FILE_NAME,
+                                        cache_dir=MODELS_CACHE_PATH)
     with open(dbpedia_trie_file, "rb") as f:
         dbpedia_trie = pickle.load(f)
     return dbpedia_trie
@@ -90,7 +94,8 @@ def load_dbpedia_mapping() -> Dict[str, str]:  # pragma: no cover
     """
     dbpedia_map = hf_hub_download(repo_id=REPO_ID,
                                   repo_type='model',
-                                  filename=DBPEDIA_MAP)
+                                  filename=DBPEDIA_MAP,
+                                  cache_dir=MODELS_CACHE_PATH)
     with open(dbpedia_map, "r") as f:
         dbpedia_map = json.load(f)
     return dbpedia_map
