@@ -45,7 +45,7 @@ Can be used to perform:
 * <a href="https://huggingface.co/docs/evaluate/index" target="_blank"><code>evaluate</code></a> - Required for evaluation.
 * <a href="https://huggingface.co/docs/datasets/index" target="_blank"><code>datasets</code></a> - Required to evaluate over datasets (e.g.: OntoNotes).
 
-## Optional Dependencies
+### Optional Dependencies
 
 * <a href="https://github.com/flairNLP/flair" target="_blank"><code>flair</code></a> - Required if you want to use Flair mentions extractor and for TARS linker.
 * <a href="https://github.com/facebookresearch/BLINK" target="_blank"><code>blink</code></a> - Required if you want to use Blink for linking to Wikipedia pages.
@@ -77,7 +77,7 @@ $ pip install zshot
 
 ZShot contains two different components, the **mentions extractor** and the **linker**.
 
-## Mentions Extractor
+### Mentions Extractor
 The **mentions extractor** will detect the possible entities (a.k.a. mentions), that will be then linked to a data source (e.g.: Wikidata) by the **linker**. 
 
 Currently, there are 6 different **mentions extractors** supported, SMXM, TARS, 2 based on *SpaCy*, and 2 that are based on *Flair*. The two different versions for *SpaCy* and *Flair* are similar, one is based on Named Entity Recognition and Classification (NERC) and the other one is based on the linguistics (i.e.: using Part Of the Speech tagging (PoS) and Dependency Parsing(DP)).
@@ -86,7 +86,7 @@ The NERC approach will use NERC models to detect all the entities that have to b
 
 The linguistic approach relies on the idea that mentions will usually be a syntagma or a noun. Therefore, this approach detects nouns that are included in a syntagma and that act like objects, subjects, etc. This approach do not depend on the model (although the performance does), but a noun in a text should be always a noun, it doesn't depend on the dataset the model has been trained on.
 
-## Linker
+### Linker
 The **linker** will link the detected entities to a existing set of labels. Some of the **linkers**, however, are *end-to-end*, i.e. they don't need the **mentions extractor**, as they detect and link the entities at the same time.  
 
 Again, there are 4 **linkers** available currently, 2 of them are *end-to-end* and 2 are not. Let's start with those thar are not *end-to-end*:
@@ -98,7 +98,6 @@ Again, there are 4 **linkers** available currently, 2 of them are *end-to-end* a
 |     SMXM    |   &check;  | [Source Code](https://github.com/Raldir/Zero-shot-NERC)  | [Paper](https://aclanthology.org/2021.acl-long.120/)               |
 |     TARS    |   &check;  | [Source Code](https://github.com/flairNLP/flair)         | [Paper](https://kishaloyhalder.github.io/pdfs/tars_coling2020.pdf) |
 
-## Example: Zero-Shot Entity Recognition
 
 ### How to use it
 
@@ -235,4 +234,26 @@ nlp.add_pipe("zshot", config=nlp_config, last=True)
 
 evaluation = evaluate(nlp, ontonotes_zs, metric=Seqeval())
 prettify_evaluate_report(evaluation)
+```
+
+## Citation
+```
+@inproceedings{picco-etal-2023-zshot,
+    title = "Zshot: An Open-source Framework for Zero-Shot Named Entity Recognition and Relation Extraction",
+    author = "Picco, Gabriele  and
+      Martinez Galindo, Marcos  and
+      Purpura, Alberto  and
+      Fuchs, Leopold  and
+      Lopez, Vanessa  and
+      Hoang, Thanh Lam",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 3: System Demonstrations)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-demo.34",
+    doi = "10.18653/v1/2023.acl-demo.34",
+    pages = "357--368",
+    abstract = "The Zero-Shot Learning (ZSL) task pertains to the identification of entities or relations in texts that were not seen during training. ZSL has emerged as a critical research area due to the scarcity of labeled data in specific domains, and its applications have grown significantly in recent years. With the advent of large pretrained language models, several novel methods have been proposed, resulting in substantial improvements in ZSL performance. There is a growing demand, both in the research community and industry, for a comprehensive ZSL framework that facilitates the development and accessibility of the latest methods and pretrained models.In this study, we propose a novel ZSL framework called Zshot that aims to address the aforementioned challenges. Our primary objective is to provide a platform that allows researchers to compare different state-of-the-art ZSL methods with standard benchmark datasets. Additionally, we have designed our framework to support the industry with readily available APIs for production under the standard SpaCy NLP pipeline. Our API is extendible and evaluable, moreover, we include numerous enhancements such as boosting the accuracy with pipeline ensembling and visualization utilities available as a SpaCy extension.",
+}
 ```
