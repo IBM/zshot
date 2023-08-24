@@ -50,7 +50,7 @@ class MentionsExtractorTARS(MentionsExtractor):
         if isinstance(self._mentions, dict):
             self._mentions = list(self._mentions.keys())
         if isinstance(self._mentions, list):
-            self._mentions = [e.name if type(e) == Entity else e for e in self._mentions]
+            self._mentions = [e.name if type(e) is Entity else e for e in self._mentions]
         if self._mentions is None:
             self._mentions = []
 
