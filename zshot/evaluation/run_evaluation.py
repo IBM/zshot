@@ -38,10 +38,19 @@ if __name__ == "__main__":
                              "One of: all; spacy_pos; spacy_ner; flair_pos; flair_ner; smxm; tars")
     parser.add_argument("--linker", required=False, default="all", type=str,
                         help="Linker to evaluate. One of: all; regen; smxm; tars")
+    parser.add_argument("--show_full_report", action="store_false",
+                        help="Show evalution report for each label. True by default")
+
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("--span_evaluation", action="store_true", help="Evaluate based on Spans")
+    group.add_argument("--token_evaluation", action="store_true", help="Evaluate based on Token")
+
     args = parser.parse_args()
 
     splits = args.splits.split(",")
     datasets = args.dataset.split(",")
+
+    mode = 'token' if args.token_evaluation else 'span'
 
     configs = {}
     if args.mentions_extractor == "all":
@@ -93,5 +102,5 @@ if __name__ == "__main__":
                 nlp.get_pipe("zshot").mentions = dataset.entities
                 nlp.get_pipe("zshot").entities = dataset.entities
 
-                evaluation = evaluate(nlp, dataset, metric=Seqeval())
-                print(prettify_evaluate_report(evaluation, name=f"{dataset_name}-{split}"))
+                evaluation = evaluate(nlp, dataset, metric=Seqeval(), mode=mode)
+                print("\n".join(prettify_evaluate_report(evaluation, name=f"{dataset_name}-{split}")))

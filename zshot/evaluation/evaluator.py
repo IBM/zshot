@@ -1,4 +1,4 @@
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Optional
 
 from datasets import Dataset
 from evaluate import (Evaluator, TokenClassificationEvaluator)
@@ -9,9 +9,11 @@ from zshot.utils.data_models import Span
 
 class ZeroShotTokenClassificationEvaluator(TokenClassificationEvaluator):
 
-    def __init__(self, task="token-classification", default_metric_name=None, alignment_mode=AlignmentMode.expand):
+    def __init__(self, task="token-classification", default_metric_name=None,
+                 mode: Optional[str] = 'span', alignment_mode=AlignmentMode.expand):
         super().__init__(task, default_metric_name)
         self.alignment_mode = alignment_mode
+        self.mode = mode
 
     def predictions_processor(self, predictions: List[List[Dict]], sentences: List[List[str]], join_by: str):
         predictions_pr = []
@@ -23,6 +25,7 @@ class ZeroShotTokenClassificationEvaluator(TokenClassificationEvaluator):
                                                    words,
                                                    tokens_offsets=words_offsets,
                                                    alignment_mode=self.alignment_mode,
+                                                   evaluation_mode=self.mode,
                                                    return_dict=True)
             predictions_pr.append(filter_dict['bio'])
         return {"predictions": predictions_pr}
@@ -40,19 +43,24 @@ class ZeroShotTokenClassificationEvaluator(TokenClassificationEvaluator):
 
 
 class MentionsExtractorEvaluator(ZeroShotTokenClassificationEvaluator):
-    def parse_label(self, label):
+    def __init__(self, task="token-classification", default_metric_name=None,
+                 mode: Optional[str] = 'span', alignment_mode=AlignmentMode.expand):
+        super().__init__(task, default_metric_name, alignment_mode=alignment_mode)
+        self.mode = mode
+
+    def process_label(self, label):
         if label != "O":
-            if label.startswith("B-") or label.startswith("I-"):
+            if (label.startswith("B-") or label.startswith("I-")) and self.mode == 'span':
                 label = label[:2] + "MENTION"
             else:
-                label = "MENTION"
+                label = "B-MENTION"
 
         return label
 
     def prepare_data(self, data: Union[str, Dataset], input_column: str, label_column: str, join_by: str):
         metric_inputs, pipeline_inputs = super().prepare_data(data, input_column, label_column, join_by)
 
-        metric_inputs['references'] = [[self.parse_label(label) for label in sent]
+        metric_inputs['references'] = [[self.process_label(label) for label in sent]
                                        for sent in metric_inputs['references']]
 
         return metric_inputs, pipeline_inputs

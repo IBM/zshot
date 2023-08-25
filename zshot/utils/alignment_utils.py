@@ -1,7 +1,7 @@
 from enum import Enum
 from itertools import accumulate
 from operator import attrgetter
-from typing import List, Union, Dict, Tuple
+from typing import List, Union, Dict, Tuple, Optional
 
 from spacy.tokens import Doc
 
@@ -59,15 +59,19 @@ def filter_overlapping_spans(spans: List[Span], tokens: List[str],
                              tokens_offsets: List[Tuple[int, int]] = None,
                              join_by: str = None,
                              alignment_mode: AlignmentMode = AlignmentMode.expand,
+                             evaluation_mode: Optional[str] = 'span',
                              return_dict=False) -> Union[List[Span], Dict]:
     """
     :param spans: List of spans to align
     :param tokens: List of tokens
     :param tokens_offsets: Tokens offset, spans of the tokens
     :param join_by: string used to join tokens. Either tokens_offsets of join_by must be provided to compute spans.
-    :param return_dict: If true, return filtered list of spans and partial results as Dict
     :param alignment_mode: "contract" (span of all tokens completely within the character span),
      "expand" (span of all tokens at least partially covered by the character span).
+    :param evaluation_mode: Mode of token evaluation. One of: span; token. Default: span
+        - span: Use BIO format
+        - token: Use only B- for all tokens
+    :param return_dict: If true, return filtered list of spans and partial results as Dict
     :return: the filtered list of spans
     """
     align_dict = align_spans(spans, tokens, tokens_offsets, join_by=join_by,
@@ -86,7 +90,8 @@ def filter_overlapping_spans(spans: List[Span], tokens: List[str],
             best_span = t_spans[0]
         if idx > 0 and filtered_spans[idx - 1] is not None and filtered_spans[idx - 1].label == best_span.label:
             filtered_spans[idx - 1].end = tokens_offsets[idx][1]
-            bio_token[idx] = f"I-{filtered_spans[idx - 1].label}"
+            bio_token[idx] = f"I-{filtered_spans[idx - 1].label}" if evaluation_mode == 'span' \
+                else f"B-{filtered_spans[idx - 1].label}"
             filtered_spans[idx], filtered_spans[idx - 1] = filtered_spans[idx - 1], None
         else:
             filtered_spans[idx] = Span(start=tokens_offsets[idx][0], end=tokens_offsets[idx][1],
