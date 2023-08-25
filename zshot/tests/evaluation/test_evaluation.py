@@ -1,11 +1,11 @@
 from typing import Iterator, List, Tuple
 
 import spacy
-from datasets import Dataset
 from spacy.tokens import Doc
 
 from zshot import Linker, MentionsExtractor, PipelineConfig
 from zshot.evaluation.dataset.dataset import DatasetWithRelations
+from zshot.evaluation.dataset.dataset import create_dataset
 from zshot.evaluation.dataset.fewrel.fewrel import get_few_rel_data
 from zshot.evaluation.evaluator import (
     MentionsExtractorEvaluator,
@@ -118,7 +118,6 @@ def get_mentions_extractor_pipe(predictions: List[Tuple[str, str, float]]):
 
 
 def get_relation_extraction_pipeline(dataset: DatasetWithRelations):
-
     nlp = spacy.blank("en")
     nlp_config = PipelineConfig(
         relations_extractor=RelationsExtractorZSRC(thr=0.0),
@@ -140,16 +139,6 @@ def get_spans_predictions(span: str, label: str, sentence: str):
     ]
 
 
-def get_dataset(gt: List[List[str]], sentence: List[str]):
-    data_dict = {
-        "tokens": [s.split(" ") for s in sentence],
-        "ner_tags": gt,
-    }
-    dataset = Dataset.from_dict(data_dict)
-    dataset.entities = ENTITIES
-    return dataset
-
-
 class TestZeroShotTokenClassificationEvaluation:
     def test_preprocess(self):
         sentences = ["New York is beautiful"]
@@ -163,15 +152,17 @@ class TestZeroShotTokenClassificationEvaluation:
         )
         assert preds["predictions"] == gt
 
-    def test_prediction_token_based_evaluation_all_matching(self):
+    def test_prediction_span_based_evaluation(self):
+        # Correct
         sentences = ["New York is beautiful"]
         gt = [["B-FAC", "I-FAC", "O", "O"]]
-
-        dataset = get_dataset(gt, sentences)
+        dataset = create_dataset(gt, sentences, ENTITIES)
 
         custom_evaluator = ZeroShotTokenClassificationEvaluator("token-classification")
         metrics = custom_evaluator.compute(
-            get_linker_pipe([("New York", "FAC", 1)]), dataset, metric="seqeval"
+            get_linker_pipe([("New York", "FAC", 1)]),
+            dataset,
+            metric="seqeval",
         )
 
         assert float(metrics["overall_precision"]) == 1.0
@@ -179,11 +170,63 @@ class TestZeroShotTokenClassificationEvaluation:
         assert float(metrics["overall_f1"]) == 1.0
         assert float(metrics["overall_accuracy"]) == 1.0
 
+        # Wrong
+        sentences = ["New York is beautiful"]
+        gt = [["B-FAC", "I-FAC", "O", "O"]]
+        dataset = create_dataset(gt, sentences, ENTITIES)
+
+        metrics = custom_evaluator.compute(
+            get_linker_pipe([("York", "FAC", 1)]),
+            dataset,
+            metric="seqeval",
+        )
+
+        assert float(metrics["overall_precision"]) == 0.0
+        assert float(metrics["overall_precision"]) == 0.0
+        assert float(metrics["overall_f1"]) == 0.0
+        assert float(metrics["overall_accuracy"]) == 0.5
+
+    def test_prediction_token_based_evaluation(self):
+        # Correct
+        sentences = ["New York is beautiful"]
+        gt = [["B-FAC", "I-FAC", "O", "O"]]
+
+        dataset = create_dataset(gt, sentences, ENTITIES)
+
+        custom_evaluator = ZeroShotTokenClassificationEvaluator("token-classification", mode='token')
+        metrics = custom_evaluator.compute(
+            get_linker_pipe([("New York", "FAC", 1)]),
+            dataset,
+            metric="seqeval",
+        )
+
+        assert float(metrics["overall_precision"]) == 1.0
+        assert float(metrics["overall_recall"]) == 1.0
+        assert float(metrics["overall_f1"]) == 1.0
+        assert float(metrics["overall_accuracy"]) == 1.0
+
+        # Partially Correct
+        sentences = ["New York is beautiful"]
+        gt = [["B-FAC", "I-FAC", "O", "O"]]
+
+        dataset = create_dataset(gt, sentences, ENTITIES)
+
+        metrics = custom_evaluator.compute(
+            get_linker_pipe([("York", "FAC", 1)]),
+            dataset,
+            metric="seqeval",
+        )
+
+        assert float(metrics["overall_precision"]) == 1.0
+        assert float(metrics["overall_recall"]) == 0.5
+        assert float(metrics["overall_f1"]) == 2 / 3
+        assert float(metrics["overall_accuracy"]) == 0.75
+
     def test_prediction_token_based_evaluation_overlapping_spans(self):
         sentences = ["New York is beautiful"]
         gt = [["B-FAC", "I-FAC", "O", "O"]]
 
-        dataset = get_dataset(gt, sentences)
+        dataset = create_dataset(gt, sentences, ENTITIES)
 
         custom_evaluator = ZeroShotTokenClassificationEvaluator("token-classification")
         metrics = custom_evaluator.compute(
@@ -201,7 +244,7 @@ class TestZeroShotTokenClassificationEvaluation:
         sentences = ["New York is beautiful"]
         gt = [["B-FAC", "I-FAC", "O", "O"]]
 
-        dataset = get_dataset(gt, sentences)
+        dataset = create_dataset(gt, sentences, ENTITIES)
 
         custom_evaluator = ZeroShotTokenClassificationEvaluator(
             "token-classification", alignment_mode=AlignmentMode.expand
@@ -218,7 +261,7 @@ class TestZeroShotTokenClassificationEvaluation:
         sentences = ["New York is beautiful"]
         gt = [["B-FAC", "I-FAC", "O", "O"]]
 
-        dataset = get_dataset(gt, sentences)
+        dataset = create_dataset(gt, sentences, ENTITIES)
 
         custom_evaluator = ZeroShotTokenClassificationEvaluator(
             "token-classification", alignment_mode=AlignmentMode.contract
@@ -235,7 +278,7 @@ class TestZeroShotTokenClassificationEvaluation:
         sentences = ["New York is beautiful"]
         gt = [["B-FAC", "I-FAC", "O", "O"]]
 
-        dataset = get_dataset(gt, sentences)
+        dataset = create_dataset(gt, sentences, ENTITIES)
 
         custom_evaluator = ZeroShotTokenClassificationEvaluator(
             "token-classification", alignment_mode=AlignmentMode.contract
@@ -255,7 +298,7 @@ class TestMentionsExtractorEvaluator:
         gt = [["B-FAC", "I-FAC", "O", "O"]]
         processed_gt = [["B-MENTION", "I-MENTION", "O", "O"]]
 
-        dataset = get_dataset(gt, sentences)
+        dataset = create_dataset(gt, sentences, ENTITIES)
 
         custom_evaluator = MentionsExtractorEvaluator("token-classification")
 
@@ -264,11 +307,11 @@ class TestMentionsExtractorEvaluator:
         )
         assert preds[0]["references"] == processed_gt
 
-    def test_prediction_token_based_evaluation_all_matching(self):
+    def test_prediction_span_based_evaluation(self):
+        # Correct
         sentences = ["New York is beautiful"]
         gt = [["B-FAC", "I-FAC", "O", "O"]]
-
-        dataset = get_dataset(gt, sentences)
+        dataset = create_dataset(gt, sentences, ENTITIES)
 
         custom_evaluator = MentionsExtractorEvaluator("token-classification")
         metrics = custom_evaluator.compute(
@@ -282,11 +325,61 @@ class TestMentionsExtractorEvaluator:
         assert float(metrics["overall_f1"]) == 1.0
         assert float(metrics["overall_accuracy"]) == 1.0
 
-    def test_prediction_token_based_evaluation_overlapping_spans(self):
+        # Wrong
+        sentences = ["New York is beautiful"]
+        gt = [["B-FAC", "I-FAC", "O", "O"]]
+        dataset = create_dataset(gt, sentences, ENTITIES)
+
+        metrics = custom_evaluator.compute(
+            get_mentions_extractor_pipe([("York", "FAC", 1)]),
+            dataset,
+            metric="seqeval",
+        )
+
+        assert float(metrics["overall_precision"]) == 0.0
+        assert float(metrics["overall_precision"]) == 0.0
+        assert float(metrics["overall_f1"]) == 0.0
+        assert float(metrics["overall_accuracy"]) == 0.5
+
+    def test_prediction_token_based_evaluation(self):
+        # Correct
+        sentences = ["New York is beautiful"]
+        gt = [["B-FAC", "I-FAC", "O", "O"]]
+        dataset = create_dataset(gt, sentences, ENTITIES)
+
+        custom_evaluator = MentionsExtractorEvaluator("token-classification", mode='token')
+        metrics = custom_evaluator.compute(
+            get_mentions_extractor_pipe([("New York", "FAC", 1)]),
+            dataset,
+            metric="seqeval",
+        )
+
+        assert float(metrics["overall_precision"]) == 1.0
+        assert float(metrics["overall_recall"]) == 1.0
+        assert float(metrics["overall_f1"]) == 1.0
+        assert float(metrics["overall_accuracy"]) == 1.0
+
+        # Partially Correct
+        sentences = ["New York is beautiful"]
+        gt = [["B-FAC", "I-FAC", "O", "O"]]
+        dataset = create_dataset(gt, sentences, ENTITIES)
+
+        metrics = custom_evaluator.compute(
+            get_mentions_extractor_pipe([("York", "FAC", 1)]),
+            dataset,
+            metric="seqeval",
+        )
+
+        assert float(metrics["overall_precision"]) == 1.0
+        assert float(metrics["overall_recall"]) == 0.5
+        assert float(metrics["overall_f1"]) == 2 / 3
+        assert float(metrics["overall_accuracy"]) == 0.75
+
+    def test_prediction_span_based_evaluation_overlapping_spans(self):
         sentences = ["New York is beautiful"]
         gt = [["B-FAC", "I-FAC", "O", "O"]]
 
-        dataset = get_dataset(gt, sentences)
+        dataset = create_dataset(gt, sentences, ENTITIES)
 
         custom_evaluator = MentionsExtractorEvaluator("token-classification")
         metrics = custom_evaluator.compute(
@@ -300,11 +393,11 @@ class TestMentionsExtractorEvaluator:
         assert float(metrics["overall_f1"]) == 1.0
         assert float(metrics["overall_accuracy"]) == 1.0
 
-    def test_prediction_token_based_evaluation_partial_match_spans_expand(self):
+    def test_prediction_span_based_evaluation_partial_match_spans_expand(self):
         sentences = ["New York is beautiful"]
         gt = [["B-FAC", "I-FAC", "O", "O"]]
 
-        dataset = get_dataset(gt, sentences)
+        dataset = create_dataset(gt, sentences, ENTITIES)
 
         custom_evaluator = MentionsExtractorEvaluator(
             "token-classification", alignment_mode=AlignmentMode.expand

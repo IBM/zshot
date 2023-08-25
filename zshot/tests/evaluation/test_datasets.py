@@ -2,6 +2,13 @@ import shutil
 from pathlib import Path
 import pytest
 from zshot.evaluation import load_ontonotes_zs, load_medmentions_zs
+from zshot.evaluation.dataset.dataset import create_dataset
+from zshot.utils.data_models import Entity
+
+ENTITIES = [
+    Entity(name="FAC", description="A facility"),
+    Entity(name="LOC", description="A location"),
+]
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -45,3 +52,12 @@ def test_medmentions_zs():
 def test_medmentions_zs_split():
     dataset = load_medmentions_zs(split='test')
     assert dataset.num_rows == 1048
+
+
+def test_create_dataset():
+    sentences = ["New York is beautiful", "New York is beautiful"]
+    gt = [["B-FAC", "I-FAC", "O", "O"], ["B-FAC", "I-FAC", "O", "O"]]
+
+    dataset = create_dataset(gt, sentences, ENTITIES)
+    assert dataset.num_rows == len(sentences)
+    assert dataset.entities == ENTITIES
