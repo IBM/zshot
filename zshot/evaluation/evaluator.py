@@ -15,6 +15,17 @@ class ZeroShotTokenClassificationEvaluator(TokenClassificationEvaluator):
         self.alignment_mode = alignment_mode
         self.mode = mode
 
+    def process_label(self, label):
+        return f"B-{label[2:]}" if label.startswith("I-") and self.mode == 'token' else label
+
+    def prepare_data(self, data: Union[str, Dataset], input_column: str, label_column: str, join_by: str):
+        metric_inputs, pipeline_inputs = super().prepare_data(data, input_column, label_column, join_by)
+
+        metric_inputs['references'] = [[self.process_label(label) for label in sent]
+                                       for sent in metric_inputs['references']]
+
+        return metric_inputs, pipeline_inputs
+
     def predictions_processor(self, predictions: List[List[Dict]], sentences: List[List[str]], join_by: str):
         predictions_pr = []
         for prediction, words in zip(predictions, sentences):
