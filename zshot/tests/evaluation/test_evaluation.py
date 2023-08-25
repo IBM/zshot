@@ -1,11 +1,10 @@
 from typing import Iterator, List, Tuple
 
 import spacy
-from datasets import Dataset
 from spacy.tokens import Doc
 
 from zshot import Linker, MentionsExtractor, PipelineConfig
-from zshot.evaluation.dataset.dataset import DatasetWithRelations
+from zshot.evaluation.dataset.dataset import DatasetWithRelations, DatasetWithEntities
 from zshot.evaluation.dataset.fewrel.fewrel import get_few_rel_data
 from zshot.evaluation.evaluator import (
     MentionsExtractorEvaluator,
@@ -21,6 +20,7 @@ from zshot.evaluation.pipeline import (
 from zshot.relation_extractor.relation_extractor_zsrc import RelationsExtractorZSRC
 from zshot.utils.alignment_utils import AlignmentMode
 from zshot.utils.data_models import Entity, Span
+from zshot.evaluation.dataset.dataset import create_dataset
 
 ENTITIES = [
     Entity(name="FAC", description="A facility"),
@@ -118,7 +118,6 @@ def get_mentions_extractor_pipe(predictions: List[Tuple[str, str, float]]):
 
 
 def get_relation_extraction_pipeline(dataset: DatasetWithRelations):
-
     nlp = spacy.blank("en")
     nlp_config = PipelineConfig(
         relations_extractor=RelationsExtractorZSRC(thr=0.0),
@@ -140,16 +139,6 @@ def get_spans_predictions(span: str, label: str, sentence: str):
     ]
 
 
-def get_dataset(gt: List[List[str]], sentence: List[str]):
-    data_dict = {
-        "tokens": [s.split(" ") for s in sentence],
-        "ner_tags": gt,
-    }
-    dataset = Dataset.from_dict(data_dict)
-    dataset.entities = ENTITIES
-    return dataset
-
-
 class TestZeroShotTokenClassificationEvaluation:
     def test_preprocess(self):
         sentences = ["New York is beautiful"]
@@ -167,7 +156,7 @@ class TestZeroShotTokenClassificationEvaluation:
         sentences = ["New York is beautiful"]
         gt = [["B-FAC", "I-FAC", "O", "O"]]
 
-        dataset = get_dataset(gt, sentences)
+        dataset = create_dataset(gt, sentences, ENTITIES)
 
         custom_evaluator = ZeroShotTokenClassificationEvaluator("token-classification")
         metrics = custom_evaluator.compute(
@@ -183,7 +172,7 @@ class TestZeroShotTokenClassificationEvaluation:
         sentences = ["New York is beautiful"]
         gt = [["B-FAC", "I-FAC", "O", "O"]]
 
-        dataset = get_dataset(gt, sentences)
+        dataset = create_dataset(gt, sentences, ENTITIES)
 
         custom_evaluator = ZeroShotTokenClassificationEvaluator("token-classification")
         metrics = custom_evaluator.compute(
@@ -201,7 +190,7 @@ class TestZeroShotTokenClassificationEvaluation:
         sentences = ["New York is beautiful"]
         gt = [["B-FAC", "I-FAC", "O", "O"]]
 
-        dataset = get_dataset(gt, sentences)
+        dataset = create_dataset(gt, sentences, ENTITIES)
 
         custom_evaluator = ZeroShotTokenClassificationEvaluator(
             "token-classification", alignment_mode=AlignmentMode.expand
@@ -218,7 +207,7 @@ class TestZeroShotTokenClassificationEvaluation:
         sentences = ["New York is beautiful"]
         gt = [["B-FAC", "I-FAC", "O", "O"]]
 
-        dataset = get_dataset(gt, sentences)
+        dataset = create_dataset(gt, sentences, ENTITIES)
 
         custom_evaluator = ZeroShotTokenClassificationEvaluator(
             "token-classification", alignment_mode=AlignmentMode.contract
@@ -235,7 +224,7 @@ class TestZeroShotTokenClassificationEvaluation:
         sentences = ["New York is beautiful"]
         gt = [["B-FAC", "I-FAC", "O", "O"]]
 
-        dataset = get_dataset(gt, sentences)
+        dataset = create_dataset(gt, sentences, ENTITIES)
 
         custom_evaluator = ZeroShotTokenClassificationEvaluator(
             "token-classification", alignment_mode=AlignmentMode.contract
@@ -255,7 +244,7 @@ class TestMentionsExtractorEvaluator:
         gt = [["B-FAC", "I-FAC", "O", "O"]]
         processed_gt = [["B-MENTION", "I-MENTION", "O", "O"]]
 
-        dataset = get_dataset(gt, sentences)
+        dataset = create_dataset(gt, sentences, ENTITIES)
 
         custom_evaluator = MentionsExtractorEvaluator("token-classification")
 
@@ -268,7 +257,7 @@ class TestMentionsExtractorEvaluator:
         sentences = ["New York is beautiful"]
         gt = [["B-FAC", "I-FAC", "O", "O"]]
 
-        dataset = get_dataset(gt, sentences)
+        dataset = create_dataset(gt, sentences, ENTITIES)
 
         custom_evaluator = MentionsExtractorEvaluator("token-classification")
         metrics = custom_evaluator.compute(
@@ -286,7 +275,7 @@ class TestMentionsExtractorEvaluator:
         sentences = ["New York is beautiful"]
         gt = [["B-FAC", "I-FAC", "O", "O"]]
 
-        dataset = get_dataset(gt, sentences)
+        dataset = create_dataset(gt, sentences, ENTITIES)
 
         custom_evaluator = MentionsExtractorEvaluator("token-classification")
         metrics = custom_evaluator.compute(
@@ -304,7 +293,7 @@ class TestMentionsExtractorEvaluator:
         sentences = ["New York is beautiful"]
         gt = [["B-FAC", "I-FAC", "O", "O"]]
 
-        dataset = get_dataset(gt, sentences)
+        dataset = create_dataset(gt, sentences, ENTITIES)
 
         custom_evaluator = MentionsExtractorEvaluator(
             "token-classification", alignment_mode=AlignmentMode.expand
