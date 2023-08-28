@@ -63,7 +63,7 @@ class LinkerRegen(Linker):
                                                            cache_dir=MODELS_CACHE_PATH)
 
     def restrict_decode_vocab(self, _, prefix_beam):
-        """ Restrict the posibilities of the Beam search to force the text generation """
+        """ Restrict the possibilities of the Beam search to force the text generation """
         return self.trie.postfix(prefix_beam.tolist())
 
     def predict(self, docs: Iterator[Doc], batch_size: Optional[Union[int, None]] = None) -> List[List[Span]]:
