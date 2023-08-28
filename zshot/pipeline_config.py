@@ -3,6 +3,7 @@ from typing import Optional, Union, List
 
 import spacy
 
+from zshot.knowledge_extractor.knowledge_extractor import KnowledgeExtractor
 from zshot.linker import Linker
 from zshot.mentions_extractor import MentionsExtractor
 from zshot.relation_extractor import RelationsExtractor
@@ -15,6 +16,7 @@ class PipelineConfig(dict):
                  mentions_extractor: Optional[MentionsExtractor] = None,
                  linker: Optional[Union[Linker, str]] = None,
                  relations_extractor: Optional[Union[RelationsExtractor, str]] = None,
+                 knowledge_extractor: Optional[Union[KnowledgeExtractor, str]] = None,
                  mentions: Optional[Union[List[Entity], List[str], str]] = None,
                  entities: Optional[Union[List[Entity], List[str], str]] = None,
                  relations: Optional[Union[List[Relation], str]] = None,
@@ -33,6 +35,10 @@ class PipelineConfig(dict):
         if relations_extractor:
             relation_extractor_id = PipelineConfig.param(relations_extractor)
             config.update({'relations_extractor': relation_extractor_id})
+
+        if knowledge_extractor:
+            knowledge_extractor_id = PipelineConfig.param(knowledge_extractor)
+            config.update({'knowledge_extractor': knowledge_extractor_id})
 
         if entities:
             entities_id = PipelineConfig.param(entities)
