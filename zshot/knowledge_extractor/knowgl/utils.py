@@ -8,18 +8,18 @@ def ranges(lst):
     pos = (j - i for i, j in enumerate(lst))
     t = 0
     for i, els in groupby(pos):
-        l = len(list(els))
+        lst_ = len(list(els))
         el = lst[t]
-        t += l
-        yield list(range(el, el+l))
+        t += lst_
+        yield list(range(el, el + lst_))
 
 
-def find_sub_list(sl,l):
-    results=[]
-    sll=len(sl)
-    for ind in (i for i,e in enumerate(l) if e==sl[0]):
-        if l[ind:ind+sll]==sl:
-            results.append((ind,ind+sll-1))
+def find_sub_list(sl, lst):
+    results = []
+    sll = len(sl)
+    for ind in (i for i, e in enumerate(lst) if e == sl[0]):
+        if lst[ind:ind + sll] == sl:
+            results.append((ind, ind + sll - 1))
 
     return results
 
@@ -65,9 +65,10 @@ def get_words_mappings(encodings, text):
 
 def get_triples(subject_spans, relation, object_spans):
     triples = []
+    relation = Relation(name=relation, description="")
     for comb in product(subject_spans, object_spans):
         triples.append((comb[0],
-                        RelationSpan(start=comb[0], end=comb[1], relation=Relation(name=relation, description="")),
+                        RelationSpan(start=comb[0], end=comb[1], relation=relation),
                         comb[1]))
 
     return triples

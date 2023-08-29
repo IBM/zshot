@@ -186,7 +186,14 @@ class Zshot:
         else:
             self.linker = linker
 
-        PipelineConfig(mentions_extractor=mentions_extractor, linker=linker)
+        try:
+            knowledge_extractor = KnowledgeExtractor.from_disk(path)
+        except FileNotFoundError:
+            knowledge_extractor = None
+        else:
+            self.knowledge_extractor = knowledge_extractor
+
+        PipelineConfig(mentions_extractor=mentions_extractor, linker=linker, knowledge_extractor=knowledge_extractor)
 
         self.disable_default_ner = config['disable_default_ner']
         self.setup()
@@ -207,3 +214,5 @@ class Zshot:
             self.mentions_extractor.to_disk(path)
         if self.linker:
             self.linker.to_disk(path)
+        if self.knowledge_extractor:
+            self.knowledge_extractor.to_disk(path)

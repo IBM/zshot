@@ -1,4 +1,4 @@
-from typing import List, Tuple, Iterator, Optional, Union, Dict
+from typing import List, Tuple, Iterator, Optional, Union
 
 from spacy.tokens import Doc
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
@@ -33,7 +33,6 @@ class KnowGL(KnowledgeExtractor):
             o_mention, o_label, o_type = object_.strip("[()]").split("#")
             s_type = s_type if s_type != "None" else s_label
             o_type = o_type if o_type != "None" else o_label
-            print(s_label, s_mention, s_type, o_label, o_mention, o_type)
             subject_spans = get_spans(s_mention, s_type, self.tokenizer, encodings,
                                       words_mapping, char_mapping)
             object_spans = get_spans(o_mention, o_type, self.tokenizer, encodings,
@@ -55,9 +54,9 @@ class KnowGL(KnowledgeExtractor):
 
         texts = [d.text for d in docs]
         input_data = self.tokenizer(texts,
-                                   truncation=True,
-                                   padding=True,
-                                   return_tensors="pt")
+                                    truncation=True,
+                                    padding=True,
+                                    return_tensors="pt")
         input_ids = input_data.input_ids.to(self.model.device)
         outputs = self.model.generate(inputs=input_ids)
 

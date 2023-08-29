@@ -24,3 +24,8 @@ EX_RELATIONS = \
         Relation(name="child", description="Is the child of someone"),
         Relation(name="sibling", description="Is the sibling of someone"),
     ]
+
+
+text_cubesat = "The Italian Space Agency’s Light Italian CubeSat for Imaging of Asteroids, or LICIACube, will fly by Dimorphos to capture images and video of the impact plume as it sprays up off the asteroid and maybe even spy the crater it could leave behind."
+text_acetamide = "CH2O2 is a chemical compound similar to Acetamide used in International Business Machines Corporation (IBM)."
+texts = [text_cubesat, text_acetamide]

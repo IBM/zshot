@@ -1,12 +1,11 @@
 import os
 import pickle as pkl
-import zlib
 from abc import ABC, abstractmethod
 from typing import List, Iterator, Optional, Union, Tuple
 
 import torch
+import zlib
 from spacy.tokens import Doc
-from spacy.util import ensure_path
 
 from zshot.utils.alignment_utils import filter_overlapping_spans, spacy_token_offsets
 from zshot.utils.data_models import Span
@@ -81,12 +80,6 @@ class KnowledgeExtractor(ABC):
     @staticmethod
     def _get_serialize_file(path):
         return os.path.join(path, "knowledge_extractor.pkl")
-
-    @staticmethod
-    def _get_config_file(path):
-        path = os.path.join(path, "knowledge_extractor.json")
-        path = ensure_path(path)
-        return path
 
     @classmethod
     def from_disk(cls, path, exclude=()):
