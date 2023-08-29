@@ -1,6 +1,7 @@
 from typing import List, Tuple, Iterator, Optional, Union
 
 from spacy.tokens import Doc
+from tokenizers import Encoding
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 from zshot.knowledge_extractor.knowgl.utils import get_words_mappings, get_spans, get_triples
@@ -11,6 +12,7 @@ from zshot.utils.data_models.relation_span import RelationSpan
 
 class KnowGL(KnowledgeExtractor):
     def __init__(self, model_name="ibm/knowgl-large"):
+        """ Instantiate the KnowGL Knowledge Extractor """
         super().__init__()
 
         self.model_name = model_name
@@ -24,7 +26,14 @@ class KnowGL(KnowledgeExtractor):
         self.model.to(self.device)
 
     def parse_result(self, result: str, doc: Doc,
-                     encodings) -> List[Tuple[Span, RelationSpan, Span]]:
+                     encodings: Encoding) -> List[Tuple[Span, RelationSpan, Span]]:
+        """  Parse the text result into a list of triples
+
+        :param result: Text generate by the KnowGL model
+        :param doc: Spacy doc
+        :param encodings: Encodings result of the tokenization
+        :return: List of triples (subject, relation, object)
+        """
         words_mapping, char_mapping = get_words_mappings(encodings, doc.text)
         triples = []
         for triple in result.split("$"):
@@ -45,9 +54,9 @@ class KnowGL(KnowledgeExtractor):
             -> List[List[Tuple[Span, RelationSpan, Span]]]:
         """ Extract triples from docs
 
-        :param docs:
-        :param batch_size:
-        :return: Triples extracted as
+        :param docs: Spacy Docs to process
+        :param batch_size: Batch size for processing
+        :return: Triples (subject, relation, object) extracted for each document
         """
         if not self.model:
             self.load_models()

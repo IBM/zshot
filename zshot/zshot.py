@@ -165,6 +165,12 @@ class Zshot:
             self.relations_extractor.extract_relations(docs, batch_size=batch_size)
 
     def extract_knowledge(self, docs: Iterator[Doc], batch_size=None):
+        """ Extract knowledge (triples of subject-relation-object) from the docs
+
+        :param docs: Spacy docs to extract knowledge from
+        :param batch_size: Batch size
+        :return:
+        """
         if self.knowledge_extractor:
             self.knowledge_extractor.extract_knowledge(docs, batch_size=batch_size)
 

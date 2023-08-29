@@ -15,6 +15,10 @@ from zshot.utils.data_models.relation_span import RelationSpan
 class KnowledgeExtractor(ABC):
 
     def __init__(self, device: Optional[Union[str, torch.device]] = None):
+        """ Instantiate the Knowledge Extractor
+
+        :param device: Device to be used for computation
+        """
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu") if device is None else device
 
     def set_device(self, device: Union[str, torch.device]):
@@ -79,19 +83,23 @@ class KnowledgeExtractor(ABC):
 
     @staticmethod
     def _get_serialize_file(path):
+        """ Get full filepath of the serialization file """
         return os.path.join(path, "knowledge_extractor.pkl")
 
     @classmethod
     def from_disk(cls, path, exclude=()):
+        """ Load component from disk """
         serialize_file = cls._get_serialize_file(path)
         with open(serialize_file, "rb") as f:
             return pkl.load(f)
 
     def to_disk(self, path):
+        """ Save component into disk """
         serialize_file = self._get_serialize_file(path)
         with open(serialize_file, "wb") as f:
             return pkl.dump(self, f)
 
     def __hash__(self):
+        """ Get hash representation of the component """
         self_repr = f"{self.__class__.__name__}.{self.version()}.{str(self.__dict__)}"
         return zlib.crc32(self_repr.encode())

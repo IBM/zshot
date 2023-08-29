@@ -65,12 +65,13 @@ $ pip install zshot
 
 ## Examples
 
-|            Example             | Notebook                                                                                                                                                           |
-|:------------------------------:|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Installation and Visualization | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/IBM/zshot/blob/examples/Zshot%20Example.ipynb) |
-|          Wikification          | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/IBM/zshot/blob/examples/Zshot%20Example%20-%20Wikification.ipynb) |
-|       Custom Components        | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/IBM/zshot/blob/examples/Zshot%20Example%20-%20Custom%20Components.ipynb) |
-|           Evaluation           | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/IBM/zshot/blob/examples/Zshot%20Example%20-%20Evaluation.ipynb) |
+|            Example             | Notebook                                                                                                                                                                                         |
+|:------------------------------:|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Installation and Visualization | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/IBM/zshot/blob/examples/Zshot%20Example.ipynb)                             |
+|      Knowledge Extractor       | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/IBM/zshot/blob/examples/Zshot%20Example%20-%20Knowledge%20Extractor.ipynb) |
+|          Wikification          | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/IBM/zshot/blob/examples/Zshot%20Example%20-%20Wikification.ipynb)          |
+|       Custom Components        | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/IBM/zshot/blob/examples/Zshot%20Example%20-%20Custom%20Components.ipynb)   |
+|           Evaluation           | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/IBM/zshot/blob/examples/Zshot%20Example%20-%20Evaluation.ipynb)            |
 
 
 ## Zshot Approach
@@ -97,6 +98,15 @@ Again, there are 4 **linkers** available currently, 2 of them are *end-to-end* a
 |    GENRE    |      X     | [Source Code](https://github.com/facebookresearch/GENRE) | [Paper](https://arxiv.org/pdf/2010.00904.pdf)                      |
 |     SMXM    |   &check;  | [Source Code](https://github.com/Raldir/Zero-shot-NERC)  | [Paper](https://aclanthology.org/2021.acl-long.120/)               |
 |     TARS    |   &check;  | [Source Code](https://github.com/flairNLP/flair)         | [Paper](https://kishaloyhalder.github.io/pdfs/tars_coling2020.pdf) |
+
+
+### Knowledge Extractor
+The **knowledge extractor** will perform at the same time the extraction and classification of named entities and the extraction of relations among them. The pipeline with this component doesn't need any **mentions extractor**, **linker** or **relation extractor** to work.
+
+Currently, the is only one Knowledge Extractor available: 
+- KnowGL
+  - [Paper Rossiello et al. (AAAI 2023)](https://arxiv.org/pdf/2210.13952.pdf)
+  - [Paper Mihindukulasooriya et al. (ISWC 2022)](https://arxiv.org/pdf/2207.05188.pdf)
 
 
 ### How to use it
