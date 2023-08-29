@@ -24,6 +24,7 @@ def ranges(lst: List[int]) -> List[List[int]]:
 
     return groups
 
+
 def find_sub_list(sl: List[Any], lst: List[Any]):
     """ Return init and end indexes of a sublist in a list
 

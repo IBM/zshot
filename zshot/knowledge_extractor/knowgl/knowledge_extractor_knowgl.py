@@ -40,8 +40,8 @@ class KnowGL(KnowledgeExtractor):
             subject_, relation, object_ = triple.split("|")
             s_mention, s_label, s_type = subject_.strip("[()]").split("#")
             o_mention, o_label, o_type = object_.strip("[()]").split("#")
-            s_type = s_type if s_type != "None" else s_label
-            o_type = o_type if o_type != "None" else o_label
+            s_type = s_label if s_label != "None" else s_type
+            o_type = o_label if o_label != "None" else o_type
             subject_spans = get_spans(s_mention, s_type, self.tokenizer, encodings,
                                       words_mapping, char_mapping)
             object_spans = get_spans(o_mention, o_type, self.tokenizer, encodings,
