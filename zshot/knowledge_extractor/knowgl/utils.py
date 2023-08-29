@@ -1,5 +1,5 @@
 from itertools import groupby, product
-from typing import List, Generator, Any, Dict, Tuple
+from typing import List, Any, Dict, Tuple
 
 from tokenizers import Tokenizer, Encoding
 
@@ -7,20 +7,22 @@ from zshot.utils.data_models import Span, Relation
 from zshot.utils.data_models.relation_span import RelationSpan
 
 
-def ranges(lst: List[int]) -> Generator(List[int]):
+def ranges(lst: List[int]) -> List[List[int]]:
     """ Get groups made by consecutive numbers in the given list
 
     :param lst: List to get groups from
-    :yield: Group of consecutive numbers
+    :return: Groups of consecutive numbers
     """
     pos = (j - i for i, j in enumerate(lst))
     t = 0
+    groups = []
     for i, els in groupby(pos):
         lst_ = len(list(els))
         el = lst[t]
         t += lst_
-        yield list(range(el, el + lst_))
+        groups.append(list(range(el, el + lst_)))
 
+    return groups
 
 def find_sub_list(sl: List[Any], lst: List[Any]):
     """ Return init and end indexes of a sublist in a list
@@ -66,7 +68,7 @@ def get_spans(mention: str, label: str,
     if not spans:
         words = mention.lower().split()
         words_idxs = [k for k, v in words_mapping.items() if v.lower() in words]
-        valid_groups = [group for group in list(ranges(words_idxs)) if len(group) == len(words)]
+        valid_groups = [group for group in ranges(words_idxs) if len(group) == len(words)]
         for group in valid_groups:
             init = char_mapping[group[0]][0]
             end = char_mapping[group[-1]][-1]
