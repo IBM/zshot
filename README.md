@@ -105,8 +105,8 @@ The **knowledge extractor** will perform at the same time the extraction and cla
 
 Currently, the is only one Knowledge Extractor available: 
 - KnowGL
-  - [Paper Rossiello et al. (AAAI 2023)](https://arxiv.org/pdf/2210.13952.pdf)
-  - [Paper Mihindukulasooriya et al. (ISWC 2022)](https://arxiv.org/pdf/2207.05188.pdf)
+  - [Rossiello et al. (AAAI 2023)](https://arxiv.org/pdf/2210.13952.pdf)
+  - [Mihindukulasooriya et al. (ISWC 2022)](https://arxiv.org/pdf/2207.05188.pdf)
 
 
 ### How to use it
