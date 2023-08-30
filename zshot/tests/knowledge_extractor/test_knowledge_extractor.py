@@ -41,7 +41,7 @@ def test_dummy_knowledge_extractor():
     assert len(doc._.relations) > 0
 
 
-def test_dummy_relations_extractor_device():
+def test_dummy_knowledge_extractor_device():
     nlp = spacy.blank("en")
     device = 'cpu'
     config_zshot = PipelineConfig(
