@@ -22,9 +22,6 @@ logger = logging.getLogger(__name__)
 def teardown():
     logger.warning("Starting regen tests")
     yield True
-    logger.warning("Removing cache")
-    shutil.rmtree(f"{Path.home()}/.cache/huggingface", ignore_errors=True)
-    shutil.rmtree(f"{Path.home()}/.cache/zshot", ignore_errors=True)
     gc.collect()
 
 

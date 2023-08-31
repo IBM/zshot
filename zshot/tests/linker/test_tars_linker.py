@@ -121,3 +121,4 @@ def test_flat_entities():
     # None
     linker_tars.set_kg(None)
     assert linker_tars.entities == []
+    del linker_tars
