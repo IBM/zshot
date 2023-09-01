@@ -15,18 +15,19 @@ from zshot.utils.displacy.templates import TPL_REL_WORDS, TPL_SCRIPT, TPL_PAGE, 
 def parse_rels(doc: Doc) -> Dict:
     filtered_spans = filter_overlapping_spans(doc._.spans, list(doc), tokens_offsets=spacy_token_offsets(doc))
     filtered_spans.sort(key=lambda x: x.start)
-
     tokens_span = []
-    for idx, span in enumerate(filtered_spans):
-        if idx == 0:
-            if span.start > 0:
-                tokens_span.append((0, span.start, None))
-        elif span.start > filtered_spans[idx - 1].end:
-            tokens_span.append((filtered_spans[idx - 1].end, span.start, None))
-        tokens_span.append((span.start, span.end, span))
-    if filtered_spans[-1].end < len(doc.text):
-        tokens_span.append((filtered_spans[-1].end, len(doc.text), None))
-
+    if filtered_spans:
+        for idx, span in enumerate(filtered_spans):
+            if idx == 0:
+                if span.start > 0:
+                    tokens_span.append((0, span.start, None))
+            elif span.start > filtered_spans[idx - 1].end:
+                tokens_span.append((filtered_spans[idx - 1].end, span.start, None))
+            tokens_span.append((span.start, span.end, span))
+        if filtered_spans[-1].end < len(doc.text):
+            tokens_span.append((filtered_spans[-1].end, len(doc.text), None))
+    else:
+        tokens_span = [(0, len(doc.text), None)]
     words = []
     span_map = {}
     for idx, (start, end, span) in enumerate(tokens_span):
