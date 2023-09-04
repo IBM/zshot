@@ -26,8 +26,6 @@ def test_flair_ner_mentions_extractor():
     doc = nlp(EX_DOCS[1])
     assert doc.ents == ()
     assert len(doc._.mentions) > 0
-    nlp.remove_pipe('zshot')
-    del doc, nlp
 
 
 def test_custom_flair_mentions_extractor():
@@ -38,8 +36,6 @@ def test_custom_flair_mentions_extractor():
     doc = nlp(EX_DOCS[1])
     assert doc.ents == ()
     assert len(doc._.mentions) > 0
-    nlp.remove_pipe('zshot')
-    del doc, nlp
 
 
 def test_flair_pos_mentions_extractor():
@@ -53,8 +49,6 @@ def test_flair_pos_mentions_extractor():
     doc = nlp(EX_DOCS[1])
     assert doc.ents == ()
     assert len(doc._.mentions) > 0
-    nlp.remove_pipe('zshot')
-    del doc, nlp
 
 
 def test_flair_ner_mentions_extractor_pipeline():
@@ -67,8 +61,6 @@ def test_flair_ner_mentions_extractor_pipeline():
     docs = [doc for doc in nlp.pipe(EX_DOCS)]
     assert all(doc.ents == () for doc in docs)
     assert all(len(doc._.mentions) > 0 for doc in docs)
-    nlp.remove_pipe('zshot')
-    del docs, nlp
 
 
 def test_flair_pos_mentions_extractor_pipeline():
@@ -81,5 +73,3 @@ def test_flair_pos_mentions_extractor_pipeline():
     docs = [doc for doc in nlp.pipe(EX_DOCS)]
     assert all(doc.ents == () for doc in docs)
     assert all(len(doc._.mentions) > 0 for doc in docs)
-    nlp.remove_pipe('zshot')
-    del docs, nlp

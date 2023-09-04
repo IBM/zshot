@@ -38,8 +38,6 @@ def test_tars_mentions_extractor_with_entities():
 
     docs = [doc for doc in nlp.pipe(EX_DOCS)]
     assert all(doc._.mentions != () for doc in docs)
-    nlp.remove_pipe('zshot')
-    del docs, doc, nlp
 
 
 @pytest.mark.xfail(pkgutil.resolve_name("flair").__version__ == '0.12.2', reason='Bug in TARS models in Flair 0.12.2')
@@ -54,8 +52,6 @@ def test_tars_mentions_extractor_overlap():
     assert "zshot" in nlp.pipe_names
     doc = nlp(OVERLAP_TEXT)
     assert len(doc._.mentions) > 0
-    nlp.remove_pipe('zshot')
-    del doc, nlp
 
 
 @pytest.mark.xfail(pkgutil.resolve_name("flair").__version__ == '0.12.2', reason='Bug in TARS models in Flair 0.12.2')
@@ -69,5 +65,3 @@ def test_tars_end2end_incomplete_spans():
     assert "zshot" in nlp.pipe_names
     doc = nlp(INCOMPLETE_SPANS_TEXT)
     assert len(doc._.mentions) == 0
-    nlp.remove_pipe('zshot')
-    del doc, nlp
