@@ -1,9 +1,9 @@
 import spacy
 
+from zshot import PipelineConfig
 from zshot.mentions_extractor import MentionsExtractorSpacy
 from zshot.mentions_extractor.mentions_extractor_spacy import ExtractorType
 from zshot.tests.config import EX_DOCS
-from zshot import PipelineConfig
 
 
 def test_spacy_ner_mentions_extractor():

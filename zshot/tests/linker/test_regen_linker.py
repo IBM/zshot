@@ -1,7 +1,5 @@
 import gc
 import logging
-import shutil
-from pathlib import Path
 
 import pytest
 import spacy

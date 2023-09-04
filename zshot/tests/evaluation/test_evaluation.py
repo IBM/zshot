@@ -109,10 +109,12 @@ class DummyRelationsExtractor(RelationsExtractor):
         rval = []
         for _ in docs:
             rval.append(
-                [RelationSpan(item["start"], item["end"], Relation(name=item["label"])) for item in self.predictions[self.curr_idx]]
+                [RelationSpan(item["start"], item["end"], Relation(name=item["label"])) for item in
+                 self.predictions[self.curr_idx]]
             )
             self.curr_idx += 1
         return rval
+
 
 def get_linker_pipe(predictions: List[Tuple[str, str, float]]):
     nlp = spacy.blank("en")

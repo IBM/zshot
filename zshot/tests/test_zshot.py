@@ -6,10 +6,10 @@ from typing import List
 import spacy
 
 from zshot import Zshot, PipelineConfig
-from zshot.utils.data_models import Entity
 from zshot.tests.config import EX_DOCS, EX_ENTITIES
 from zshot.tests.linker.test_linker import DummyLinker, DummyLinkerEnd2End
 from zshot.tests.mentions_extractor.test_mention_extractor import DummyMentionsExtractor, DummyMentionsExtractorWithNER
+from zshot.utils.data_models import Entity
 
 
 def test_add_pipe():
@@ -63,7 +63,6 @@ def test_serialization_zshot():
 
 
 def test_call_pipe_with_registered_function_configuration():
-
     @spacy.registry.misc("dummy.mentions-extractor")
     def create_custom_spacy_extractor():
         return DummyMentionsExtractor()

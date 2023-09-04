@@ -4,7 +4,7 @@ import pkgutil
 import pytest
 import spacy
 
-from zshot import PipelineConfig, MentionsExtractor
+from zshot import PipelineConfig
 from zshot.mentions_extractor import MentionsExtractorTARS
 from zshot.tests.config import EX_DOCS, EX_ENTITIES
 

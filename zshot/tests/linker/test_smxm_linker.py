@@ -1,13 +1,11 @@
 import gc
 import logging
-import shutil
-from pathlib import Path
 
 import pytest
 import spacy
 
 from zshot import PipelineConfig, Linker
-from zshot.linker import LinkerSMXM, LinkerEnsemble
+from zshot.linker import LinkerSMXM
 from zshot.tests.config import EX_DOCS, EX_ENTITIES
 
 logger = logging.getLogger(__name__)
