@@ -24,6 +24,7 @@ def teardown():
     gc.collect()
 
 
+@pytest.mark.xfail(pkgutil.resolve_name("flair").__version__ == '0.12.2', reason='Bug in TARS models in Flair 0.12.2')
 def test_tars_mentions_extractor_with_entities():
     if not pkgutil.find_loader("flair"):
         return
@@ -41,6 +42,7 @@ def test_tars_mentions_extractor_with_entities():
     del docs, doc, nlp
 
 
+@pytest.mark.xfail(pkgutil.resolve_name("flair").__version__ == '0.12.2', reason='Bug in TARS models in Flair 0.12.2')
 def test_tars_mentions_extractor_overlap():
     if not pkgutil.find_loader("flair"):
         return
@@ -56,6 +58,7 @@ def test_tars_mentions_extractor_overlap():
     del doc, nlp
 
 
+@pytest.mark.xfail(pkgutil.resolve_name("flair").__version__ == '0.12.2', reason='Bug in TARS models in Flair 0.12.2')
 def test_tars_end2end_incomplete_spans():
     if not pkgutil.find_loader("flair"):
         return
