@@ -22,6 +22,7 @@ def test_smxm_download():
     linker = LinkerSMXM()
     linker.load_models()
     assert isinstance(linker, Linker)
+    del linker.tokenizer, linker.model, linker
 
 
 def test_smxm_linker():
@@ -37,6 +38,9 @@ def test_smxm_linker():
     assert len(doc.ents) > 0
     docs = [doc for doc in nlp.pipe(EX_DOCS)]
     assert all(len(doc.ents) > 0 for doc in docs)
+    del nlp.get_pipe('zshot').linker.tokenizer, nlp.get_pipe('zshot').linker.model, nlp.get_pipe('zshot').linker
+    nlp.remove_pipe('zshot')
+    del doc, nlp, smxm_config
 
 
 def test_smxm_linker_no_entities():
@@ -50,3 +54,6 @@ def test_smxm_linker_no_entities():
 
     doc = nlp(EX_DOCS[1])
     assert len(doc.ents) == 0
+    del nlp.get_pipe('zshot').linker.tokenizer, nlp.get_pipe('zshot').linker.model, nlp.get_pipe('zshot').linker
+    nlp.remove_pipe('zshot')
+    del doc, nlp, smxm_config

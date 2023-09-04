@@ -22,6 +22,7 @@ def test_smxm_download():
     mentions_extractor = MentionsExtractorSMXM()
     mentions_extractor.load_models()
     assert isinstance(mentions_extractor, MentionsExtractor)
+    del mentions_extractor
 
 
 def test_smxm_mentions_extractor():
@@ -35,6 +36,8 @@ def test_smxm_mentions_extractor():
 
     doc = nlp(EX_DOCS[1])
     assert len(doc._.mentions) > 0
+    nlp.remove_pipe('zshot')
+    del doc, nlp
 
 
 def test_smxm_mentions_extractor_pipeline():
@@ -48,6 +51,8 @@ def test_smxm_mentions_extractor_pipeline():
 
     docs = [doc for doc in nlp.pipe(EX_DOCS)]
     assert all(len(doc._.mentions) > 0 for doc in docs)
+    nlp.remove_pipe('zshot')
+    del docs, nlp
 
 
 def test_smxm_mentions_extractor_no_entities():
@@ -61,3 +66,5 @@ def test_smxm_mentions_extractor_no_entities():
 
     doc = nlp(EX_DOCS[1])
     assert len(doc._.mentions) == 0
+    nlp.remove_pipe('zshot')
+    del doc, nlp

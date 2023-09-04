@@ -25,6 +25,7 @@ def test_ensemble_linker_max():
     assert len(doc.ents) > 0
     assert len(doc._.spans) > 0
     assert all([bool(ent.label_) for ent in doc.ents])
+    del doc, nlp
 
 
 def test_ensemble_linker_count():
@@ -48,3 +49,4 @@ def test_ensemble_linker_count():
     assert len(doc.ents) > 0
     assert len(doc._.spans) > 0
     assert all([bool(ent.label_) for ent in doc.ents])
+    del doc, nlp

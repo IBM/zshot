@@ -39,6 +39,11 @@ def test_regen_linker():
     assert len(doc.ents) == 0
     docs = [doc for doc in nlp.pipe(EX_DOCS)]
     assert all(len(doc.ents) > 0 for doc in docs)
+    del nlp.get_pipe('zshot').mentions_extractor, nlp.get_pipe('zshot').entities, nlp.get_pipe('zshot').nlp
+    del nlp.get_pipe('zshot').linker.tokenizer, nlp.get_pipe('zshot').linker.trie, \
+        nlp.get_pipe('zshot').linker.model, nlp.get_pipe('zshot').linker
+    nlp.remove_pipe('zshot')
+    del doc, nlp, config
 
 
 def test_regen_linker_wikification():
@@ -55,6 +60,11 @@ def test_regen_linker_wikification():
 
     doc = nlp(EX_DOCS[1])
     assert len(doc.ents) > 0
+    del nlp.get_pipe('zshot').mentions_extractor, nlp.get_pipe('zshot').entities, nlp.get_pipe('zshot').nlp
+    del nlp.get_pipe('zshot').linker.tokenizer, nlp.get_pipe('zshot').linker.trie, \
+        nlp.get_pipe('zshot').linker.model, nlp.get_pipe('zshot').linker
+    nlp.remove_pipe('zshot')
+    del doc, nlp, config
 
 
 @pytest.mark.skip(reason="Too expensive to run on every commit")

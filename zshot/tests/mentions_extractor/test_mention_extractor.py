@@ -44,6 +44,7 @@ def test_dummy_mentions_extractor():
     doc = nlp(EX_DOCS[1])
     assert doc.ents == ()
     assert len(doc._.mentions) > 0
+    del doc, nlp
 
 
 def test_dummy_mentions_extractor_device():
@@ -54,6 +55,7 @@ def test_dummy_mentions_extractor_device():
     doc = nlp(EX_DOCS[1])
     assert doc.ents == ()
     assert len(doc._.mentions) > 0
+    del doc, nlp
 
 
 def test_dummy_mentions_extractor_with_entities_config():
@@ -65,3 +67,4 @@ def test_dummy_mentions_extractor_with_entities_config():
     doc = nlp(EX_DOCS[1])
     assert doc.ents == ()
     assert len(doc._.mentions) > 0
+    del doc, nlp

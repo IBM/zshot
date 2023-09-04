@@ -60,6 +60,7 @@ def test_dummy_linker():
     assert len(doc._.mentions) > 0
     assert len(doc.ents) > 0
     assert len(doc._.spans) > 0
+    del doc, nlp
 
 
 def test_dummy_linker_device():
@@ -74,6 +75,7 @@ def test_dummy_linker_device():
     assert len(doc._.mentions) > 0
     assert len(doc.ents) > 0
     assert len(doc._.spans) > 0
+    del doc, nlp
 
 
 def test_dummy_linker_with_entities_config():
@@ -91,6 +93,7 @@ def test_dummy_linker_with_entities_config():
     assert len(doc.ents) > 0
     assert len(doc._.spans) > 0
     assert all([bool(ent.label_) for ent in doc.ents])
+    del doc, nlp
 
 
 def test_dummy_linker_end2end():
@@ -107,3 +110,4 @@ def test_dummy_linker_end2end():
     assert len(doc._.mentions) == 0
     assert len(doc.ents) > 0
     assert len(doc._.spans) > 0
+    del doc, nlp
