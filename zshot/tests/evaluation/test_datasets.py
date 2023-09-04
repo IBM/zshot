@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from zshot.evaluation import load_ontonotes_zs, load_medmentions_zs
+from zshot.evaluation import load_ontonotes_zs, load_medmentions_zs, load_few_rel_zs
 from zshot.evaluation.dataset.dataset import create_dataset
 from zshot.utils.data_models import Entity
 
@@ -58,6 +58,15 @@ def test_medmentions_zs():
 def test_medmentions_zs_split():
     dataset = load_medmentions_zs(split='test')
     assert dataset.num_rows == 1048
+    del dataset
+
+
+def test_few_rel_zs():
+    dataset = load_few_rel_zs()
+    assert dataset.num_rows == 11200
+
+    dataset = load_few_rel_zs("val_wiki[0:5]")
+    assert dataset.num_rows == 5
     del dataset
 
 
