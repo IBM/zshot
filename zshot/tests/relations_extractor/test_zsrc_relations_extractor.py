@@ -18,6 +18,4 @@ def test_zsrc_with_entities_config_dummy_annotator():
     assert "zshot" in nlp.pipe_names
     doc = nlp(EX_DOCS[0])
     assert len(doc.ents) >= 0
-    assert (
-            len(doc._.relations) == 0
-    )
+    assert len(doc._.relations) == 0
