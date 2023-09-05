@@ -99,12 +99,23 @@ Again, there are 4 **linkers** available currently, 2 of them are *end-to-end* a
 |     SMXM    |   &check;  | [Source Code](https://github.com/Raldir/Zero-shot-NERC)  | [Paper](https://aclanthology.org/2021.acl-long.120/)               |
 |     TARS    |   &check;  | [Source Code](https://github.com/flairNLP/flair)         | [Paper](https://kishaloyhalder.github.io/pdfs/tars_coling2020.pdf) |
 
+### Relations Extractor
+The **relations extractor** will extract relations among different entities *previously* extracted by a **linker**.. 
+
+Currently, the is only one Relation Extractor available: 
+
+- ZS-Bert
+  - [Paper](https://arxiv.org/abs/2104.04697)
+  - [Source Code](https://github.com/dinobby/ZS-BERT)
+
 
 ### Knowledge Extractor
 The **knowledge extractor** will perform at the same time the extraction and classification of named entities and the extraction of relations among them. The pipeline with this component doesn't need any **mentions extractor**, **linker** or **relation extractor** to work.
 
 Currently, the is only one Knowledge Extractor available: 
+
 - KnowGL
+
   - [Rossiello et al. (AAAI 2023)](https://arxiv.org/pdf/2210.13952.pdf)
   - [Mihindukulasooriya et al. (ISWC 2022)](https://arxiv.org/pdf/2207.05188.pdf)
 
