@@ -7,6 +7,7 @@ from spacy.language import Language
 from spacy.tokens import Doc
 from spacy.util import registry as spacy_registry, ensure_path
 
+from zshot.knowledge_extractor.knowledge_extractor import KnowledgeExtractor
 from zshot.linker import Linker
 from zshot.mentions_extractor import MentionsExtractor
 from zshot.pipeline_config import PipelineConfig
@@ -21,6 +22,7 @@ from zshot.utils.data_models import Entity, Relation
     "mentions_extractor": None,
     "linker": None,
     "relations_extractor": None,
+    "knowledge_extractor": None,
     "disable_default_ner": True,
     "device": None
 })
@@ -31,9 +33,11 @@ def create_zshot_component(nlp: Language, name: str,
                            mentions_extractor: Optional[Union[MentionsExtractor, str]],
                            linker: Optional[Union[Linker, str]],
                            relations_extractor: Optional[Union[RelationsExtractor, str]],
+                           knowledge_extractor: Optional[Union[KnowledgeExtractor, str]],
                            disable_default_ner: Optional[bool] = True,
                            device: Optional[str] = None):
-    return Zshot(nlp, mentions, entities, relations, mentions_extractor, linker, relations_extractor,
+    return Zshot(nlp, mentions, entities, relations,
+                 mentions_extractor, linker, relations_extractor, knowledge_extractor,
                  disable_default_ner, device)
 
 
@@ -46,6 +50,7 @@ class Zshot:
                  mentions_extractor,
                  linker,
                  relations_extractor,
+                 knowledge_extractor,
                  disable_default_ner,
                  device):
         self.nlp = nlp
@@ -55,6 +60,7 @@ class Zshot:
         self.mentions_extractor = mentions_extractor
         self.linker = linker
         self.relations_extractor = relations_extractor
+        self.knowledge_extractor = knowledge_extractor
         self.disable_default_ner = disable_default_ner
         self.device = device
         self.setup()
@@ -92,6 +98,11 @@ class Zshot:
             self.relations_extractor = spacy_registry.get(registry_name='misc', func_name=self.relations_extractor)()
             self.relations_extractor.set_device(device=self.device)
 
+        if isinstance(self.knowledge_extractor, str):
+            self.knowledge_extractor = spacy_registry.get(registry_name='misc',
+                                                          func_name=self.knowledge_extractor)()
+            self.knowledge_extractor.set_device(device=self.device)
+
         if self.mentions_extractor and self.mentions_extractor.require_existing_ner \
                 and "ner" not in self.nlp.pipe_names:
             raise ValueError(f"The pipeline you are using does not contains a NER,"
@@ -122,6 +133,7 @@ class Zshot:
         self.extracts_mentions([doc])
         self.link_entities([doc])
         self.extract_relations([doc])
+        self.extract_knowledge([doc])
         return doc
 
     def pipe(self, docs: Iterator[Doc], batch_size: int, **kwargs):
@@ -133,6 +145,7 @@ class Zshot:
         self.extracts_mentions(docs, batch_size=batch_size)
         self.link_entities(docs, batch_size=batch_size)
         self.extract_relations(docs, batch_size=batch_size)
+        self.extract_knowledge(docs, batch_size=batch_size)
         for doc in docs:
             yield doc
 
@@ -150,6 +163,16 @@ class Zshot:
         if self.relations_extractor:
             self.relations_extractor.set_relations(self.relations)
             self.relations_extractor.extract_relations(docs, batch_size=batch_size)
+
+    def extract_knowledge(self, docs: Iterator[Doc], batch_size=None):
+        """ Extract knowledge (triples of subject-relation-object) from the docs
+
+        :param docs: Spacy docs to extract knowledge from
+        :param batch_size: Batch size
+        :return:
+        """
+        if self.knowledge_extractor:
+            self.knowledge_extractor.extract_knowledge(docs, batch_size=batch_size)
 
     def from_disk(self, path, exclude=()):
         with open(os.path.join(path, "config.cfg"), "r") as f:
@@ -169,7 +192,14 @@ class Zshot:
         else:
             self.linker = linker
 
-        PipelineConfig(mentions_extractor=mentions_extractor, linker=linker)
+        try:
+            knowledge_extractor = KnowledgeExtractor.from_disk(path)
+        except FileNotFoundError:
+            knowledge_extractor = None
+        else:
+            self.knowledge_extractor = knowledge_extractor
+
+        PipelineConfig(mentions_extractor=mentions_extractor, linker=linker, knowledge_extractor=knowledge_extractor)
 
         self.disable_default_ner = config['disable_default_ner']
         self.setup()
@@ -190,3 +220,5 @@ class Zshot:
             self.mentions_extractor.to_disk(path)
         if self.linker:
             self.linker.to_disk(path)
+        if self.knowledge_extractor:
+            self.knowledge_extractor.to_disk(path)

@@ -55,3 +55,8 @@ EX_DATASET_RELATIONS = {
                                         'and was protected by Wilton Castle .',
                             'start': 45}]],
     'labels': ['crosses', 'crosses']}
+
+
+TEXT_CUBESAT = "The Italian Space Agency’s Light Italian CubeSat for Imaging of Asteroids, or LICIACube, will fly by Dimorphos to capture images and video of the impact plume as it sprays up off the asteroid and maybe even spy the crater it could leave behind."
+TEXT_ACETAMIDE = "CH2O2 is a chemical compound similar to Acetamide used in International Business Machines Corporation (IBM)."
+TEXTS = [TEXT_CUBESAT, TEXT_ACETAMIDE]

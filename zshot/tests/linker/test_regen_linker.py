@@ -7,11 +7,9 @@ import spacy
 from zshot import PipelineConfig
 from zshot.linker.linker_regen.linker_regen import LinkerRegen
 from zshot.linker.linker_regen.trie import Trie
-from zshot.linker.linker_regen.utils import load_wikipedia_trie, spans_to_wikipedia, \
-    load_dbpedia_trie, spans_to_dbpedia, create_input
+from zshot.linker.linker_regen.utils import load_wikipedia_trie, load_dbpedia_trie, create_input
 from zshot.tests.config import EX_DOCS, EX_ENTITIES
 from zshot.tests.mentions_extractor.test_mention_extractor import DummyMentionsExtractor
-from zshot.utils.data_models import Span
 
 logger = logging.getLogger(__name__)
 
@@ -74,25 +72,9 @@ def test_load_wikipedia_trie():  # pragma: no cover
 
 
 @pytest.mark.skip(reason="Too expensive to run on every commit")
-def test_span_to_wiki():  # pragma: no cover
-    s = Span(label="Surfing", start=0, end=10)
-    wiki_links = spans_to_wikipedia([s])
-    assert len(wiki_links) > 0
-    assert wiki_links[0].startswith("https://en.wikipedia.org/wiki?curid=")
-
-
-@pytest.mark.skip(reason="Too expensive to run on every commit")
 def test_load_dbpedia_trie():  # pragma: no cover
     trie = load_dbpedia_trie()
     assert len(list(trie.trie_dict.keys())) == 7156
-
-
-@pytest.mark.skip(reason="Too expensive to run on every commit")
-def test_span_to_dbpedia():  # pragma: no cover
-    s = Span(label="Surfing", start=0, end=10)
-    db_links = spans_to_dbpedia([s])
-    assert len(db_links) > 0
-    assert db_links[0].startswith("http://dbpedia.org/resource")
 
 
 def test_create_input():

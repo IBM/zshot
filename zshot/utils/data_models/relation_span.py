@@ -18,3 +18,10 @@ class RelationSpan:
 
     def __hash__(self):
         return zlib.crc32(self.__repr__().encode())
+
+    def __eq__(self, other):
+        return (type(other) is type(self)
+                and self.start == other.start
+                and self.end == other.end
+                and self.relation == other.relation
+                and self.score == other.score)
