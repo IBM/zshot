@@ -21,6 +21,12 @@ nav:
     - regen.md
     - smxm_linker.md
     - tars_linker.md
+  - Relations Extractor:
+      - relations_extractor.md
+      - zsbert_relations_extractor.md
+  - Knowledge Extractor:
+      - knowledge_extractor.md
+      - knowgl_knowledge_extractor.md
 
 markdown_extensions:
   - attr_list
