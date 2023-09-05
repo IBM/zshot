@@ -23,9 +23,9 @@ def get_entity_data(e, tokenized_sentence):
     return d
 
 
-def get_few_rel_data(split_name: Optional[Union[str, Split]] = "val_wiki") -> Union[Dict[DatasetWithRelations,
-                                                                                         Dataset], Dataset]:
-    dataset = load_dataset("few_rel", split=split_name)
+def load_few_rel_zs(split: Optional[Union[str, Split]] = "val_wiki") -> Union[Dict[DatasetWithRelations,
+                                                                                   Dataset], Dataset]:
+    dataset = load_dataset("few_rel", split=split)
     relations_descriptions = dataset["names"]
     tokenized_sentences = dataset["tokens"]
     sentences = [" ".join(tokens) for tokens in tokenized_sentences]
@@ -42,7 +42,8 @@ def get_few_rel_data(split_name: Optional[Union[str, Split]] = "val_wiki") -> Un
                 get_entity_data(e2, tokenized_sentences[idx]),
             ]
         )
-    relations = [Relation(name=name, description=desc) for name, desc in set([(i, j) for i, j in relations_descriptions])]
+    relations = [Relation(name=name, description=desc) for name, desc in
+                 set([(i, j) for i, j in relations_descriptions])]
     dataset = Dataset.from_dict({
         "sentences": sentences,
         "sentence_entities": entities_data,

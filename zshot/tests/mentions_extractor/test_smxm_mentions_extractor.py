@@ -1,7 +1,5 @@
 import gc
 import logging
-import shutil
-from pathlib import Path
 
 import pytest
 import spacy
@@ -17,9 +15,6 @@ logger = logging.getLogger(__name__)
 def teardown():
     logger.warning("Starting smxm tests")
     yield True
-    logger.warning("Removing cache")
-    shutil.rmtree(f"{Path.home()}/.cache/huggingface", ignore_errors=True)
-    shutil.rmtree(f"{Path.home()}/.cache/zshot", ignore_errors=True)
     gc.collect()
 
 
