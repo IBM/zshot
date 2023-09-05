@@ -5,7 +5,7 @@ from spacy.tokens import Doc
 
 from zshot import PipelineConfig, Linker
 from zshot.relation_extractor import RelationsExtractorZSRC
-from zshot.tests.config import EX_ENTITIES, EX_RELATIONS, EX_DATASET_RELATIONS, EX_DOCS
+from zshot.tests.config import EX_RELATIONS, EX_DATASET_RELATIONS, EX_DOCS
 from zshot.utils.data_models import Span
 
 
