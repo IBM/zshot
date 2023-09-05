@@ -1,12 +1,12 @@
-from typing import Iterator, List, Tuple
+from typing import Iterator, List, Tuple, Optional, Union
 
 import spacy
+from datasets import Dataset
 from spacy.tokens import Doc
 
-from zshot import Linker, MentionsExtractor, PipelineConfig
+from zshot import Linker, MentionsExtractor, PipelineConfig, RelationsExtractor
 from zshot.evaluation.dataset.dataset import DatasetWithRelations
 from zshot.evaluation.dataset.dataset import create_dataset
-from zshot.evaluation.dataset.fewrel.fewrel import get_few_rel_data
 from zshot.evaluation.evaluator import (
     MentionsExtractorEvaluator,
     RelationExtractorEvaluator,
@@ -18,9 +18,10 @@ from zshot.evaluation.pipeline import (
     MentionsExtractorPipeline,
     RelationExtractorPipeline,
 )
-from zshot.relation_extractor.relation_extractor_zsrc import RelationsExtractorZSRC
+from zshot.tests.config import EX_DATASET_RELATIONS, EX_RELATIONS
 from zshot.utils.alignment_utils import AlignmentMode
-from zshot.utils.data_models import Entity, Span
+from zshot.utils.data_models import Entity, Span, Relation
+from zshot.utils.data_models.relation_span import RelationSpan
 
 ENTITIES = [
     Entity(name="FAC", description="A facility"),
@@ -97,6 +98,24 @@ class DummyMentionsExtractor(MentionsExtractor):
         return sentences
 
 
+class DummyRelationsExtractor(RelationsExtractor):
+    # this dummy relation extractor works correctly ONLY if no shuffling is done by spacy when batching documents
+    def __init__(self, predictions):
+        super().__init__()
+        self.predictions = predictions
+        self.curr_idx = 0
+
+    def predict(self, docs: Iterator[Doc], batch_size: Optional[Union[int, None]] = None) -> List[List[RelationSpan]]:
+        rval = []
+        for _ in docs:
+            rval.append(
+                [RelationSpan(item["start"], item["end"], Relation(name=item["label"])) for item in
+                 self.predictions[self.curr_idx]]
+            )
+            self.curr_idx += 1
+        return rval
+
+
 def get_linker_pipe(predictions: List[Tuple[str, str, float]]):
     nlp = spacy.blank("en")
     nlp_config = PipelineConfig(linker=DummyLinker(predictions), entities=ENTITIES)
@@ -117,12 +136,11 @@ def get_mentions_extractor_pipe(predictions: List[Tuple[str, str, float]]):
     return MentionsExtractorPipeline(nlp)
 
 
-def get_relation_extraction_pipeline(dataset: DatasetWithRelations):
+def get_relation_extraction_pipeline(predictions_relations):
     nlp = spacy.blank("en")
     nlp_config = PipelineConfig(
-        relations_extractor=RelationsExtractorZSRC(thr=0.0),
-        linker=DummyLinkerEnd2EndForEval(dataset["sentence_entities"]),
-        relations=dataset.relations,
+        relations_extractor=DummyRelationsExtractor(predictions_relations),
+        relations=EX_RELATIONS,
     )
     nlp.add_pipe("zshot", config=nlp_config, last=True)
     return RelationExtractorPipeline(nlp)
@@ -166,7 +184,7 @@ class TestZeroShotTokenClassificationEvaluation:
         )
 
         assert float(metrics["overall_precision"]) == 1.0
-        assert float(metrics["overall_precision"]) == 1.0
+        assert float(metrics["overall_recall"]) == 1.0
         assert float(metrics["overall_f1"]) == 1.0
         assert float(metrics["overall_accuracy"]) == 1.0
 
@@ -182,7 +200,7 @@ class TestZeroShotTokenClassificationEvaluation:
         )
 
         assert float(metrics["overall_precision"]) == 0.0
-        assert float(metrics["overall_precision"]) == 0.0
+        assert float(metrics["overall_recall"]) == 0.0
         assert float(metrics["overall_f1"]) == 0.0
         assert float(metrics["overall_accuracy"]) == 0.5
 
@@ -236,7 +254,7 @@ class TestZeroShotTokenClassificationEvaluation:
         )
 
         assert float(metrics["overall_precision"]) == 1.0
-        assert float(metrics["overall_precision"]) == 1.0
+        assert float(metrics["overall_recall"]) == 1.0
         assert float(metrics["overall_f1"]) == 1.0
         assert float(metrics["overall_accuracy"]) == 1.0
 
@@ -253,7 +271,7 @@ class TestZeroShotTokenClassificationEvaluation:
         metrics = custom_evaluator.compute(pipe, dataset, metric="seqeval")
 
         assert float(metrics["overall_precision"]) == 1.0
-        assert float(metrics["overall_precision"]) == 1.0
+        assert float(metrics["overall_recall"]) == 1.0
         assert float(metrics["overall_f1"]) == 1.0
         assert float(metrics["overall_accuracy"]) == 1.0
 
@@ -270,7 +288,7 @@ class TestZeroShotTokenClassificationEvaluation:
         metrics = custom_evaluator.compute(pipe, dataset, metric="seqeval")
 
         assert float(metrics["overall_precision"]) == 1.0
-        assert float(metrics["overall_precision"]) == 1.0
+        assert float(metrics["overall_recall"]) == 1.0
         assert float(metrics["overall_f1"]) == 1.0
         assert float(metrics["overall_accuracy"]) == 1.0
 
@@ -287,7 +305,7 @@ class TestZeroShotTokenClassificationEvaluation:
         metrics = custom_evaluator.compute(pipe, dataset, metric="seqeval")
 
         assert float(metrics["overall_precision"]) == 1.0
-        assert float(metrics["overall_precision"]) == 1.0
+        assert float(metrics["overall_recall"]) == 1.0
         assert float(metrics["overall_f1"]) == 1.0
         assert float(metrics["overall_accuracy"]) == 1.0
 
@@ -321,7 +339,7 @@ class TestMentionsExtractorEvaluator:
         )
 
         assert float(metrics["overall_precision"]) == 1.0
-        assert float(metrics["overall_precision"]) == 1.0
+        assert float(metrics["overall_recall"]) == 1.0
         assert float(metrics["overall_f1"]) == 1.0
         assert float(metrics["overall_accuracy"]) == 1.0
 
@@ -337,7 +355,7 @@ class TestMentionsExtractorEvaluator:
         )
 
         assert float(metrics["overall_precision"]) == 0.0
-        assert float(metrics["overall_precision"]) == 0.0
+        assert float(metrics["overall_recall"]) == 0.0
         assert float(metrics["overall_f1"]) == 0.0
         assert float(metrics["overall_accuracy"]) == 0.5
 
@@ -389,7 +407,7 @@ class TestMentionsExtractorEvaluator:
         )
 
         assert float(metrics["overall_precision"]) == 1.0
-        assert float(metrics["overall_precision"]) == 1.0
+        assert float(metrics["overall_recall"]) == 1.0
         assert float(metrics["overall_f1"]) == 1.0
         assert float(metrics["overall_accuracy"]) == 1.0
 
@@ -406,18 +424,29 @@ class TestMentionsExtractorEvaluator:
         metrics = custom_evaluator.compute(pipe, dataset, metric="seqeval")
 
         assert float(metrics["overall_precision"]) == 1.0
-        assert float(metrics["overall_precision"]) == 1.0
+        assert float(metrics["overall_recall"]) == 1.0
         assert float(metrics["overall_f1"]) == 1.0
         assert float(metrics["overall_accuracy"]) == 1.0
 
 
-class TestZeroShotTextClassificationEvaluation:
+class TestRelationExtractorEvaluator:
 
     def test_relation_classification_prediction(self):
-        dataset = get_few_rel_data(split_name="val_wiki[0:5]")
+        predictions_relations = [
+            [{
+                'start': Span(start["start"], start["end"], start["label"]),
+                'end': Span(end["start"], end["end"], end["label"]),
+                'label': label
+            }]
+            for (start, end), label in zip(EX_DATASET_RELATIONS['sentence_entities'], EX_DATASET_RELATIONS['labels'])
+        ]
+        dataset = DatasetWithRelations(
+            Dataset.from_dict(EX_DATASET_RELATIONS).data,
+            relations=EX_RELATIONS
+        )
 
         custom_evaluator = RelationExtractorEvaluator()
-        pipe = get_relation_extraction_pipeline(dataset)
+        pipe = get_relation_extraction_pipeline(predictions_relations=predictions_relations)
         results = custom_evaluator.compute(
             pipe,
             dataset,
@@ -425,5 +454,11 @@ class TestZeroShotTextClassificationEvaluation:
             label_column="labels",
             metric=RelEval(),
         )
-        assert len(dataset) == 5
         assert results is not None
+        assert float(results["overall_precision_micro"]) == 1.0
+        assert float(results["overall_recall_micro"]) == 1.0
+        assert float(results["overall_f1_micro"]) == 1.0
+        assert float(results["overall_precision_macro"]) == 1.0
+        assert float(results["overall_recall_macro"]) == 1.0
+        assert float(results["overall_f1_macro"]) == 1.0
+        assert float(results["overall_accuracy"]) == 2.0

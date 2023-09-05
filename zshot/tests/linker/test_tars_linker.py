@@ -25,6 +25,7 @@ def teardown():
     gc.collect()
 
 
+@pytest.mark.xfail(pkgutil.resolve_name("flair").__version__ == '0.12.2', reason='Bug in TARS models in Flair 0.12.2')
 def test_tars_download():
     linker = LinkerTARS()
     linker.load_models()
@@ -32,6 +33,7 @@ def test_tars_download():
     del linker.model, linker
 
 
+@pytest.mark.xfail(pkgutil.resolve_name("flair").__version__ == '0.12.2', reason='Bug in TARS models in Flair 0.12.2')
 def test_tars_end2end_with_entities():
     if not pkgutil.find_loader("flair"):
         return
@@ -47,6 +49,7 @@ def test_tars_end2end_with_entities():
     del nlp, config_zshot
 
 
+@pytest.mark.xfail(pkgutil.resolve_name("flair").__version__ == '0.12.2', reason='Bug in TARS models in Flair 0.12.2')
 def test_tars_end2end_pipeline_with_entities():
     if not pkgutil.find_loader("flair"):
         return
@@ -62,6 +65,7 @@ def test_tars_end2end_pipeline_with_entities():
     del nlp, config_zshot
 
 
+@pytest.mark.xfail(pkgutil.resolve_name("flair").__version__ == '0.12.2', reason='Bug in TARS models in Flair 0.12.2')
 def test_tars_end2end_overlap():
     if not pkgutil.find_loader("flair"):
         return
@@ -77,6 +81,7 @@ def test_tars_end2end_overlap():
     del nlp, config_zshot
 
 
+@pytest.mark.xfail(pkgutil.resolve_name("flair").__version__ == '0.12.2', reason='Bug in TARS models in Flair 0.12.2')
 def test_tars_end2end_incomplete_spans():
     if not pkgutil.find_loader("flair"):
         return
@@ -92,6 +97,7 @@ def test_tars_end2end_incomplete_spans():
     del nlp, config_zshot
 
 
+@pytest.mark.xfail(pkgutil.resolve_name("flair").__version__ == '0.12.2', reason='Bug in TARS models in Flair 0.12.2')
 def test_flat_entities():
     linker_tars = LinkerTARS()
 
@@ -121,3 +127,4 @@ def test_flat_entities():
     # None
     linker_tars.set_kg(None)
     assert linker_tars.entities == []
+    del linker_tars

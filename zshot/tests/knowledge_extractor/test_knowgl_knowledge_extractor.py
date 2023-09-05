@@ -10,7 +10,7 @@ from transformers import AutoTokenizer
 from zshot import PipelineConfig
 from zshot.knowledge_extractor import KnowGL
 from zshot.knowledge_extractor.knowgl.utils import ranges, find_sub_list, get_words_mappings, get_spans, get_triples
-from zshot.tests.config import texts
+from zshot.tests.config import TEXTS
 from zshot.utils.data_models import Span, Relation
 from zshot.utils.data_models.relation_span import RelationSpan
 
@@ -35,7 +35,7 @@ def test_knowgl_knowledge_extractor():
     nlp.add_pipe("zshot", config=config, last=True)
     assert "zshot" in nlp.pipe_names
 
-    doc = nlp(texts[0])
+    doc = nlp(TEXTS[0])
     assert len(doc.ents) > 0
     assert len(doc._.spans) > 0
     assert len(doc._.relations) > 0
@@ -43,7 +43,7 @@ def test_knowgl_knowledge_extractor():
     assert len(doc.ents) == 0
     assert len(doc._.spans) == 0
     assert len(doc._.relations) == 0
-    docs = [doc for doc in nlp.pipe(texts)]
+    docs = [doc for doc in nlp.pipe(TEXTS)]
     assert all(len(doc.ents) > 0 for doc in docs)
     assert all(len(doc._.spans) > 0 for doc in docs)
     assert all(len(doc._.relations) > 0 for doc in docs)
@@ -67,17 +67,17 @@ def test_find_sub_list():
 
 def test_get_spans():
     tokenizer = AutoTokenizer.from_pretrained("ibm/knowgl-large")
-    input_data = tokenizer(texts,
+    input_data = tokenizer(TEXTS,
                            truncation=True,
                            padding=True,
                            return_tensors="pt")
-    words_mapping, char_mapping = get_words_mappings(input_data.encodings[0], texts[0])
+    words_mapping, char_mapping = get_words_mappings(input_data.encodings[0], TEXTS[0])
     assert words_mapping and char_mapping
     spans = get_spans("LICIACube", "CubeSat", tokenizer, input_data.encodings[0],
                       words_mapping, char_mapping)
     assert spans == [Span(78, 87, 'CubeSat')]
 
-    words_mapping, char_mapping = get_words_mappings(input_data.encodings[1], texts[1])
+    words_mapping, char_mapping = get_words_mappings(input_data.encodings[1], TEXTS[1])
     assert words_mapping and char_mapping
     spans = get_spans("CH2O2", "CH2O2", tokenizer, input_data.encodings[1],
                       words_mapping, char_mapping)

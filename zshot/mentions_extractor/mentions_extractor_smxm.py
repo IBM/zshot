@@ -3,6 +3,7 @@ from typing import Iterator, List, Optional, Union
 from spacy.tokens import Doc
 from transformers import BertTokenizerFast
 
+from zshot.config import MODELS_CACHE_PATH
 from zshot.mentions_extractor.mentions_extractor import MentionsExtractor
 from zshot.utils.data_models import Span
 from zshot.utils.models.smxm.model import BertTaggerMultiClass
@@ -21,7 +22,7 @@ class MentionsExtractorSMXM(MentionsExtractor):
         super().__init__()
 
         self.tokenizer = BertTokenizerFast.from_pretrained(
-            "bert-large-cased", truncation_side="left"
+            "bert-large-cased", truncation_side="left", cache_dir=MODELS_CACHE_PATH
         )
 
         self.model_name = model_name
@@ -31,7 +32,7 @@ class MentionsExtractorSMXM(MentionsExtractor):
         """ Load SMXM model """
         if self.model is None:
             self.model = BertTaggerMultiClass.from_pretrained(
-                self.model_name, output_hidden_states=True
+                self.model_name, output_hidden_states=True, cache_dir=MODELS_CACHE_PATH
             ).to(self.device)
 
     def predict(self, docs: Iterator[Doc], batch_size: Optional[Union[int, None]] = None) -> List[List[Span]]:

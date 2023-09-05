@@ -42,6 +42,7 @@ jobs:
     - name: Install Spacy pipeline
       run: |
         python -m spacy download en_core_web_sm
+        python -m zshot.utils.download_models
     - name: Test with pytest
       run: |
         python -m pytest --cov -v --cov-report xml:/home/runner/coverage.xml  
