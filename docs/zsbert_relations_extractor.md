@@ -7,4 +7,4 @@ This `RelationsExtractor` uses relations pre-defined along with their descriptio
 - [Paper](https://arxiv.org/abs/2104.04697)
 - [Original Repo](https://github.com/dinobby/ZS-BERT)
 
-::: zshot.relations_extractor.RelationsExtractorZSRC
+::: zshot.relation_extractor.RelationsExtractorZSRC
