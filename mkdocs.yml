@@ -22,7 +22,7 @@ nav:
     - smxm_linker.md
     - tars_linker.md
   - Relations Extractor:
-      - relations_extractor.md
+      - relation_extractor.md
       - zsbert_relations_extractor.md
   - Knowledge Extractor:
       - knowledge_extractor.md
