@@ -1,5 +1,6 @@
 import gc
 import logging
+import pkgutil
 
 import pytest
 import spacy
@@ -18,6 +19,7 @@ def teardown():
     gc.collect()
 
 
+@pytest.mark.skipif(not pkgutil.find_loader("blink"), "BLINK is not installed")
 def test_blink():
     linker = LinkerBlink()
     with pytest.raises(Exception):
@@ -28,7 +30,7 @@ def test_blink():
         assert linker.local_name2wikipedia_url('IBM').startswith("https://en.wikipedia.org/wiki")
 
 
-@pytest.mark.skip()
+@pytest.mark.skip(reason="Too expensive to run on every commit")
 def test_blink_download():
     linker = LinkerBlink()
     linker.load_models()
@@ -36,7 +38,7 @@ def test_blink_download():
     del linker.tokenizer, linker.model, linker
 
 
-@pytest.mark.skip()
+@pytest.mark.skip(reason="Too expensive to run on every commit")
 def test_blink_linker():
     nlp = spacy.blank("en")
     blink_config = PipelineConfig(
@@ -55,7 +57,7 @@ def test_blink_linker():
     del doc, nlp, blink_config
 
 
-@pytest.mark.skip()
+@pytest.mark.skip(reason="Too expensive to run on every commit")
 def test_blink_linker_no_entities():
     nlp = spacy.blank("en")
     blink_config = PipelineConfig(
