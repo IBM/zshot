@@ -10,11 +10,6 @@ from zshot.utils.data_models import Span
 
 
 class DummyLinkerEnd2End(Linker):
-
-    @property
-    def is_end2end(self) -> bool:
-        return True
-
     def predict(self, docs: Iterator[Doc], batch_size=None):
         return [[Span(187, 165, label='label', score=0.9),
                  Span(111, 129, label='label', score=0.9)] for doc in docs]

@@ -1,3 +1,4 @@
+import pytest
 import spacy
 
 from zshot.tests.config import EX_DATASET_RELATIONS
@@ -29,6 +30,19 @@ def test_span():
     assert repr(s) == f"{s.label}, {s.start}, {s.end}, {s.score}"
 
     # From Dict
+    with pytest.raises(ValueError):
+        s1 = Span.from_dict({})
+    with pytest.raises(ValueError):
+        s1 = Span.from_dict({'start': 0})
+    with pytest.raises(ValueError):
+        s1 = Span.from_dict({'start': 0, 'end': 0})
+
+    s1 = Span.from_dict(EX_DATASET_RELATIONS['sentence_entities'][0][0])
+    assert type(s1) is Span
+    assert s1.start == 165
+    assert s1.end == 187
+    assert s1.label == 'Q5034838'
+
     s1 = Span.from_dict(EX_DATASET_RELATIONS['sentence_entities'][0][0])
     assert type(s1) is Span
     assert s1.start == 165
