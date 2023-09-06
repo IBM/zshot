@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Dict
 
 import zlib
 
@@ -50,3 +50,20 @@ class Span:
     def from_spacy_span(spacy_span: spacy.tokens.Span, score=None) -> "Span":
         return Span(spacy_span.start_char, spacy_span.end_char, spacy_span.label_, score=score,
                     kb_id=str(spacy_span.kb_id))
+
+    @staticmethod
+    def from_dict(d: Dict[str, Any]) -> "Span":
+        start = d.get('start', None) if 'start' in d else d.get('start_char', None)
+        end = d.get('end', None) if 'end' in d else d.get('end_char', None)
+        label = d.get('label', None)
+        score = d.get('score', None)
+        kb_id = d.get('kb_id', None)
+        if not start:
+            raise ValueError('One of [start, start_char] must be defined in dict.')
+        if not end:
+            raise ValueError('One of [end, end_char] must be defined in dict.')
+        if not label:
+            raise ValueError('Label must be defined in dict.')
+
+        return Span(start, end, label=label, score=score,
+                    kb_id=str(kb_id))

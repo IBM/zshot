@@ -6,7 +6,15 @@ from zshot.utils.data_models import Relation
 
 
 class RelationSpan:
-    def __init__(self, start: Span, end: Span, relation: Relation = None, score: float = None, kb_id: str = None):
+    def __init__(self, start: Span, end: Span, relation: Relation, score: float = None, kb_id: str = None):
+        """ Create a RelationSpan that relates two entities
+
+        :param start: Entity acting as subject in the relation
+        :param end: Entity acting as object in the relation
+        :param relation: Relation
+        :param score: Score of the relation classification
+        :param kb_id: ID of the Relation in a KB
+        """
         self.start = start
         self.end = end
         self.relation = relation
@@ -23,5 +31,4 @@ class RelationSpan:
         return (type(other) is type(self)
                 and self.start == other.start
                 and self.end == other.end
-                and self.relation == other.relation
-                and self.score == other.score)
+                and self.relation == other.relation)
