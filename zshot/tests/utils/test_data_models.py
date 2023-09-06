@@ -42,7 +42,7 @@ def test_span():
     nlp = spacy.blank('en')
     doc = nlp(EX_DATASET_RELATIONS['sentence_entities'][0][0]['sentence'])
     spacy_span = s.to_spacy_span(doc)
-    assert type(spacy_span) == spacy.tokens.Span
+    assert type(spacy_span) is spacy.tokens.Span
     assert spacy_span.start == 26
     assert spacy_span.end == 29
     assert spacy_span.label_ == s.label
@@ -84,7 +84,7 @@ def test_relation_span():
     s1 = Span.from_dict(EX_DATASET_RELATIONS['sentence_entities'][0][0])
     s2 = Span.from_dict(EX_DATASET_RELATIONS['sentence_entities'][0][1])
     rs = RelationSpan(start=s1, end=s2, relation=Relation(name=EX_DATASET_RELATIONS['labels'][0]), score=1, kb_id='P1')
-    assert type(rs) == RelationSpan
+    assert type(rs) is RelationSpan
     assert type(rs.start) == Span
     assert type(rs.end) == Span
     assert type(rs.relation) == Relation
@@ -93,7 +93,7 @@ def test_relation_span():
 
     # No Score/KB Id
     rs = RelationSpan(start=s1, end=s2, relation=Relation(name=EX_DATASET_RELATIONS['labels'][0]))
-    assert type(rs) == RelationSpan
+    assert type(rs) is RelationSpan
     assert type(rs.start) == Span
     assert type(rs.end) == Span
     assert type(rs.relation) == Relation
