@@ -19,7 +19,7 @@ def teardown():
     gc.collect()
 
 
-@pytest.mark.skipif(not pkgutil.find_loader("blink"), "BLINK is not installed")
+@pytest.mark.skipif(not pkgutil.find_loader("blink"), reason="BLINK is not installed")
 def test_blink():
     linker = LinkerBlink()
     with pytest.raises(Exception):
