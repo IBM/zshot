@@ -85,18 +85,18 @@ def test_relation_span():
     s2 = Span.from_dict(EX_DATASET_RELATIONS['sentence_entities'][0][1])
     rs = RelationSpan(start=s1, end=s2, relation=Relation(name=EX_DATASET_RELATIONS['labels'][0]), score=1, kb_id='P1')
     assert type(rs) is RelationSpan
-    assert type(rs.start) == Span
-    assert type(rs.end) == Span
-    assert type(rs.relation) == Relation
+    assert type(rs.start) is Span
+    assert type(rs.end) is Span
+    assert type(rs.relation) is Relation
     assert rs.score == 1
     assert rs.kb_id == 'P1'
 
     # No Score/KB Id
     rs = RelationSpan(start=s1, end=s2, relation=Relation(name=EX_DATASET_RELATIONS['labels'][0]))
     assert type(rs) is RelationSpan
-    assert type(rs.start) == Span
-    assert type(rs.end) == Span
-    assert type(rs.relation) == Relation
+    assert type(rs.start) is Span
+    assert type(rs.end) is Span
+    assert type(rs.relation) is Relation
 
     # Check hash
     assert hash(rs) == 1864423560
