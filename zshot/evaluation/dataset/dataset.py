@@ -1,6 +1,6 @@
-from typing import List
+from typing import List, Optional
 
-from datasets import Dataset
+from datasets import Dataset, DatasetInfo, Features, NamedSplit
 from datasets.table import Table
 
 from zshot.utils.data_models import Entity, Relation
@@ -26,6 +26,19 @@ class DatasetWithEntities(Dataset):
     def __repr__(self):
         return f"Dataset({{\n    features: {list(self.features.keys())},\n    num_rows: {self.num_rows}," \
                f"\n    entities: {[ent.name for ent in self.entities if self.entities is not None]}\n}})"
+
+    @classmethod
+    def from_dict(
+        cls,
+        mapping: dict,
+        features: Optional[Features] = None,
+        info: Optional[DatasetInfo] = None,
+        split: Optional[NamedSplit] = None,
+        entities: Optional[List[Entity]] = None
+    ) -> "Dataset":
+        dataset = super().from_dict(mapping, features, info, split)
+        dataset.entities = entities
+        return dataset
 
 
 def create_dataset(gt: List[List[str]], sentences: List[str], entities) -> DatasetWithEntities:
