@@ -22,7 +22,7 @@ class MentionsExtractorFlair(MentionsExtractor):
         """
         if not pkgutil.find_loader("flair"):
             raise Exception("Flair module not installed. You need to install Flair for using this class."
-                            "Install it with: pip install flair==0.11")
+                            "Install it with: pip install flair>=0.13")
 
         super(MentionsExtractorFlair, self).__init__()
 
