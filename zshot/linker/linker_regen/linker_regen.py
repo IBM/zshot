@@ -64,7 +64,11 @@ class LinkerRegen(Linker):
 
     def restrict_decode_vocab(self, _, prefix_beam):
         """ Restrict the possibilities of the Beam search to force the text generation """
-        return self.trie.postfix(prefix_beam.tolist())
+        tokens = self.trie.postfix(prefix_beam.tolist())
+        if not tokens:
+            return [self.tokenizer.eos_token_id]
+
+        return tokens
 
     def predict(self, docs: Iterator[Doc], batch_size: Optional[Union[int, None]] = None) -> List[List[Span]]:
         """
