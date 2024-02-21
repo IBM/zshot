@@ -90,3 +90,7 @@ def test_create_input():
     sentence = "[START]" + " test" * times_rep + " [END]"
     input_sentence = create_input(sentence, max_length, start_delimiter, end_delimiter)
     assert input_sentence == " ".join(["test" for i in range(9)])
+
+    text = f"IBM headquarters are located in {start_delimiter} New York {end_delimiter} ."
+    input_ = create_input(text, max_length=4, start_delimiter=start_delimiter, end_delimiter=end_delimiter)
+    assert start_delimiter in input_ and end_delimiter in input_
