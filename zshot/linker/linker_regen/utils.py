@@ -21,6 +21,9 @@ def create_input(sentence, max_length, start_delimiter, end_delimiter):
         left_index = max(0, start_delimiter_index - half_context)
         right_index = min(len(sent_list),
                           end_delimiter_index + half_context + (half_context - (start_delimiter_index - left_index)))
+        if right_index == end_delimiter_index:
+            right_index += 1
+
         left_index = left_index - max(0, (half_context - (right_index - end_delimiter_index)))
         return " ".join(sent_list[left_index:right_index])
 
