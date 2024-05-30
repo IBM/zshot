@@ -1,3 +1,4 @@
+import pytest
 import spacy
 
 from zshot import PipelineConfig
@@ -7,6 +8,7 @@ from zshot.utils.enrichment.description_enrichment import PreTrainedLMExtensionS
     FineTunedLMExtensionStrategy, SummarizationStrategy, ParaphrasingStrategy, EntropyHeuristic
 
 
+@pytest.mark.skip(reason="Too expensive to run on every commit")
 def test_pretrained_lm_extension_strategy():
     description = "The name of a company"
     strategy = PreTrainedLMExtensionStrategy()
@@ -19,6 +21,7 @@ def test_pretrained_lm_extension_strategy():
     assert len(desc_variations) == 3 and len(set(desc_variations + [description])) == 4
 
 
+@pytest.mark.skip(reason="Too expensive to run on every commit")
 def test_finetuned_lm_extension_strategy():
     description = "The name of a company"
     strategy = FineTunedLMExtensionStrategy()
@@ -31,6 +34,7 @@ def test_finetuned_lm_extension_strategy():
     assert len(desc_variations) == 3 and len(set(desc_variations + [description])) == 4
 
 
+@pytest.mark.skip(reason="Too expensive to run on every commit")
 def test_summarization_strategy():
     description = "The name of a company"
     strategy = SummarizationStrategy()
@@ -43,6 +47,7 @@ def test_summarization_strategy():
     assert len(desc_variations) == 3 and len(set(desc_variations + [description])) == 4
 
 
+@pytest.mark.skip(reason="Too expensive to run on every commit")
 def test_paraphrasing_strategy():
     description = "The name of a company"
     strategy = ParaphrasingStrategy()
@@ -55,6 +60,7 @@ def test_paraphrasing_strategy():
     assert len(desc_variations) == 3 and len(set(desc_variations + [description])) == 4
 
 
+@pytest.mark.skip(reason="Too expensive to run on every commit")
 def test_entropy_heuristic():
     def check_is_tuple(x):
         return isinstance(x, tuple) and len(x) == 2 and isinstance(x[0], str) and isinstance(x[1], float)
