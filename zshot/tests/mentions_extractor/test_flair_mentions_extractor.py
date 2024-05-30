@@ -42,6 +42,7 @@ def test_custom_flair_mentions_extractor():
     del doc, nlp
 
 
+@pytest.mark.xfail(reason='Chunk models not working in Flair. See https://github.com/flairNLP/flair/issues/3418')
 def test_flair_pos_mentions_extractor():
     if not pkgutil.find_loader("flair"):
         return
@@ -71,6 +72,7 @@ def test_flair_ner_mentions_extractor_pipeline():
     del docs, nlp
 
 
+@pytest.mark.xfail(reason='Chunk models not working in Flair. See https://github.com/flairNLP/flair/issues/3418')
 def test_flair_pos_mentions_extractor_pipeline():
     if not pkgutil.find_loader("flair"):
         return
