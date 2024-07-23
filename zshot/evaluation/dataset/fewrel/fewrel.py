@@ -25,7 +25,7 @@ def get_entity_data(e, tokenized_sentence):
 
 def load_few_rel_zs(split: Optional[Union[str, Split]] = "val_wiki") -> Union[Dict[DatasetWithRelations,
                                                                                    Dataset], Dataset]:
-    dataset = load_dataset("few_rel", split=split)
+    dataset = load_dataset("few_rel", split=split, trust_remote_code=True)
     relations_descriptions = dataset["names"]
     tokenized_sentences = dataset["tokens"]
     sentences = [" ".join(tokens) for tokens in tokenized_sentences]
