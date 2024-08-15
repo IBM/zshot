@@ -1,5 +1,18 @@
 from zshot.utils.data_models import Entity
 
+ONTONOTES_EXPLANATORY_MAPPING = {
+    'PERSON': "Person", "NORP": "Affiliation", "FAC": "Building name",
+    "ORG": "Organization", "GPE": "Geopolitical Entity", "LOC": "Location", "PRODUCT": "Product",
+    "DATE": "Date", "TIME": "Time", "PERCENT": "Percentage", "MONEY": "Money",
+    "QUANTITY": "Quantity", "ORDINAL": "Ordinal", "CARDINAL": "Cardinal", "EVENT": "Event",
+    "WORK_OF_ART": "Work of Art", "LAW": "Law", "LANGUAGE": "Language",
+    "NEG": "NEG"
+}
+
+ONTONOTES_EXPLANATORY_INVERSE_MAPPING = {
+    v: k for k, v in ONTONOTES_EXPLANATORY_MAPPING.items()
+}
+
 ONTONOTES_ENTITIES = [Entity(name='NEG',
                              description="Coal, water, oil, etc. are normally used for traditional electricity "
                                          "generation. However using liquefied natural gas as fuel for joint "

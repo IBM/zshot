@@ -7,4 +7,4 @@ The TARS **mentions extractor** will use the **mentions** specified in the `zsho
 - [Paper](https://kishaloyhalder.github.io/pdfs/tars_coling2020.pdf)
 - [Original Source Code](https://github.com/flairNLP/flair)
 
-::: zshot.linker.LinkerTARS
+::: zshot.mentions_extractor.MentionsExtractorTARS

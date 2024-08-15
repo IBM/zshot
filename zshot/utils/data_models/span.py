@@ -1,5 +1,6 @@
 from typing import Any, Dict
 
+
 import zlib
 
 import spacy
@@ -57,10 +58,10 @@ class Span:
         end = d.get('end', None) if 'end' in d else d.get('end_char', None)
         label = d.get('label', None)
         score = d.get('score', None)
-        kb_id = d.get('kb_id', None)
-        if not start:
+        kb_id = d.get('kb_id', '')
+        if start is None:
             raise ValueError('One of [start, start_char] must be defined in dict.')
-        if not end:
+        if end is None:
             raise ValueError('One of [end, end_char] must be defined in dict.')
         if not label:
             raise ValueError('Label must be defined in dict.')

@@ -14,7 +14,8 @@ def evaluate(nlp: spacy.language.Language,
              dataset: Dataset,
              metric: Optional[Union[str, EvaluationModule]] = Seqeval(),
              mode: Optional[str] = 'span',
-             batch_size: Optional[int] = 16) -> dict:
+             batch_size: Optional[int] = 16,
+             entity_mapper: Optional[Dict[str, str]] = None) -> dict:
     """ Evaluate a spacy zshot model
 
     :param nlp: Spacy Language pipeline with ZShot components
@@ -25,10 +26,11 @@ def evaluate(nlp: spacy.language.Language,
         - token: The evaluation is done at token level,
             so if any of the tokens of the entity is missing the other are still valid
     :param batch_size: the batch size
+    :param entity_mapper: Mapper for entity names
     :return: Result of the evaluation. Dict with metrics results for each component
     """
-    linker_evaluator = ZeroShotTokenClassificationEvaluator(mode=mode)
-    mentions_extractor_evaluator = MentionsExtractorEvaluator(mode=mode)
+    linker_evaluator = ZeroShotTokenClassificationEvaluator(mode=mode, entity_mapper=entity_mapper)
+    mentions_extractor_evaluator = MentionsExtractorEvaluator(mode=mode, entity_mapper=entity_mapper)
 
     results = {'evaluation_mode': mode}
     if nlp.get_pipe("zshot").linker:

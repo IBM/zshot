@@ -47,9 +47,9 @@ Can be used to perform:
 
 ### Optional Dependencies
 
-* <a href="https://github.com/flairNLP/flair" target="_blank"><code>flair</code></a> - Required if you want to use Flair mentions extractor and for TARS linker.
+* <a href="https://github.com/flairNLP/flair" target="_blank"><code>flair</code></a> - Required if you want to use Flair mentions extractor and for TARS linker and TARS Mentions Extractor.
 * <a href="https://github.com/facebookresearch/BLINK" target="_blank"><code>blink</code></a> - Required if you want to use Blink for linking to Wikipedia pages.
-
+* <a href="https://github.com/urchade/GLiNER" target="_blank"><code>gliner</code></a> - Required if you want to use GLiNER Linker or GLiNER Mentions Extractor.
 
 ## Installation
 
@@ -81,7 +81,7 @@ ZShot contains two different components, the **mentions extractor** and the **li
 ### Mentions Extractor
 The **mentions extractor** will detect the possible entities (a.k.a. mentions), that will be then linked to a data source (e.g.: Wikidata) by the **linker**. 
 
-Currently, there are 6 different **mentions extractors** supported, SMXM, TARS, 2 based on *SpaCy*, and 2 that are based on *Flair*. The two different versions for *SpaCy* and *Flair* are similar, one is based on Named Entity Recognition and Classification (NERC) and the other one is based on the linguistics (i.e.: using Part Of the Speech tagging (PoS) and Dependency Parsing(DP)).
+Currently, there are 7 different **mentions extractors** supported, SMXM, TARS, GLiNER, 2 based on *SpaCy*, and 2 that are based on *Flair*. The two different versions for *SpaCy* and *Flair* are similar, one is based on Named Entity Recognition and Classification (NERC) and the other one is based on the linguistics (i.e.: using Part Of the Speech tagging (PoS) and Dependency Parsing(DP)).
 
 The NERC approach will use NERC models to detect all the entities that have to be linked. This approach depends on the model that is being used, and the entities the model has been trained on, so depending on the use case and the target entities it may be not the best approach, as the entities may be not recognized by the NERC model and thus won't be linked.
 
@@ -90,14 +90,15 @@ The linguistic approach relies on the idea that mentions will usually be a synta
 ### Linker
 The **linker** will link the detected entities to a existing set of labels. Some of the **linkers**, however, are *end-to-end*, i.e. they don't need the **mentions extractor**, as they detect and link the entities at the same time.  
 
-Again, there are 4 **linkers** available currently, 2 of them are *end-to-end* and 2 are not. Let's start with those thar are not *end-to-end*:
+Again, there are 5 **linkers** available currently, 3 of them are *end-to-end* and 2 are not.
 
 | Linker Name | end-to-end | Source Code                                              | Paper                                                              |
 |:-----------:|:----------:|----------------------------------------------------------|--------------------------------------------------------------------|
 |    Blink    |      X     | [Source Code](https://github.com/facebookresearch/BLINK) | [Paper](https://arxiv.org/pdf/1911.03814.pdf)                      |
 |    GENRE    |      X     | [Source Code](https://github.com/facebookresearch/GENRE) | [Paper](https://arxiv.org/pdf/2010.00904.pdf)                      |
-|     SMXM    |   &check;  | [Source Code](https://github.com/Raldir/Zero-shot-NERC)  | [Paper](https://aclanthology.org/2021.acl-long.120/)               |
-|     TARS    |   &check;  | [Source Code](https://github.com/flairNLP/flair)         | [Paper](https://kishaloyhalder.github.io/pdfs/tars_coling2020.pdf) |
+|    SMXM     |   &check;  | [Source Code](https://github.com/Raldir/Zero-shot-NERC)  | [Paper](https://aclanthology.org/2021.acl-long.120/)               |
+|    TARS     |   &check;  | [Source Code](https://github.com/flairNLP/flair)         | [Paper](https://kishaloyhalder.github.io/pdfs/tars_coling2020.pdf) |
+|   GLINER    |   &check;  | [Source Code](https://github.com/urchade/GLiNER)         | [Paper](https://arxiv.org/abs/2311.08526) |
 
 ### Relations Extractor
 The **relations extractor** will extract relations among different entities *previously* extracted by a **linker**.. 
