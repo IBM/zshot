@@ -15,7 +15,7 @@ from zshot.evaluation.metrics.seqeval.seqeval import Seqeval
 from zshot.evaluation.zshot_evaluate import evaluate, prettify_evaluate_report
 from zshot.linker import LinkerTARS, LinkerSMXM, LinkerRegen, LinkerGLINER
 from zshot.mentions_extractor import MentionsExtractorSpacy, MentionsExtractorFlair, \
-    MentionsExtractorSMXM, MentionsExtractorTARS
+    MentionsExtractorSMXM, MentionsExtractorTARS, MentionsExtractorGLINER
 from zshot.mentions_extractor.utils import ExtractorType
 
 MENTION_EXTRACTORS = {
@@ -24,7 +24,8 @@ MENTION_EXTRACTORS = {
     "flair_pos": lambda: MentionsExtractorFlair(ExtractorType.POS),
     "flair_ner": lambda: MentionsExtractorFlair(ExtractorType.NER),
     "smxm": lambda: MentionsExtractorSMXM,
-    "tars": lambda: MentionsExtractorTARS
+    "tars": lambda: MentionsExtractorTARS,
+    "gliner": lambda: MentionsExtractorGLINER
 }
 LINKERS = {
     "regen": LinkerRegen,
@@ -63,7 +64,7 @@ if __name__ == "__main__":
                         help="Type of entity name. One of: original; explanatory. Original by default.")
     parser.add_argument("--mentions_extractor", required=False, default="all", type=str,
                         help="Mentions extractor to evaluate. "
-                             "One of: all; spacy_pos; spacy_ner; flair_pos; flair_ner; smxm; tars")
+                             "One of: all; spacy_pos; spacy_ner; flair_pos; flair_ner; smxm; tars; gliner")
     parser.add_argument("--linker", required=False, default="all", type=str,
                         help="Linker to evaluate. One of: all; regen; smxm; tars; gliner")
     parser.add_argument("--show_full_report", action="store_false",
