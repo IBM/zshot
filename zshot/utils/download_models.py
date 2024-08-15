@@ -7,18 +7,6 @@ from zshot.relation_extractor.relation_extractor_zsrc import RelationsExtractorZ
 
 def load_all():
     try:
-        load_few_rel_zs()
-    except ConnectionError:
-        pass
-    try:
-        load_medmentions_zs()
-    except ConnectionError:
-        pass
-    try:
-        load_ontonotes_zs()
-    except ConnectionError:
-        pass
-    try:
         LinkerSMXM().load_models()
     except RuntimeError:
         pass
