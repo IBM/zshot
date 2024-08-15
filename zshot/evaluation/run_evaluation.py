@@ -1,8 +1,6 @@
 import argparse
-from typing import Union
 
 import spacy
-from datasets import DatasetDict
 
 from zshot import PipelineConfig
 from zshot.evaluation import load_medmentions_zs, load_ontonotes_zs
