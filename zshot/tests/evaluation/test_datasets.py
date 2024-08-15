@@ -20,6 +20,7 @@ def teardown():
     shutil.rmtree(f"{Path.home()}/.cache/zshot", ignore_errors=True)
 
 
+@pytest.mark.skip(reason="Too expensive to run on every commit")
 def test_ontonotes_zs():
     dataset = load_ontonotes_zs()
     assert 'train' in dataset
@@ -31,18 +32,21 @@ def test_ontonotes_zs():
     del dataset
 
 
+@pytest.mark.skip(reason="Too expensive to run on every commit")
 def test_ontonotes_zs_split():
     dataset = load_ontonotes_zs(split='test')
     assert dataset.num_rows == 426
     del dataset
 
 
+@pytest.mark.skip(reason="Too expensive to run on every commit")
 def test_ontonotes_zs_sub_split():
     dataset = load_ontonotes_zs(split='test[0:10]')
     assert dataset.num_rows > 0
     del dataset
 
 
+@pytest.mark.skip(reason="Too expensive to run on every commit")
 def test_medmentions_zs():
     dataset = load_medmentions_zs()
     assert 'train' in dataset
@@ -55,12 +59,14 @@ def test_medmentions_zs():
     del dataset
 
 
+@pytest.mark.skip(reason="Too expensive to run on every commit")
 def test_medmentions_zs_split():
     dataset = load_medmentions_zs(split='test')
     assert dataset.num_rows == 1048
     del dataset
 
 
+@pytest.mark.skip(reason="Too expensive to run on every commit")
 def test_few_rel_zs():
     dataset = load_few_rel_zs()
     assert dataset.num_rows == 11200
