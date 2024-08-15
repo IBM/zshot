@@ -1,11 +1,19 @@
 import argparse
+from typing import Union
 
 import spacy
+from datasets import DatasetDict
+
 from zshot import PipelineConfig
 from zshot.evaluation import load_medmentions_zs, load_ontonotes_zs
+from zshot.evaluation.dataset.dataset import DatasetWithEntities
+from zshot.evaluation.dataset.med_mentions.entities import MEDMENTIONS_EXPLANATORY_MAPPING, \
+    MEDMENTIONS_EXPLANATORY_INVERSE_MAPPING
+from zshot.evaluation.dataset.ontonotes.entities import ONTONOTES_EXPLANATORY_INVERSE_MAPPING, \
+    ONTONOTES_EXPLANATORY_MAPPING
 from zshot.evaluation.metrics.seqeval.seqeval import Seqeval
 from zshot.evaluation.zshot_evaluate import evaluate, prettify_evaluate_report
-from zshot.linker import LinkerTARS, LinkerSMXM, LinkerRegen
+from zshot.linker import LinkerTARS, LinkerSMXM, LinkerRegen, LinkerGLINER
 from zshot.mentions_extractor import MentionsExtractorSpacy, MentionsExtractorFlair, \
     MentionsExtractorSMXM, MentionsExtractorTARS
 from zshot.mentions_extractor.utils import ExtractorType
@@ -21,23 +29,43 @@ MENTION_EXTRACTORS = {
 LINKERS = {
     "regen": LinkerRegen,
     "tars": LinkerTARS,
-    "smxm": LinkerSMXM
+    "smxm": LinkerSMXM,
+    "gliner": LinkerGLINER
 }
-END2END = ['tars', 'smxm']
+END2END = ['tars', 'smxm', 'gliner']
+ENTITIES_MAPPERS = {
+    "medmentions": MEDMENTIONS_EXPLANATORY_MAPPING,
+    "ontonotes": ONTONOTES_EXPLANATORY_MAPPING
+}
+ENTITIES_INVERSE_MAPPERS = {
+    "medmentions": MEDMENTIONS_EXPLANATORY_INVERSE_MAPPING,
+    "ontonotes": ONTONOTES_EXPLANATORY_INVERSE_MAPPING
+}
+
+
+def convert_entities(dataset: DatasetWithEntities, dataset_name: str) -> DatasetWithEntities:
+    mapping = ENTITIES_MAPPERS[dataset_name]
+    for entity in dataset.entities:
+        entity.name = mapping[entity.name]
+
+    return dataset
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", default="ontonotes", type=str,
-                        help="Name or path to the validation data. Comma separated")
+                        help="Name or names of the datasets. One of: ontonotes; medmentions. Comma separated")
     parser.add_argument("--splits", required=False, default="test", type=str,
                         help="Splits to evaluate. Comma separated")
     parser.add_argument("--mode", required=False, default="full", type=str,
                         help="Evaluation mode. One of: full; mentions_extractor; linker")
+    parser.add_argument("--entity_name", default="original", type=str,
+                        help="Type of entity name. One of: original; explanatory. Original by default.")
     parser.add_argument("--mentions_extractor", required=False, default="all", type=str,
                         help="Mentions extractor to evaluate. "
                              "One of: all; spacy_pos; spacy_ner; flair_pos; flair_ner; smxm; tars")
     parser.add_argument("--linker", required=False, default="all", type=str,
-                        help="Linker to evaluate. One of: all; regen; smxm; tars")
+                        help="Linker to evaluate. One of: all; regen; smxm; tars; gliner")
     parser.add_argument("--show_full_report", action="store_false",
                         help="Show evalution report for each label. True by default")
 
@@ -99,8 +127,14 @@ if __name__ == "__main__":
                     dataset = load_ontonotes_zs(split)
                 else:
                     raise ValueError(f"{dataset_name} not supported")
+
+                if args.entity_name == "explanatory":
+                    convert_entities(dataset, dataset_name)
+
                 nlp.get_pipe("zshot").mentions = dataset.entities
                 nlp.get_pipe("zshot").entities = dataset.entities
 
-                evaluation = evaluate(nlp, dataset, metric=Seqeval(), mode=mode)
+                evaluation = evaluate(nlp, dataset, metric=Seqeval(), mode=mode,
+                                      entity_mapper=ENTITIES_MAPPERS[dataset_name] if args.entity_name != "original"
+                                      else None)
                 print("\n".join(prettify_evaluate_report(evaluation, name=f"{dataset_name}-{split}")))

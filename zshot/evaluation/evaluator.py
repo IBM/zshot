@@ -10,12 +10,19 @@ from zshot.utils.data_models import Span
 class ZeroShotTokenClassificationEvaluator(TokenClassificationEvaluator):
 
     def __init__(self, task="token-classification", default_metric_name=None,
-                 mode: Optional[str] = 'span', alignment_mode=AlignmentMode.expand):
+                 mode: Optional[str] = 'span', alignment_mode=AlignmentMode.expand,
+                 entity_mapper: Optional[Dict[str, str]] = None):
         super().__init__(task, default_metric_name)
         self.alignment_mode = alignment_mode
         self.mode = mode
+        self.entity_mapper = entity_mapper
 
     def process_label(self, label):
+        if label != "O":
+            if self.entity_mapper is not None:
+                label_prefix = label[:2]
+                label = label_prefix + self.entity_mapper[label[2:]]
+
         return f"B-{label[2:]}" if label.startswith("I-") and self.mode == 'token' else label
 
     def prepare_data(self, data: Union[str, Dataset], input_column: str, label_column: str, join_by: str):
@@ -55,12 +62,17 @@ class ZeroShotTokenClassificationEvaluator(TokenClassificationEvaluator):
 
 class MentionsExtractorEvaluator(ZeroShotTokenClassificationEvaluator):
     def __init__(self, task="token-classification", default_metric_name=None,
-                 mode: Optional[str] = 'span', alignment_mode=AlignmentMode.expand):
+                 mode: Optional[str] = 'span', alignment_mode=AlignmentMode.expand,
+                 entity_mapper: Optional[Dict[str, str]] = None):
         super().__init__(task, default_metric_name, alignment_mode=alignment_mode)
         self.mode = mode
+        self.entity_mapper = entity_mapper
 
     def process_label(self, label):
         if label != "O":
+            if self.entity_mapper is not None:
+                label_prefix = label[:2]
+                label = label_prefix + self.entity_mapper[label[2:]]
             if (label.startswith("B-") or label.startswith("I-")) and self.mode == 'span':
                 label = label[:2] + "MENTION"
             else:

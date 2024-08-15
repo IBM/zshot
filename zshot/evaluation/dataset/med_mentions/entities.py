@@ -10,6 +10,14 @@ MEDMENTIONS_TYPE_INV = {
     "NEG": "NEG"
 }
 
+MEDMENTIONS_EXPLANATORY_MAPPING = {
+    k: v.replace("_", " ") for k, v in MEDMENTIONS_TYPE_INV.items()
+}
+
+MEDMENTIONS_EXPLANATORY_INVERSE_MAPPING = {
+    v:k for k, v in MEDMENTIONS_EXPLANATORY_MAPPING.items()
+}
+
 MEDMENTIONS_SPLITS = {
     "train": ['Biologic_Function', 'Chemical', 'Health_Care_Activity', 'Anotomical_Structure', "Finding",
               "Spatial_Concept", "Intellectual_Product", "Research_Activity", 'Medical_Device', 'Eukaryote',
