@@ -1,4 +1,3 @@
-from zshot.evaluation.dataset import load_few_rel_zs, load_medmentions_zs, load_ontonotes_zs
 from zshot.linker import LinkerRegen, LinkerSMXM, LinkerTARS, LinkerGLINER
 from zshot.mentions_extractor import MentionsExtractorFlair
 from zshot.mentions_extractor.utils import ExtractorType
