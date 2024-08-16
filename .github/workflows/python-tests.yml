@@ -39,7 +39,7 @@ jobs:
     - name: Lint with flake8
       run: |
         flake8 --ignore E501,W503 zshot/
-    - name: Install Spacy pipeline
+    - name: Install Spacy pipeline and download models
       run: |
         python -m spacy download en_core_web_sm
         python -m zshot.utils.download_models
@@ -47,6 +47,12 @@ jobs:
       run: |
         python -m pytest --cov -v --cov-report xml:/home/runner/coverage.xml  
       timeout-minutes: 30
+    - name: Remove cache
+      uses: JesseTG/rm@v1.0.3
+      with:
+        path: |
+          ~/.cache/huggingface
+          ~/.cache/zshot
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3.1.1
       with:
