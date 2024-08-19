@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 @pytest.fixture(scope="module", autouse=True)
 def teardown():
-    logger.warning("Starting smxm tests")
+    logger.warning("Starting gliner tests")
     yield True
     gc.collect()
 
