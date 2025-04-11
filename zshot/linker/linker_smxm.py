@@ -39,6 +39,7 @@ class LinkerSMXM(Linker):
             self.model = BertTaggerMultiClass.from_pretrained(
                 self.model_name, output_hidden_states=True, cache_dir=MODELS_CACHE_PATH
             ).to(self.device)
+            self.model.eval()
 
     def predict(self, docs: Iterator[Doc], batch_size: Optional[Union[int, None]] = None) -> List[List[Span]]:
         """
