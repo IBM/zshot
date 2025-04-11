@@ -42,14 +42,16 @@ def predictions_to_span_annotations(
 ) -> List[List[Span]]:
     span_annotations = []
 
-    for i, sentence in enumerate(sentences):
-        sentence_span_annotations = []
+    for i, sentence_full in enumerate(sentences):  # Keep the original full sentence
 
+        sentence = sentence_full.split(" ")
+        sentence_span_annotations = []
         tokenization = tokenizer.encode_plus(
             sentence,
             return_token_type_ids=False,
             return_attention_mask=False,
             return_offsets_mapping=True,
+            is_split_into_words=True
         )
 
         num_tokens_full_sentence = len(tokenization["input_ids"]) - 2
@@ -59,39 +61,36 @@ def predictions_to_span_annotations(
         offset_mapping = tokenization["offset_mapping"]
         mapping_input_id_to_word = tokenization.encodings[0].word_ids
         words_offset_mappings = {}
-        for j, w in enumerate(mapping_input_id_to_word):
-            if w in words_offset_mappings:
-                words_offset_mappings[w] = (
-                    words_offset_mappings[w][0],
-                    offset_mapping[j][1],
-                )
-            elif w is not None:
-                words_offset_mappings[w] = offset_mapping[j]
+        word_index_offset = 0
+        for word_index, word in enumerate(sentence):
+            start_offset = sentence_full.find(word, word_index_offset)
+            end_offset = start_offset + len(word)
+            words_offset_mappings[word_index] = (start_offset, end_offset)
+            word_index_offset = end_offset + 1
 
         for j, input_id in enumerate(mapping_input_id_to_word[truncation_offset:-1]):
-            pred = predictions[i][j]
-            if (
-                    entities[pred] != "NEG"
-            ) and (
-                    input_id is not None
-            ) and (
-                    (j == 0) or (input_id != mapping_input_id_to_word[j - 1])
-            ) and (
-                    (words_offset_mappings[input_id][1] - words_offset_mappings[input_id][0]) > 1
-            ):
+            if input_id is not None and input_id < len(sentence):
+                pred = predictions[i][j]
                 if (
-                        sentence_span_annotations and (sentence_span_annotations[-1].label == entities[pred])
+                        entities[pred] != "NEG"
                 ) and (
-                        sentence_span_annotations[-1].end == words_offset_mappings[input_id][0] - 1
+                        (j == 0) or (input_id != mapping_input_id_to_word[j - 1])
+                ) and (
+                        (words_offset_mappings[input_id][1] - words_offset_mappings[input_id][0]) > 1
                 ):
-                    sentence_span_annotations[-1].end = words_offset_mappings[input_id][1]
-                    sentence_span_annotations[-1].score = max(sentence_span_annotations[-1].score,
-                                                              probabilities[i][j][pred])
-                else:
-                    sentence_span_annotations.append(
-                        Span(words_offset_mappings[input_id][0], words_offset_mappings[input_id][1],
-                             entities[pred], probabilities[i][j][pred])
-                    )
+                    if (
+                            sentence_span_annotations and (sentence_span_annotations[-1].label == entities[pred])
+                    ) and (
+                            sentence_span_annotations[-1].end == words_offset_mappings[input_id][0] - 1
+                    ):
+                        sentence_span_annotations[-1].end = words_offset_mappings[input_id][1]
+                        sentence_span_annotations[-1].score = max(sentence_span_annotations[-1].score,
+                                                                  probabilities[i][j][pred])
+                    else:
+                        sentence_span_annotations.append(
+                            Span(words_offset_mappings[input_id][0], words_offset_mappings[input_id][1],
+                                 entities[pred], probabilities[i][j][pred])
+                        )
         span_annotations.append(sentence_span_annotations)
 
     return span_annotations

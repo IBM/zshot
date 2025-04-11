@@ -7,7 +7,7 @@ from os.path import isfile, join
 
 from zshot import PipelineConfig
 from zshot.evaluation import load_medmentions_zs, load_ontonotes_zs
-from zshot.evaluation.metrics.seqeval.seqeval import Seqeval
+from zshot.evaluation.metrics._seqeval.seqeval import Seqeval
 from zshot.evaluation.zshot_evaluate import evaluate, prettify_evaluate_report
 from zshot.linker import LinkerSMXM
 from zshot.utils.data_models import Entity

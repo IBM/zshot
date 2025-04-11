@@ -6,7 +6,7 @@ from evaluate import EvaluationModule
 from prettytable import PrettyTable
 
 from zshot.evaluation.evaluator import ZeroShotTokenClassificationEvaluator, MentionsExtractorEvaluator
-from zshot.evaluation.metrics.seqeval.seqeval import Seqeval
+from zshot.evaluation.metrics._seqeval._seqeval import Seqeval
 from zshot.evaluation.pipeline import LinkerPipeline, MentionsExtractorPipeline
 
 
