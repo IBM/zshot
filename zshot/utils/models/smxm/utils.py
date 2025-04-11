@@ -58,7 +58,6 @@ def predictions_to_span_annotations(
         token_overflow = num_tokens_full_sentence - max_sentence_tokens
         truncation_offset = token_overflow * (token_overflow > 0)
 
-        offset_mapping = tokenization["offset_mapping"]
         mapping_input_id_to_word = tokenization.encodings[0].word_ids
         words_offset_mappings = {}
         word_index_offset = 0
