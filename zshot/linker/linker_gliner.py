@@ -35,6 +35,7 @@ class LinkerGLINER(Linker):
         """ Load GLINER model """
         if self.model is None:
             self.model = GLiNER.from_pretrained(self.model_name, cache_dir=MODELS_CACHE_PATH).to(self.device)
+            self.model.eval()
 
     def predict(self, docs: Iterator[Doc], batch_size: Optional[Union[int, None]] = None) -> List[List[Span]]:
         """

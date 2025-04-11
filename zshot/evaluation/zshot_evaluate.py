@@ -78,8 +78,10 @@ def prettify_evaluate_report(evaluation: Dict, name: str = "", decimals: int = 4
         return table
 
     tables = []
-    mode = evaluation.pop('evaluation_mode')
+    mode = evaluation.get('evaluation_mode')
     for component in evaluation:
+        if component == 'evaluation_mode':
+            continue
         # General evaluation
         t_repr = make_table(evaluation[component], f"{component} - {name} \n General - {mode}-based").get_string()
         tables.append(fix_table_title(t_repr))
