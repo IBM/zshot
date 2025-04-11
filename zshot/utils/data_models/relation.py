@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 class Relation(BaseModel):
     name: str
-    description: Optional[str]
+    description: Optional[str] = None
 
     def __hash__(self):
         self_repr = f"{self.__class__.__name__}.{str(self.__dict__)}"
