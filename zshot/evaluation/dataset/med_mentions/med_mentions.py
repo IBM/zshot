@@ -13,7 +13,7 @@ ENTITIES_FN = "entities.json"
 
 
 def load_medmentions_zs(split: Optional[Union[str, Split]] = None, **kwargs) -> Union[DatasetDict, Dataset]:
-    dataset = load_dataset(REPO_ID, split=split, trust_remote_code=True, **kwargs)
+    dataset = load_dataset(REPO_ID, split=split, **kwargs)
     entities_file = hf_hub_download(repo_id=REPO_ID,
                                     repo_type='dataset',
                                     filename=ENTITIES_FN)
