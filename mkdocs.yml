@@ -15,12 +15,14 @@ nav:
       - flair_mentions_extractor.md
       - smxm_mentions_extractor.md
       - tars_mentions_extractor.md
+      - gliner_mentions_extractor.md
   - Entity Linking:
     - entity_linking.md
     - blink.md
     - regen.md
     - smxm_linker.md
     - tars_linker.md
+    - gliner_linker.md
   - Relations Extractor:
       - relation_extractor.md
       - zsbert_relations_extractor.md
@@ -77,8 +79,6 @@ plugins:
         options:
           show_source: false
           docstring_style: sphinx
-          docstring_options:
-            ignore_init_summary: yes
           merge_init_into_class: yes
           show_submodules: yes
 - markdownextradata:
