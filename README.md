@@ -50,6 +50,7 @@ Can be used to perform:
 * <a href="https://github.com/flairNLP/flair" target="_blank"><code>flair</code></a> - Required if you want to use Flair mentions extractor and for TARS linker and TARS Mentions Extractor.
 * <a href="https://github.com/facebookresearch/BLINK" target="_blank"><code>blink</code></a> - Required if you want to use Blink for linking to Wikipedia pages.
 * <a href="https://github.com/urchade/GLiNER" target="_blank"><code>gliner</code></a> - Required if you want to use GLiNER Linker or GLiNER Mentions Extractor.
+* <a href="https://github.com/SapienzaNLP/relik" target="_blank"><code>relik</code></a> - Required if you want to use Relik Linker.
 
 ## Installation
 
@@ -90,7 +91,7 @@ The linguistic approach relies on the idea that mentions will usually be a synta
 ### Linker
 The **linker** will link the detected entities to a existing set of labels. Some of the **linkers**, however, are *end-to-end*, i.e. they don't need the **mentions extractor**, as they detect and link the entities at the same time.  
 
-Again, there are 5 **linkers** available currently, 3 of them are *end-to-end* and 2 are not.
+Again, there are 6 **linkers** available currently, 4 of them are *end-to-end* and 2 are not.
 
 | Linker Name | end-to-end | Source Code                                              | Paper                                                              |
 |:-----------:|:----------:|----------------------------------------------------------|--------------------------------------------------------------------|
@@ -99,6 +100,7 @@ Again, there are 5 **linkers** available currently, 3 of them are *end-to-end* a
 |    SMXM     |   &check;  | [Source Code](https://github.com/Raldir/Zero-shot-NERC)  | [Paper](https://aclanthology.org/2021.acl-long.120/)               |
 |    TARS     |   &check;  | [Source Code](https://github.com/flairNLP/flair)         | [Paper](https://kishaloyhalder.github.io/pdfs/tars_coling2020.pdf) |
 |   GLINER    |   &check;  | [Source Code](https://github.com/urchade/GLiNER)         | [Paper](https://arxiv.org/abs/2311.08526) |
+|    RELIK    |   &check;  | [Source Code](https://github.com/SapienzaNLP/relik)         | [Paper](https://arxiv.org/abs/2408.00103) |
 
 ### Relations Extractor
 The **relations extractor** will extract relations among different entities *previously* extracted by a **linker**.. 
@@ -241,7 +243,7 @@ from zshot import PipelineConfig
 from zshot.linker import LinkerTARS
 from zshot.evaluation.dataset import load_ontonotes_zs
 from zshot.evaluation.zshot_evaluate import evaluate, prettify_evaluate_report
-from zshot.evaluation.metrics.seqeval.seqeval import Seqeval
+from zshot.evaluation.metrics._seqeval._seqeval import Seqeval
 
 ontonotes_zs = load_ontonotes_zs('validation')
 
