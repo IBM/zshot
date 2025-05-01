@@ -24,6 +24,7 @@ nav:
     - tars_linker.md
     - relik_linker.md
     - gliner_linker.md
+    - relik_linker.md
   - Relations Extractor:
       - relation_extractor.md
       - zsbert_relations_extractor.md
