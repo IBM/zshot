@@ -29,11 +29,11 @@ class LinkerRelik(Linker):
 
         self.model_name = model_name
         self.model = None
-        self.device = {
-            "retriever_device": self.device,
-            "index_device": self.device,
-            "reader_device": self.device
-        }
+        # self.device = {
+        #     "retriever_device": self.device,
+        #     "index_device": self.device,
+        #     "reader_device": self.device
+        # }
 
     @property
     def is_end2end(self) -> bool:
@@ -51,7 +51,8 @@ class LinkerRelik(Linker):
                                                        retriever=None, device=self.device)
                 else:
                     self.model = Relik.from_pretrained(self.model_name,
-                                                       cache_dir=MODELS_CACHE_PATH, device=self.device)
+                                                       cache_dir=MODELS_CACHE_PATH, device=self.device,
+                                                       index_device='cpu')
 
     def predict(self, docs: Iterator[Doc], batch_size: Optional[Union[int, None]] = None) -> List[List[Span]]:
         """

@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 @pytest.fixture(scope="module", autouse=True)
 def teardown():
-    logger.warning("Starting smxm tests")
+    logger.warning("Starting gliner tests")
     yield True
     gc.collect()
 
@@ -25,7 +25,7 @@ def test_gliner_download():
     del linker.model, linker
 
 
-def test_smxm_linker():
+def test_gliner_linker():
     nlp = spacy.blank("en")
     gliner_config = PipelineConfig(
         linker=LinkerGLINER(),
@@ -43,7 +43,7 @@ def test_smxm_linker():
     del doc, nlp, gliner_config
 
 
-def test_smxm_linker_no_entities():
+def test_gliner_linker_no_entities():
     nlp = spacy.blank("en")
     gliner_config = PipelineConfig(
         linker=LinkerGLINER(),
