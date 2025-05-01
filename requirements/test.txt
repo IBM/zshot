@@ -7,4 +7,5 @@ gliner>=0.2.9
 flake8>=4.0.1
 coverage>=6.4.1
 pydantic==1.9.2
+relik==1.0.5
 IPython
