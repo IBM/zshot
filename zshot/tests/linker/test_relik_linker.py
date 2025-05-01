@@ -20,6 +20,7 @@ def teardown():
 
 def test_relik_download():
     linker = LinkerRelik()
+    linker.device = 'cpu'
     linker.load_models()
     assert isinstance(linker, Linker)
     del linker.model, linker
@@ -29,7 +30,8 @@ def test_relik_linker():
     nlp = spacy.blank("en")
     relik_config = PipelineConfig(
         linker=LinkerRelik(),
-        entities=EX_ENTITIES
+        entities=EX_ENTITIES,
+        device='cpu'
     )
     nlp.add_pipe("zshot", config=relik_config, last=True)
     assert "zshot" in nlp.pipe_names
@@ -47,7 +49,8 @@ def test_relik_linker_no_entities():
     nlp = spacy.blank("en")
     relik_config = PipelineConfig(
         linker=LinkerRelik(),
-        entities=[]
+        entities=[],
+        device='cpu'
     )
     nlp.add_pipe("zshot", config=relik_config, last=True)
     assert "zshot" in nlp.pipe_names
