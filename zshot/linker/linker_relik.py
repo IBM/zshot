@@ -29,7 +29,11 @@ class LinkerRelik(Linker):
 
         self.model_name = model_name
         self.model = None
-        self.device = {"reader": self.device}
+        self.device = {
+            "retriever_device": self.device,
+            "index_device": self.device
+            "reader_device": self.device
+        }
 
     @property
     def is_end2end(self) -> bool:
