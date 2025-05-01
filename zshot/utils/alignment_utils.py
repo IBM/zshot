@@ -39,14 +39,22 @@ def align_spans(spans: List[Span], tokens: List[str], tokens_offsets: List[Tuple
         tokens_map = list(accumulate(map(lambda t: len(t) + len(join_by), tokens)))
         tokens_offsets = list(zip([0] + tokens_map, map(lambda x: x - len(join_by), tokens_map)))
     alignments = [[] for _ in range(len(tokens))]
+
     for idt, (t_start, t_end) in enumerate(tokens_offsets):
         for ids, s in enumerate(spans):
-            if (t_start <= s.start < t_end or t_start < s.end <= t_end) and alignment_mode == AlignmentMode.expand:
-                alignments[idt].append(ids)
-            if t_start >= s.start and t_end <= s.end and alignment_mode == AlignmentMode.contract:
-                alignments[idt].append(ids)
-            if t_start > s.start and t_end < s.end:
-                alignments[idt].append(ids)
+            # Check if there's any overlap between token and span
+            if alignment_mode == AlignmentMode.expand:
+                # Token is at least partially covered by the span
+                # Either the token start or end is within the span, or the span is completely within the token
+                if (t_start <= s.start < t_end   # span starts within token
+                        or t_start < s.end <= t_end   # span ends within token
+                        or (s.start <= t_start and s.end >= t_end)):  # span completely covers token
+                    alignments[idt].append(ids)
+            elif alignment_mode == AlignmentMode.contract:
+                # Token is completely within the span
+                if t_start >= s.start and t_end <= s.end:
+                    alignments[idt].append(ids)
+
     if return_dict:
         return {
             'tokens_offsets': tokens_offsets,

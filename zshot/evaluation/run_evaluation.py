@@ -9,7 +9,7 @@ from zshot.evaluation.dataset.med_mentions.entities import MEDMENTIONS_EXPLANATO
     MEDMENTIONS_EXPLANATORY_INVERSE_MAPPING
 from zshot.evaluation.dataset.ontonotes.entities import ONTONOTES_EXPLANATORY_INVERSE_MAPPING, \
     ONTONOTES_EXPLANATORY_MAPPING
-from zshot.evaluation.metrics.seqeval.seqeval import Seqeval
+from zshot.evaluation.metrics._seqeval._seqeval import Seqeval
 from zshot.evaluation.zshot_evaluate import evaluate, prettify_evaluate_report
 from zshot.linker import LinkerTARS, LinkerSMXM, LinkerRegen, LinkerGLINER
 from zshot.mentions_extractor import MentionsExtractorSpacy, MentionsExtractorFlair, \

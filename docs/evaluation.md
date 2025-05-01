@@ -30,10 +30,9 @@ from zshot import PipelineConfig
 from zshot.linker import LinkerTARS
 from zshot.evaluation.dataset import load_ontonotes_zs
 from zshot.evaluation.zshot_evaluate import evaluate, prettify_evaluate_report
-from zshot.evaluation.metrics.seqeval.seqeval import Seqeval
+from zshot.evaluation.metrics._seqeval._seqeval import Seqeval
 
 ontonotes_zs = load_ontonotes_zs('validation')
-
 
 nlp = spacy.blank("en")
 nlp_config = PipelineConfig(

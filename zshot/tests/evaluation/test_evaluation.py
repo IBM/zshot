@@ -12,6 +12,7 @@ from zshot.evaluation.evaluator import (
     RelationExtractorEvaluator,
     ZeroShotTokenClassificationEvaluator,
 )
+from zshot.evaluation.metrics._seqeval._seqeval import Seqeval
 from zshot.evaluation.metrics.rel_eval import RelEval
 from zshot.evaluation.pipeline import (
     LinkerPipeline,
@@ -180,12 +181,12 @@ class TestZeroShotTokenClassificationEvaluation:
         metrics = custom_evaluator.compute(
             get_linker_pipe([("New York", "FAC", 1)]),
             dataset,
-            metric="seqeval",
+            metric=Seqeval(),
         )
 
-        assert float(metrics["overall_precision"]) == 1.0
-        assert float(metrics["overall_recall"]) == 1.0
-        assert float(metrics["overall_f1"]) == 1.0
+        assert float(metrics["overall_precision_macro"]) == 1.0
+        assert float(metrics["overall_recall_macro"]) == 1.0
+        assert float(metrics["overall_f1_macro"]) == 1.0
         assert float(metrics["overall_accuracy"]) == 1.0
 
         # Wrong
@@ -196,12 +197,12 @@ class TestZeroShotTokenClassificationEvaluation:
         metrics = custom_evaluator.compute(
             get_linker_pipe([("York", "FAC", 1)]),
             dataset,
-            metric="seqeval",
+            metric=Seqeval(),
         )
 
-        assert float(metrics["overall_precision"]) == 0.0
-        assert float(metrics["overall_recall"]) == 0.0
-        assert float(metrics["overall_f1"]) == 0.0
+        assert float(metrics["overall_precision_macro"]) == 0.0
+        assert float(metrics["overall_recall_macro"]) == 0.0
+        assert float(metrics["overall_f1_macro"]) == 0.0
         assert float(metrics["overall_accuracy"]) == 0.5
 
     def test_prediction_token_based_evaluation(self):
@@ -215,12 +216,12 @@ class TestZeroShotTokenClassificationEvaluation:
         metrics = custom_evaluator.compute(
             get_linker_pipe([("New York", "FAC", 1)]),
             dataset,
-            metric="seqeval",
+            metric=Seqeval(),
         )
 
-        assert float(metrics["overall_precision"]) == 1.0
-        assert float(metrics["overall_recall"]) == 1.0
-        assert float(metrics["overall_f1"]) == 1.0
+        assert float(metrics["overall_precision_macro"]) == 1.0
+        assert float(metrics["overall_recall_macro"]) == 1.0
+        assert float(metrics["overall_f1_macro"]) == 1.0
         assert float(metrics["overall_accuracy"]) == 1.0
 
         # Partially Correct
@@ -232,12 +233,12 @@ class TestZeroShotTokenClassificationEvaluation:
         metrics = custom_evaluator.compute(
             get_linker_pipe([("York", "FAC", 1)]),
             dataset,
-            metric="seqeval",
+            metric=Seqeval(),
         )
 
-        assert float(metrics["overall_precision"]) == 1.0
-        assert float(metrics["overall_recall"]) == 0.5
-        assert float(metrics["overall_f1"]) == 2 / 3
+        assert float(metrics["overall_precision_macro"]) == 1.0
+        assert float(metrics["overall_recall_macro"]) == 0.5
+        assert float(metrics["overall_f1_macro"]) == 2 / 3
         assert float(metrics["overall_accuracy"]) == 0.75
 
     def test_prediction_token_based_evaluation_overlapping_spans(self):
@@ -250,12 +251,12 @@ class TestZeroShotTokenClassificationEvaluation:
         metrics = custom_evaluator.compute(
             get_linker_pipe([("New York", "FAC", 1), ("York", "LOC", 0.7)]),
             dataset,
-            metric="seqeval",
+            metric=Seqeval(),
         )
 
-        assert float(metrics["overall_precision"]) == 1.0
-        assert float(metrics["overall_recall"]) == 1.0
-        assert float(metrics["overall_f1"]) == 1.0
+        assert float(metrics["overall_precision_macro"]) == 1.0
+        assert float(metrics["overall_recall_macro"]) == 1.0
+        assert float(metrics["overall_f1_macro"]) == 1.0
         assert float(metrics["overall_accuracy"]) == 1.0
 
     def test_prediction_token_based_evaluation_partial_match_spans_expand(self):
@@ -268,11 +269,11 @@ class TestZeroShotTokenClassificationEvaluation:
             "token-classification", alignment_mode=AlignmentMode.expand
         )
         pipe = get_linker_pipe([("New Yo", "FAC", 1)])
-        metrics = custom_evaluator.compute(pipe, dataset, metric="seqeval")
+        metrics = custom_evaluator.compute(pipe, dataset, metric=Seqeval())
 
-        assert float(metrics["overall_precision"]) == 1.0
-        assert float(metrics["overall_recall"]) == 1.0
-        assert float(metrics["overall_f1"]) == 1.0
+        assert float(metrics["overall_precision_macro"]) == 1.0
+        assert float(metrics["overall_recall_macro"]) == 1.0
+        assert float(metrics["overall_f1_macro"]) == 1.0
         assert float(metrics["overall_accuracy"]) == 1.0
 
     def test_prediction_token_based_evaluation_partial_match_spans_contract(self):
@@ -285,11 +286,11 @@ class TestZeroShotTokenClassificationEvaluation:
             "token-classification", alignment_mode=AlignmentMode.contract
         )
         pipe = get_linker_pipe([("New York i", "FAC", 1)])
-        metrics = custom_evaluator.compute(pipe, dataset, metric="seqeval")
+        metrics = custom_evaluator.compute(pipe, dataset, metric=Seqeval())
 
-        assert float(metrics["overall_precision"]) == 1.0
-        assert float(metrics["overall_recall"]) == 1.0
-        assert float(metrics["overall_f1"]) == 1.0
+        assert float(metrics["overall_precision_macro"]) == 1.0
+        assert float(metrics["overall_recall_macro"]) == 1.0
+        assert float(metrics["overall_f1_macro"]) == 1.0
         assert float(metrics["overall_accuracy"]) == 1.0
 
     def test_prediction_token_based_evaluation_partial_and_overlapping_spans(self):
@@ -302,11 +303,11 @@ class TestZeroShotTokenClassificationEvaluation:
             "token-classification", alignment_mode=AlignmentMode.contract
         )
         pipe = get_linker_pipe([("New York i", "FAC", 1), ("w York", "LOC", 0.7)])
-        metrics = custom_evaluator.compute(pipe, dataset, metric="seqeval")
+        metrics = custom_evaluator.compute(pipe, dataset, metric=Seqeval())
 
-        assert float(metrics["overall_precision"]) == 1.0
-        assert float(metrics["overall_recall"]) == 1.0
-        assert float(metrics["overall_f1"]) == 1.0
+        assert float(metrics["overall_precision_macro"]) == 1.0
+        assert float(metrics["overall_recall_macro"]) == 1.0
+        assert float(metrics["overall_f1_macro"]) == 1.0
         assert float(metrics["overall_accuracy"]) == 1.0
 
 
@@ -335,12 +336,12 @@ class TestMentionsExtractorEvaluator:
         metrics = custom_evaluator.compute(
             get_mentions_extractor_pipe([("New York", "FAC", 1)]),
             dataset,
-            metric="seqeval",
+            metric=Seqeval(),
         )
 
-        assert float(metrics["overall_precision"]) == 1.0
-        assert float(metrics["overall_recall"]) == 1.0
-        assert float(metrics["overall_f1"]) == 1.0
+        assert float(metrics["overall_precision_macro"]) == 1.0
+        assert float(metrics["overall_recall_macro"]) == 1.0
+        assert float(metrics["overall_f1_macro"]) == 1.0
         assert float(metrics["overall_accuracy"]) == 1.0
 
         # Wrong
@@ -351,12 +352,12 @@ class TestMentionsExtractorEvaluator:
         metrics = custom_evaluator.compute(
             get_mentions_extractor_pipe([("York", "FAC", 1)]),
             dataset,
-            metric="seqeval",
+            metric=Seqeval(),
         )
 
-        assert float(metrics["overall_precision"]) == 0.0
-        assert float(metrics["overall_recall"]) == 0.0
-        assert float(metrics["overall_f1"]) == 0.0
+        assert float(metrics["overall_precision_macro"]) == 0.0
+        assert float(metrics["overall_recall_macro"]) == 0.0
+        assert float(metrics["overall_f1_macro"]) == 0.0
         assert float(metrics["overall_accuracy"]) == 0.5
 
     def test_prediction_token_based_evaluation(self):
@@ -369,12 +370,12 @@ class TestMentionsExtractorEvaluator:
         metrics = custom_evaluator.compute(
             get_mentions_extractor_pipe([("New York", "FAC", 1)]),
             dataset,
-            metric="seqeval",
+            metric=Seqeval(),
         )
 
-        assert float(metrics["overall_precision"]) == 1.0
-        assert float(metrics["overall_recall"]) == 1.0
-        assert float(metrics["overall_f1"]) == 1.0
+        assert float(metrics["overall_precision_macro"]) == 1.0
+        assert float(metrics["overall_recall_macro"]) == 1.0
+        assert float(metrics["overall_f1_macro"]) == 1.0
         assert float(metrics["overall_accuracy"]) == 1.0
 
         # Partially Correct
@@ -385,12 +386,12 @@ class TestMentionsExtractorEvaluator:
         metrics = custom_evaluator.compute(
             get_mentions_extractor_pipe([("York", "FAC", 1)]),
             dataset,
-            metric="seqeval",
+            metric=Seqeval(),
         )
 
-        assert float(metrics["overall_precision"]) == 1.0
-        assert float(metrics["overall_recall"]) == 0.5
-        assert float(metrics["overall_f1"]) == 2 / 3
+        assert float(metrics["overall_precision_macro"]) == 1.0
+        assert float(metrics["overall_recall_macro"]) == 0.5
+        assert float(metrics["overall_f1_macro"]) == 2 / 3
         assert float(metrics["overall_accuracy"]) == 0.75
 
     def test_prediction_span_based_evaluation_overlapping_spans(self):
@@ -403,12 +404,12 @@ class TestMentionsExtractorEvaluator:
         metrics = custom_evaluator.compute(
             get_mentions_extractor_pipe([("New York", "FAC", 1), ("York", "LOC", 0.7)]),
             dataset,
-            metric="seqeval",
+            metric=Seqeval(),
         )
 
-        assert float(metrics["overall_precision"]) == 1.0
-        assert float(metrics["overall_recall"]) == 1.0
-        assert float(metrics["overall_f1"]) == 1.0
+        assert float(metrics["overall_precision_macro"]) == 1.0
+        assert float(metrics["overall_recall_macro"]) == 1.0
+        assert float(metrics["overall_f1_macro"]) == 1.0
         assert float(metrics["overall_accuracy"]) == 1.0
 
     def test_prediction_span_based_evaluation_partial_match_spans_expand(self):
@@ -421,11 +422,11 @@ class TestMentionsExtractorEvaluator:
             "token-classification", alignment_mode=AlignmentMode.expand
         )
         pipe = get_mentions_extractor_pipe([("New Yo", "FAC", 1)])
-        metrics = custom_evaluator.compute(pipe, dataset, metric="seqeval")
+        metrics = custom_evaluator.compute(pipe, dataset, metric=Seqeval())
 
-        assert float(metrics["overall_precision"]) == 1.0
-        assert float(metrics["overall_recall"]) == 1.0
-        assert float(metrics["overall_f1"]) == 1.0
+        assert float(metrics["overall_precision_macro"]) == 1.0
+        assert float(metrics["overall_recall_macro"]) == 1.0
+        assert float(metrics["overall_f1_macro"]) == 1.0
         assert float(metrics["overall_accuracy"]) == 1.0
 
 
