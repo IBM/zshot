@@ -31,7 +31,7 @@ class LinkerRelik(Linker):
         self.model = None
         self.device = {
             "retriever_device": self.device,
-            "index_device": self.device
+            "index_device": self.device,
             "reader_device": self.device
         }
 
