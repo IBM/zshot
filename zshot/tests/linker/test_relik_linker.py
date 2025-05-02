@@ -18,6 +18,7 @@ def teardown():
     gc.collect()
 
 
+@pytest.mark.skip(reason="Too expensive to run on every commit")
 def test_relik_download():
     linker = LinkerRelik()
     linker.load_models()
@@ -25,6 +26,7 @@ def test_relik_download():
     del linker.model, linker
 
 
+@pytest.mark.skip(reason="Too expensive to run on every commit")
 def test_relik_linker():
     nlp = spacy.blank("en")
     relik_config = PipelineConfig(
@@ -41,6 +43,7 @@ def test_relik_linker():
     del doc, nlp, relik_config
 
 
+@pytest.mark.skip(reason="Too expensive to run on every commit")
 def test_relik_linker_no_entities():
     nlp = spacy.blank("en")
     relik_config = PipelineConfig(
