@@ -21,6 +21,10 @@ def load_all():
         LinkerGLINER().load_models()
     except RuntimeError:
         pass
+    # try:
+    #     LinkerRelik().load_models()
+    # except RuntimeError:
+    #     pass
     try:
         RelationsExtractorZSRC().load_models()
     except RuntimeError:

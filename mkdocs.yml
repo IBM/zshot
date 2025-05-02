@@ -22,6 +22,7 @@ nav:
     - regen.md
     - smxm_linker.md
     - tars_linker.md
+    - relik_linker.md
     - gliner_linker.md
   - Relations Extractor:
       - relation_extractor.md
