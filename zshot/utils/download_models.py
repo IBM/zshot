@@ -1,4 +1,4 @@
-from zshot.linker import LinkerRegen, LinkerSMXM, LinkerTARS, LinkerGLINER, LinkerRelik
+from zshot.linker import LinkerRegen, LinkerSMXM, LinkerTARS, LinkerGLINER
 from zshot.mentions_extractor import MentionsExtractorFlair
 from zshot.mentions_extractor.utils import ExtractorType
 from zshot.relation_extractor.relation_extractor_zsrc import RelationsExtractorZSRC
