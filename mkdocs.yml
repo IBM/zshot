@@ -30,6 +30,7 @@ nav:
   - Knowledge Extractor:
       - knowledge_extractor.md
       - knowgl_knowledge_extractor.md
+      - relik_knowledge_extractor.md
 
 markdown_extensions:
   - attr_list

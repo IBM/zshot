@@ -115,12 +115,17 @@ Currently, the is only one Relation Extractor available:
 ### Knowledge Extractor
 The **knowledge extractor** will perform at the same time the extraction and classification of named entities and the extraction of relations among them. The pipeline with this component doesn't need any **mentions extractor**, **linker** or **relation extractor** to work.
 
-Currently, the is only one Knowledge Extractor available: 
+Currently, there are only two Knowledge Extractor available: 
 
 - KnowGL
 
   - [Rossiello et al. (AAAI 2023)](https://arxiv.org/pdf/2210.13952.pdf)
   - [Mihindukulasooriya et al. (ISWC 2022)](https://arxiv.org/pdf/2207.05188.pdf)
+
+- Relik
+
+  - [Paper](https://arxiv.org/abs/2408.00103)
+  - [Source Code](https://github.com/SapienzaNLP/relik)
 
 
 ### How to use it
