@@ -1,0 +1,1878 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Zero and Few shot Named Entities and Relationships recognition">
+      
+      
+      
+      
+      
+        <link rel="next" href="usage/">
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
+    
+    
+      
+        <title>Overview - Zshot</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.2afb09e1.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#requirements" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="." title="Zshot" class="md-header__button md-logo" aria-label="Zshot" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Zshot
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Overview
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="lime"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/IBM/zshot" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    IBM/zshot
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="." class="md-tabs__link">
+          
+  
+  
+  Home
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="mentions_extractor/" class="md-tabs__link">
+          
+  
+  
+  Code reference
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="Zshot" class="md-nav__button md-logo" aria-label="Zshot" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Zshot
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/IBM/zshot" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    IBM/zshot
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Home
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="." class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Requirements
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#optional-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      Optional Dependencies
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#zshot-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      Zshot Approach
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Zshot Approach">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mentions-extractor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mentions Extractor
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linker" class="md-nav__link">
+    <span class="md-ellipsis">
+      Linker
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relations-extractor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Relations Extractor
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#knowledge-extractor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Knowledge Extractor
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-use-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      How to use it
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run it
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      Check it
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-create-a-custom-component" class="md-nav__link">
+    <span class="md-ellipsis">
+      How to create a custom component
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-evaluate-zshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      How to evaluate ZShot
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#citation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Citation
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Usage
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="evaluation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Evaluation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentions_extractor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Code reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Code reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Code reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Mentions Extraction
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Mentions Extraction
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentions_extractor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    MentionsExtractor
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="spacy_mentions_extractor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Spacy Mentions Extractor
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="flair_mentions_extractor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Flair Mentions Extractor
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="smxm_mentions_extractor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SMXM Mentions Extractor
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tars_mentions_extractor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    TARS Mentions Extractor
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="gliner_mentions_extractor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    GLiNER Mentions Extractor
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Entity Linking
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Entity Linking
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="entity_linking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Linker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="blink/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Blink
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="regen/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    GENRE
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="smxm_linker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SMXM Linker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tars_linker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    TARS Linker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="relik_linker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ReLiK Linker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="gliner_linker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    GLiNER Linker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Relations Extractor
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Relations Extractor
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="relation_extractor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Relations Extractor
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="zsbert_relations_extractor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ZS-BERT Relations Extractor
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Knowledge Extractor
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            Knowledge Extractor
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="knowledge_extractor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Knowledge Extractor
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="knowgl_knowledge_extractor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    KnowGL Knowledge Extractor
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="relik_knowledge_extractor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ReLiK Knowledge Extractor
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Requirements
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#optional-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      Optional Dependencies
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#zshot-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      Zshot Approach
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Zshot Approach">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mentions-extractor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mentions Extractor
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linker" class="md-nav__link">
+    <span class="md-ellipsis">
+      Linker
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relations-extractor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Relations Extractor
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#knowledge-extractor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Knowledge Extractor
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-use-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      How to use it
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run it
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      Check it
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-create-a-custom-component" class="md-nav__link">
+    <span class="md-ellipsis">
+      How to create a custom component
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-evaluate-zshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      How to evaluate ZShot
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#citation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Citation
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<div align="center">
+
+  <img height="170x" src="https://ibm.github.io/zshot/img/graph.png" />
+
+  <h1>Zshot</h1>
+
+  <p>
+    <strong>Zero and Few shot named entity & relationships recognition</strong>
+  </p>
+
+  <p>    
+
+<a href="https://ibm.github.io/zshot/"><img alt="Tutorials" src="https://img.shields.io/badge/docs-tutorials-green" /></a>
+<a href="https://pypi.org/project/zshot/"><img src="https://img.shields.io/pypi/v/zshot" /></a>
+<a href="https://pypi.org/project/zshot/"><img src="https://img.shields.io/pypi/dm/zshot" /></a>
+<a href="https://github.com/IBM/zshot/actions/workflows/python-tests.yml"> <img alt="Build" src="https://github.com/IBM/zshot/actions/workflows/python-tests.yml/badge.svg" /></a>
+<a href="https://app.codecov.io/github/ibm/zshot"> <img alt="Build" src="https://codecov.io/github/ibm/zshot/branch/main/graph/badge.svg" /></a>
+
+  </p>
+</div>
+
+<p><strong>Documentation</strong>: <a href="https://ibm.github.io/zshot/" target="_blank">https://ibm.github.io/zshot</a></p>
+<p><strong>Source Code</strong>: <a href="https://github.com/IBM/zshot" target="_blank">https://github.com/IBM/zshot</a></p>
+<p><strong>Paper</strong>: <a href="https://aclanthology.org/2023.acl-demo.34/" target="_blank">https://aclanthology.org/2023.acl-demo.34/</a></p>
+<p>Zshot is a highly customisable framework for performing Zero and Few shot named entity recognition.</p>
+<p>Can be used to perform:</p>
+<ul>
+<li><strong>Mentions extraction</strong>: Identify globally relevant mentions or mentions relevant for a given domain </li>
+<li><strong>Wikification</strong>: The task of linking textual mentions to entities in Wikipedia</li>
+<li><strong>Zero and Few Shot named entity recognition</strong>: using language description perform NER to generalize to unseen domains</li>
+<li><strong>Zero and Few Shot named relationship recognition</strong></li>
+<li><strong>Visualization: Zero-shot NER and RE extraction</strong></li>
+</ul>
+<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><code>Python 3.6+</code></p>
+</li>
+<li>
+<p><a href="https://spacy.io/" target="_blank"><code>spacy</code></a> - Zshot rely on <a href="https://spacy.io/" class="external-link" target="_blank">Spacy</a> for pipelining and visualization</p>
+</li>
+<li><a href="https://pytorch.org/get-started" target="_blank"><code>torch</code></a> - PyTorch is required to run pytorch models.</li>
+<li><a href="https://huggingface.co/docs/transformers/index" target="_blank"><code>transformers</code></a> - Required for pre-trained language models.</li>
+<li><a href="https://huggingface.co/docs/evaluate/index" target="_blank"><code>evaluate</code></a> - Required for evaluation.</li>
+<li><a href="https://huggingface.co/docs/datasets/index" target="_blank"><code>datasets</code></a> - Required to evaluate over datasets (e.g.: OntoNotes).</li>
+</ul>
+<h3 id="optional-dependencies">Optional Dependencies<a class="headerlink" href="#optional-dependencies" title="Permanent link">&para;</a></h3>
+<ul>
+<li><a href="https://github.com/flairNLP/flair" target="_blank"><code>flair</code></a> - Required if you want to use Flair mentions extractor and for TARS linker and TARS Mentions Extractor.</li>
+<li><a href="https://github.com/facebookresearch/BLINK" target="_blank"><code>blink</code></a> - Required if you want to use Blink for linking to Wikipedia pages.</li>
+<li><a href="https://github.com/urchade/GLiNER" target="_blank"><code>gliner</code></a> - Required if you want to use GLiNER Linker or GLiNER Mentions Extractor.</li>
+<li><a href="https://github.com/SapienzaNLP/relik" target="_blank"><code>relik</code></a> - Required if you want to use Relik Linker.</li>
+</ul>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
+<div class="termy">
+
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>zshot
+
+<span class="go">---&gt; 100%</span>
+</code></pre></div>
+
+</div>
+
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Example</th>
+<th>Notebook</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Installation and Visualization</td>
+<td><a href="https://colab.research.google.com/github/IBM/zshot/blob/examples/Zshot%20Example.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></td>
+</tr>
+<tr>
+<td style="text-align: center;">Knowledge Extractor</td>
+<td><a href="https://colab.research.google.com/github/IBM/zshot/blob/examples/Zshot%20Example%20-%20Knowledge%20Extractor.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></td>
+</tr>
+<tr>
+<td style="text-align: center;">Wikification</td>
+<td><a href="https://colab.research.google.com/github/IBM/zshot/blob/examples/Zshot%20Example%20-%20Wikification.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></td>
+</tr>
+<tr>
+<td style="text-align: center;">Custom Components</td>
+<td><a href="https://colab.research.google.com/github/IBM/zshot/blob/examples/Zshot%20Example%20-%20Custom%20Components.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></td>
+</tr>
+<tr>
+<td style="text-align: center;">Evaluation</td>
+<td><a href="https://colab.research.google.com/github/IBM/zshot/blob/examples/Zshot%20Example%20-%20Evaluation.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="zshot-approach">Zshot Approach<a class="headerlink" href="#zshot-approach" title="Permanent link">&para;</a></h2>
+<p>ZShot contains two different components, the <strong>mentions extractor</strong> and the <strong>linker</strong>.</p>
+<h3 id="mentions-extractor">Mentions Extractor<a class="headerlink" href="#mentions-extractor" title="Permanent link">&para;</a></h3>
+<p>The <strong>mentions extractor</strong> will detect the possible entities (a.k.a. mentions), that will be then linked to a data source (e.g.: Wikidata) by the <strong>linker</strong>. </p>
+<p>Currently, there are 7 different <strong>mentions extractors</strong> supported, SMXM, TARS, GLiNER, 2 based on <em>SpaCy</em>, and 2 that are based on <em>Flair</em>. The two different versions for <em>SpaCy</em> and <em>Flair</em> are similar, one is based on Named Entity Recognition and Classification (NERC) and the other one is based on the linguistics (i.e.: using Part Of the Speech tagging (PoS) and Dependency Parsing(DP)).</p>
+<p>The NERC approach will use NERC models to detect all the entities that have to be linked. This approach depends on the model that is being used, and the entities the model has been trained on, so depending on the use case and the target entities it may be not the best approach, as the entities may be not recognized by the NERC model and thus won't be linked.</p>
+<p>The linguistic approach relies on the idea that mentions will usually be a syntagma or a noun. Therefore, this approach detects nouns that are included in a syntagma and that act like objects, subjects, etc. This approach do not depend on the model (although the performance does), but a noun in a text should be always a noun, it doesn't depend on the dataset the model has been trained on.</p>
+<h3 id="linker">Linker<a class="headerlink" href="#linker" title="Permanent link">&para;</a></h3>
+<p>The <strong>linker</strong> will link the detected entities to a existing set of labels. Some of the <strong>linkers</strong>, however, are <em>end-to-end</em>, i.e. they don't need the <strong>mentions extractor</strong>, as they detect and link the entities at the same time.  </p>
+<p>Again, there are 6 <strong>linkers</strong> available currently, 4 of them are <em>end-to-end</em> and 2 are not.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Linker Name</th>
+<th style="text-align: center;">end-to-end</th>
+<th>Source Code</th>
+<th>Paper</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Blink</td>
+<td style="text-align: center;">X</td>
+<td><a href="https://github.com/facebookresearch/BLINK">Source Code</a></td>
+<td><a href="https://arxiv.org/pdf/1911.03814.pdf">Paper</a></td>
+</tr>
+<tr>
+<td style="text-align: center;">GENRE</td>
+<td style="text-align: center;">X</td>
+<td><a href="https://github.com/facebookresearch/GENRE">Source Code</a></td>
+<td><a href="https://arxiv.org/pdf/2010.00904.pdf">Paper</a></td>
+</tr>
+<tr>
+<td style="text-align: center;">SMXM</td>
+<td style="text-align: center;">&check;</td>
+<td><a href="https://github.com/Raldir/Zero-shot-NERC">Source Code</a></td>
+<td><a href="https://aclanthology.org/2021.acl-long.120/">Paper</a></td>
+</tr>
+<tr>
+<td style="text-align: center;">TARS</td>
+<td style="text-align: center;">&check;</td>
+<td><a href="https://github.com/flairNLP/flair">Source Code</a></td>
+<td><a href="https://kishaloyhalder.github.io/pdfs/tars_coling2020.pdf">Paper</a></td>
+</tr>
+<tr>
+<td style="text-align: center;">GLINER</td>
+<td style="text-align: center;">&check;</td>
+<td><a href="https://github.com/urchade/GLiNER">Source Code</a></td>
+<td><a href="https://arxiv.org/abs/2311.08526">Paper</a></td>
+</tr>
+<tr>
+<td style="text-align: center;">RELIK</td>
+<td style="text-align: center;">&check;</td>
+<td><a href="https://github.com/SapienzaNLP/relik">Source Code</a></td>
+<td><a href="https://arxiv.org/abs/2408.00103">Paper</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="relations-extractor">Relations Extractor<a class="headerlink" href="#relations-extractor" title="Permanent link">&para;</a></h3>
+<p>The <strong>relations extractor</strong> will extract relations among different entities <em>previously</em> extracted by a <strong>linker</strong>.. </p>
+<p>Currently, the is only one Relation Extractor available: </p>
+<ul>
+<li>ZS-Bert</li>
+<li><a href="https://arxiv.org/abs/2104.04697">Paper</a></li>
+<li><a href="https://github.com/dinobby/ZS-BERT">Source Code</a></li>
+</ul>
+<h3 id="knowledge-extractor">Knowledge Extractor<a class="headerlink" href="#knowledge-extractor" title="Permanent link">&para;</a></h3>
+<p>The <strong>knowledge extractor</strong> will perform at the same time the extraction and classification of named entities and the extraction of relations among them. The pipeline with this component doesn't need any <strong>mentions extractor</strong>, <strong>linker</strong> or <strong>relation extractor</strong> to work.</p>
+<p>Currently, there are only two Knowledge Extractor available: </p>
+<ul>
+<li>
+<p>KnowGL</p>
+</li>
+<li>
+<p><a href="https://arxiv.org/pdf/2210.13952.pdf">Rossiello et al. (AAAI 2023)</a></p>
+</li>
+<li>
+<p><a href="https://arxiv.org/pdf/2207.05188.pdf">Mihindukulasooriya et al. (ISWC 2022)</a></p>
+</li>
+<li>
+<p>Relik</p>
+</li>
+<li>
+<p><a href="https://arxiv.org/abs/2408.00103">Paper</a></p>
+</li>
+<li><a href="https://github.com/SapienzaNLP/relik">Source Code</a></li>
+</ul>
+<h3 id="how-to-use-it">How to use it<a class="headerlink" href="#how-to-use-it" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Install requirements: <code>pip install -r requirements.txt</code></li>
+<li>Install a spacy pipeline to use it for mentions extraction: <code>python -m spacy download en_core_web_sm</code></li>
+<li>Create a file <code>main.py</code> with the pipeline configuration and entities definition (<em>Wikipedia abstract are usually a good starting point for descriptions</em>):</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">zshot</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineConfig</span><span class="p">,</span> <span class="n">displacy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zshot.linker</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinkerRegen</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zshot.mentions_extractor</span><span class="w"> </span><span class="kn">import</span> <span class="n">MentionsExtractorSpacy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zshot.utils.data_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Entity</span>
+
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;en_core_web_sm&quot;</span><span class="p">)</span>
+<span class="n">nlp_config</span> <span class="o">=</span> <span class="n">PipelineConfig</span><span class="p">(</span>
+    <span class="n">mentions_extractor</span><span class="o">=</span><span class="n">MentionsExtractorSpacy</span><span class="p">(),</span>
+    <span class="n">linker</span><span class="o">=</span><span class="n">LinkerRegen</span><span class="p">(),</span>
+    <span class="n">entities</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">Entity</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Paris&quot;</span><span class="p">,</span>
+               <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Paris is located in northern central France, in a north-bending arc of the river Seine&quot;</span><span class="p">),</span>
+        <span class="n">Entity</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;IBM&quot;</span><span class="p">,</span>
+               <span class="n">description</span><span class="o">=</span><span class="s2">&quot;International Business Machines Corporation (IBM) is an American multinational technology corporation headquartered in Armonk, New York&quot;</span><span class="p">),</span>
+        <span class="n">Entity</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;New York&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;New York is a city in U.S. state&quot;</span><span class="p">),</span>
+        <span class="n">Entity</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Florida&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;southeasternmost U.S. state&quot;</span><span class="p">),</span>
+        <span class="n">Entity</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;American&quot;</span><span class="p">,</span>
+               <span class="n">description</span><span class="o">=</span><span class="s2">&quot;American, something of, from, or related to the United States of America, commonly known as the United States or America&quot;</span><span class="p">),</span>
+        <span class="n">Entity</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Chemical formula&quot;</span><span class="p">,</span>
+               <span class="n">description</span><span class="o">=</span><span class="s2">&quot;In chemistry, a chemical formula is a way of presenting information about the chemical proportions of atoms that constitute a particular chemical compound or molecule&quot;</span><span class="p">),</span>
+        <span class="n">Entity</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Acetamide&quot;</span><span class="p">,</span>
+               <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Acetamide (systematic name: ethanamide) is an organic compound with the formula CH3CONH2. It is the simplest amide derived from acetic acid. It finds some use as a plasticizer and as an industrial solvent.&quot;</span><span class="p">),</span>
+        <span class="n">Entity</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Armonk&quot;</span><span class="p">,</span>
+               <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Armonk is a hamlet and census-designated place (CDP) in the town of North Castle, located in Westchester County, New York, United States.&quot;</span><span class="p">),</span>
+        <span class="n">Entity</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Acetic Acid&quot;</span><span class="p">,</span>
+               <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Acetic acid, systematically named ethanoic acid, is an acidic, colourless liquid and organic compound with the chemical formula CH3COOH&quot;</span><span class="p">),</span>
+        <span class="n">Entity</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Industrial solvent&quot;</span><span class="p">,</span>
+               <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Acetamide (systematic name: ethanamide) is an organic compound with the formula CH3CONH2. It is the simplest amide derived from acetic acid. It finds some use as a plasticizer and as an industrial solvent.&quot;</span><span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">&quot;zshot&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">nlp_config</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;International Business Machines Corporation (IBM) is an American multinational technology corporation&quot;</span> \
+       <span class="s2">&quot; headquartered in Armonk, New York, with operations in over 171 countries.&quot;</span>
+
+<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">displacy</span><span class="o">.</span><span class="n">serve</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;ent&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="run-it">Run it<a class="headerlink" href="#run-it" title="Permanent link">&para;</a></h3>
+<p>Run with</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>python<span class="w"> </span>main.py
+
+<span class="go">Using the &#39;ent&#39; visualizer</span>
+<span class="go">Serving on http://0.0.0.0:5000 ...</span>
+</code></pre></div>
+<p>The script will annotate the text using Zshot and use Displacy for visualising the annotations</p>
+<h3 id="check-it">Check it<a class="headerlink" href="#check-it" title="Permanent link">&para;</a></h3>
+<p>Open your browser at <a href="http://127.0.0.1:5000" class="external-link" target="_blank">http://127.0.0.1:5000</a> .</p>
+<p>You will see the annotated sentence:</p>
+<p><img src="https://ibm.github.io/zshot/img/annotations.png" /></p>
+<h3 id="how-to-create-a-custom-component">How to create a custom component<a class="headerlink" href="#how-to-create-a-custom-component" title="Permanent link">&para;</a></h3>
+<p>If you want to implement your own mentions_extractor or linker and use it with ZShot you can do it. To make it easier for the user to implement a new component, some base classes are provided that you have to extend with your code.</p>
+<p>It is as simple as create a new class extending the base class (<code>MentionsExtractor</code> or <code>Linker</code>). You will have to implement the predict method, which will receive the SpaCy Documents and will return a list of <code>zshot.utils.data_models.Span</code> for each document.</p>
+<p>This is a simple mentions_extractor that will extract as mentions all words that contain the letter s:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">spacy.tokens</span><span class="w"> </span><span class="kn">import</span> <span class="n">Doc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zshot</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zshot.utils.data_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Span</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zshot.mentions_extractor</span><span class="w"> </span><span class="kn">import</span> <span class="n">MentionsExtractor</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SimpleMentionExtractor</span><span class="p">(</span><span class="n">MentionsExtractor</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Doc</span><span class="p">],</span> <span class="n">batch_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">spans</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Span</span><span class="p">(</span><span class="n">tok</span><span class="o">.</span><span class="n">idx</span><span class="p">,</span> <span class="n">tok</span><span class="o">.</span><span class="n">idx</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">tok</span><span class="p">))</span> <span class="k">for</span> <span class="n">tok</span> <span class="ow">in</span> <span class="n">doc</span> <span class="k">if</span> <span class="s2">&quot;s&quot;</span> <span class="ow">in</span> <span class="n">tok</span><span class="o">.</span><span class="n">text</span><span class="p">]</span> <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">spans</span>
+
+<span class="n">new_nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;en_core_web_sm&quot;</span><span class="p">)</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">PipelineConfig</span><span class="p">(</span>
+    <span class="n">mentions_extractor</span><span class="o">=</span><span class="n">SimpleMentionExtractor</span><span class="p">()</span>
+<span class="p">)</span>
+<span class="n">new_nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">&quot;zshot&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">text_acetamide</span> <span class="o">=</span> <span class="s2">&quot;CH2O2 is a chemical compound similar to Acetamide used in International Business &quot;</span> \
+        <span class="s2">&quot;Machines Corporation (IBM).&quot;</span>
+
+<span class="n">doc</span> <span class="o">=</span> <span class="n">new_nlp</span><span class="p">(</span><span class="n">text_acetamide</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">mentions</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="ow">is</span><span class="p">,</span> <span class="n">similar</span><span class="p">,</span> <span class="n">used</span><span class="p">,</span> <span class="n">Business</span><span class="p">,</span> <span class="n">Machines</span><span class="p">,</span> <span class="n">materials</span><span class="p">]</span>
+</code></pre></div>
+<h3 id="how-to-evaluate-zshot">How to evaluate ZShot<a class="headerlink" href="#how-to-evaluate-zshot" title="Permanent link">&para;</a></h3>
+<p>Evaluation is an important process to keep improving the performance of the models, that's why ZShot allows to evaluate the component with two predefined datasets: OntoNotes and MedMentions, in a Zero-Shot version in which the entities of the test and validation splits don't appear in the train set.  </p>
+<p>The package <code>evaluation</code> contains all the functionalities to evaluate the ZShot components. The main function is <code>zshot.evaluation.zshot_evaluate.evaluate</code>, that will take as input the SpaCy <code>nlp</code> model and the dataset to evaluate. It will return a <code>str</code> containing a table with the results of the evaluation. For instance the evaluation of the TARS linker in ZShot for the <em>Ontonotes validation</em> set would be:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">zshot</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zshot.linker</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinkerTARS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zshot.evaluation.dataset</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_ontonotes_zs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zshot.evaluation.zshot_evaluate</span><span class="w"> </span><span class="kn">import</span> <span class="n">evaluate</span><span class="p">,</span> <span class="n">prettify_evaluate_report</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zshot.evaluation.metrics._seqeval._seqeval</span><span class="w"> </span><span class="kn">import</span> <span class="n">Seqeval</span>
+
+<span class="n">ontonotes_zs</span> <span class="o">=</span> <span class="n">load_ontonotes_zs</span><span class="p">(</span><span class="s1">&#39;validation&#39;</span><span class="p">)</span>
+
+
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">blank</span><span class="p">(</span><span class="s2">&quot;en&quot;</span><span class="p">)</span>
+<span class="n">nlp_config</span> <span class="o">=</span> <span class="n">PipelineConfig</span><span class="p">(</span>
+    <span class="n">linker</span><span class="o">=</span><span class="n">LinkerTARS</span><span class="p">(),</span>
+    <span class="n">entities</span><span class="o">=</span><span class="n">ontonotes_zs</span><span class="o">.</span><span class="n">entities</span>
+<span class="p">)</span>
+
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">&quot;zshot&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">nlp_config</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">evaluation</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">ontonotes_zs</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">Seqeval</span><span class="p">())</span>
+<span class="n">prettify_evaluate_report</span><span class="p">(</span><span class="n">evaluation</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="citation">Citation<a class="headerlink" href="#citation" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>@inproceedings{picco-etal-2023-zshot,
+    title = &quot;Zshot: An Open-source Framework for Zero-Shot Named Entity Recognition and Relation Extraction&quot;,
+    author = &quot;Picco, Gabriele  and
+      Martinez Galindo, Marcos  and
+      Purpura, Alberto  and
+      Fuchs, Leopold  and
+      Lopez, Vanessa  and
+      Hoang, Thanh Lam&quot;,
+    booktitle = &quot;Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 3: System Demonstrations)&quot;,
+    month = jul,
+    year = &quot;2023&quot;,
+    address = &quot;Toronto, Canada&quot;,
+    publisher = &quot;Association for Computational Linguistics&quot;,
+    url = &quot;https://aclanthology.org/2023.acl-demo.34&quot;,
+    doi = &quot;10.18653/v1/2023.acl-demo.34&quot;,
+    pages = &quot;357--368&quot;,
+    abstract = &quot;The Zero-Shot Learning (ZSL) task pertains to the identification of entities or relations in texts that were not seen during training. ZSL has emerged as a critical research area due to the scarcity of labeled data in specific domains, and its applications have grown significantly in recent years. With the advent of large pretrained language models, several novel methods have been proposed, resulting in substantial improvements in ZSL performance. There is a growing demand, both in the research community and industry, for a comprehensive ZSL framework that facilitates the development and accessibility of the latest methods and pretrained models.In this study, we propose a novel ZSL framework called Zshot that aims to address the aforementioned challenges. Our primary objective is to provide a platform that allows researchers to compare different state-of-the-art ZSL methods with standard benchmark datasets. Additionally, we have designed our framework to support the industry with readily available APIs for production under the standard SpaCy NLP pipeline. Our API is extendible and evaluable, moreover, we include numerous enhancements such as boosting the accuracy with pipeline ensembling and visualization utilities available as a SpaCy extension.&quot;,
+}
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/IBM/zshot" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": ".", "features": ["content.code.annotate", "navigation.tabs", "navigation.top"], "search": "assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+    
+  </body>
+</html>
