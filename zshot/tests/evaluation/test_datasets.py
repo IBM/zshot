@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from zshot.evaluation import load_ontonotes_zs, load_medmentions_zs, load_few_rel_zs
+from zshot.evaluation import load_ontonotes_zs, load_medmentions_zs, load_few_rel_zs, load_pile_ner_biomed_zs
 from zshot.evaluation.dataset.dataset import create_dataset
 from zshot.utils.data_models import Entity
 
@@ -63,6 +63,14 @@ def test_medmentions_zs():
 def test_medmentions_zs_split():
     dataset = load_medmentions_zs(split='test')
     assert dataset.num_rows == 1048
+    del dataset
+
+
+@pytest.mark.skip(reason="Too expensive to run on every commit")
+def test_pile_bioner():
+    dataset = load_pile_ner_biomed_zs()
+    assert dataset.num_rows == 58861
+    assert len(dataset.entities) == 3912
     del dataset
 
 
