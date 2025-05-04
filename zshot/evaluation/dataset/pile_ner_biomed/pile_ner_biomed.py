@@ -1,5 +1,3 @@
-from typing import Union, Optional
-
 from datasets import load_dataset
 
 from zshot.evaluation.dataset.dataset import DatasetWithEntities
